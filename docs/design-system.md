@@ -80,6 +80,16 @@ export const stagger = 0.06; // segundos entre filhos
 
 Valores são ponto de partida: ajustar no navegador até o "peso" ficar certo e atualizar aqui.
 
+### Exceção aprovada: intro animada do Hero
+
+O Hero (`components/sections/hero.tsx` + `hero-intro.tsx`) replica fielmente a
+animação de entrada do cooldock.app, incluindo o `<h1>` com fade+translate em
+stagger — isso diverge da regra geral do CLAUDE.md §8 ("o H1 do hero aparece
+imediatamente", para proteger LCP). Decisão explícita do time, não descuido:
+fidelidade visual à referência teve prioridade sobre a fração de LCP perdida
+nesse ponto específico. Não replicar esse padrão em outras seções acima da
+dobra sem a mesma aprovação.
+
 ## Componentes de motion reutilizáveis
 
 - `<Reveal>` — fade + translateY no scroll, respeita reduced motion

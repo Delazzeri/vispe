@@ -11,12 +11,7 @@ export function FinancialDashboard() {
   const shouldReduceMotion = useReducedMotion();
 
   return (
-    <motion.div
-      initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: 32, scale: 0.98 }}
-      animate={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, y: 0, scale: 1 }}
-      transition={spring.gentle}
-      className="w-full max-w-md rounded-3xl border border-border bg-glass p-6 shadow-[0_1px_2px_rgba(38,38,38,0.06),0_24px_48px_-16px_rgba(38,38,38,0.16)] backdrop-blur-xl"
-    >
+    <div className="w-full max-w-md rounded-3xl border border-border bg-glass p-6 shadow-[0_1px_2px_rgba(38,38,38,0.06),0_24px_48px_-16px_rgba(38,38,38,0.16)] backdrop-blur-xl">
       <div className="flex items-center justify-between">
         <p className="text-sm font-semibold text-fg-muted">Saúde financeira</p>
         <span className="inline-flex items-center gap-1.5 rounded-full bg-accent-soft px-3 py-1 text-xs font-semibold text-brand-dark">
@@ -64,6 +59,6 @@ export function FinancialDashboard() {
       <p className="mt-4 text-[11px] leading-relaxed text-fg-muted">
         Dados ilustrativos — representação do painel de acompanhamento financeiro Vispe.
       </p>
-    </motion.div>
+    </div>
   );
 }
