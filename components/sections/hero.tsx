@@ -2,8 +2,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { site } from "@/content/site";
 import { HeroIntro, HeroIntroItem } from "@/components/sections/hero-intro";
-import { FinancialDashboard } from "@/components/showcase/financial-dashboard";
-import { GoldBar } from "@/components/ui/gold-bar";
+import { ValuationReport } from "@/components/showcase/valuation-report";
 
 const trust = [
   "Sem contrato de fidelidade",
@@ -17,26 +16,11 @@ export function Hero({ id }: { id?: string }) {
     <section
       id={id}
       aria-labelledby="hero-heading"
-      className="relative isolate overflow-clip bg-surface"
+      className="relative isolate overflow-clip bg-bg"
     >
-      {/* Cena de fundo: gradiente radial dourado, dissolvendo no bg no topo e no fundo */}
-      <div className="absolute inset-x-0 top-[80px] h-[520px] overflow-hidden md:top-[150px] md:h-[800px]">
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              "radial-gradient(60% 60% at 50% 35%, rgba(250,214,67,0.18) 0%, rgba(214,178,86,0.10) 45%, transparent 75%)",
-          }}
-        />
-        <div className="absolute inset-x-0 top-0 h-[45%] bg-gradient-to-b from-surface to-transparent" />
-        <div className="absolute inset-x-0 bottom-0 h-[40%] bg-gradient-to-t from-surface to-transparent" />
-      </div>
-
-      <HeroIntro className="relative mx-auto flex max-w-4xl flex-col items-center px-6 pt-28 text-center md:pt-40">
+      <HeroIntro className="relative mx-auto flex max-w-4xl flex-col items-center px-6 pt-28 text-center md:pt-36">
         <HeroIntroItem>
-          <p className="inline-flex items-center gap-2 text-sm font-semibold text-brand-dark">
-            {site.name}
-          </p>
+          <p className="text-sm font-semibold text-brand-dark">{site.name}</p>
         </HeroIntroItem>
 
         <HeroIntroItem>
@@ -76,18 +60,9 @@ export function Hero({ id }: { id?: string }) {
         </HeroIntroItem>
       </HeroIntro>
 
-      {/* Mockup + barras de ouro: camada única, barras avançam sobre o mockup */}
-      <HeroIntro className="relative mx-auto mt-12 flex max-w-5xl justify-center px-6 pb-24 md:mt-16 md:pb-32">
-        <HeroIntroItem className="pointer-events-none absolute -left-16 top-6 hidden w-32 -rotate-6 md:-left-20 md:top-10 md:block md:w-40 lg:-left-28 lg:w-48">
-          <GoldBar className="w-full drop-shadow-xl" />
-        </HeroIntroItem>
-
-        <HeroIntroItem className="relative z-10">
-          <FinancialDashboard />
-        </HeroIntroItem>
-
-        <HeroIntroItem className="pointer-events-none absolute -right-16 top-10 hidden w-32 rotate-6 md:-right-20 md:top-16 md:block md:w-40 lg:-right-28 lg:w-48">
-          <GoldBar flip className="w-full drop-shadow-xl" />
+      <HeroIntro className="relative mx-auto flex max-w-5xl justify-center px-6 pb-24 pt-14 md:pb-32 md:pt-20">
+        <HeroIntroItem>
+          <ValuationReport />
         </HeroIntroItem>
       </HeroIntro>
     </section>
