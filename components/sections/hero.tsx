@@ -3,7 +3,7 @@ import { ArrowRight } from "lucide-react";
 import { site } from "@/content/site";
 import { HeroIntro, HeroIntroItem } from "@/components/sections/hero-intro";
 import { HeroScene } from "@/components/sections/hero-scene";
-import { ValuationReport } from "@/components/showcase/valuation-report";
+import { DashboardMockup } from "@/components/showcase/dashboard-mockup";
 import { HeroRock } from "@/components/ui/hero-rock";
 
 const trust = [
@@ -64,16 +64,16 @@ export function Hero({ id }: { id?: string }) {
         </HeroIntroItem>
       </HeroIntro>
 
-      <HeroIntro className="relative mx-auto flex max-w-5xl justify-center px-6 pb-24 pt-14 md:pb-32 md:pt-20">
-        <HeroIntroItem className="pointer-events-auto absolute left-[calc(50%-620px)] top-8 hidden w-[220px] md:block lg:w-[260px]">
+      <HeroIntro className="relative mx-auto flex max-w-6xl justify-center px-6 pb-24 pt-14 md:pb-32 md:pt-20">
+        <HeroIntroItem className="pointer-events-auto absolute left-[calc(50%-680px)] top-8 hidden w-[200px] md:block lg:w-[240px]">
           <HeroRock side="left" />
         </HeroIntroItem>
 
-        <HeroIntroItem className="relative z-10">
-          <ValuationReport />
+        <HeroIntroItem className="relative z-10 w-full max-w-4xl">
+          <DashboardMockup />
         </HeroIntroItem>
 
-        <HeroIntroItem className="pointer-events-auto absolute right-[calc(50%-620px)] top-4 hidden w-[220px] md:block lg:w-[260px]">
+        <HeroIntroItem className="pointer-events-auto absolute right-[calc(50%-680px)] top-4 hidden w-[200px] md:block lg:w-[240px]">
           <HeroRock side="right" />
         </HeroIntroItem>
       </HeroIntro>
