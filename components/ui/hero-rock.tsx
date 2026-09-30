@@ -21,15 +21,11 @@ type HeroRockProps = {
 };
 
 const sizes = "(max-width: 809px) 206px, 500px";
-const SPOTLIGHT_RADIUS = 130; // px — raio do "líquido" ao redor do cursor
+const SPOTLIGHT_RADIUS = 130; // px — raio total do reveal ao redor do cursor
+const CORE_RATIO = 0.62; // fração do raio que fica sólida/estável, sem distorção
 const LEAVE_DELAY = 1200; // ms antes de começar a desfazer o reveal ao tirar o mouse
 const LEAVE_TRANSITION = "opacity 1800ms ease-out";
 const MOVE_TRANSITION = "opacity 250ms ease-out";
-
-// Borda nítida (sem esfumaçado) — o filtro SVG de turbulência é quem
-// desfaz a forma circular em algo orgânico e instável.
-const LIQUID_MASK = (x: number, y: number) =>
-  `radial-gradient(circle ${SPOTLIGHT_RADIUS}px at ${x}px ${y}px, black 0%, black 88%, transparent 100%)`;
 
 export function HeroRock({ side, hoverVariant, hoverScale, className }: HeroRockProps) {
   const base = `/media/hero/rock-${side}-1000.webp`;
@@ -38,6 +34,8 @@ export function HeroRock({ side, hoverVariant, hoverScale, className }: HeroRock
 
   const containerRef = useRef<HTMLDivElement>(null);
   const hoverLayerRef = useRef<HTMLImageElement>(null);
+  const coreRef = useRef<SVGCircleElement>(null);
+  const ringRef = useRef<SVGCircleElement>(null);
   const leaveTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const shouldReduceMotion = useReducedMotion();
 
@@ -52,13 +50,15 @@ export function HeroRock({ side, hoverVariant, hoverScale, className }: HeroRock
       leaveTimeout.current = null;
     }
 
-    // Atualiza a máscara diretamente no DOM — sem passar pelo estado do
-    // React, para não re-renderizar a cada pixel de movimento do mouse.
+    // Move os dois círculos da máscara diretamente no DOM — sem passar
+    // pelo estado do React — para não re-renderizar a cada pixel.
+    coreRef.current?.setAttribute("cx", String(x));
+    coreRef.current?.setAttribute("cy", String(y));
+    ringRef.current?.setAttribute("cx", String(x));
+    ringRef.current?.setAttribute("cy", String(y));
+
     const layer = hoverLayerRef.current;
     if (layer) {
-      const mask = LIQUID_MASK(x, y);
-      layer.style.maskImage = mask;
-      layer.style.webkitMaskImage = mask;
       layer.style.transition = MOVE_TRANSITION;
       layer.style.opacity = "1";
     }
@@ -73,6 +73,8 @@ export function HeroRock({ side, hoverVariant, hoverScale, className }: HeroRock
       }
     }, LEAVE_DELAY);
   }
+
+  const coreRadius = SPOTLIGHT_RADIUS * CORE_RATIO;
 
   return (
     <div
@@ -98,58 +100,81 @@ export function HeroRock({ side, hoverVariant, hoverScale, className }: HeroRock
         sizes={sizes}
         className="absolute inset-0 h-full w-full select-none object-contain opacity-0"
         style={{
-          filter: `url(#${filterId})`,
+          mask: `url(#${filterId}-mask)`,
+          WebkitMask: `url(#${filterId}-mask)`,
           transform: hoverScale ? `scale(${hoverScale})` : undefined,
         }}
       />
 
       {/*
-        Duas camadas de feTurbulence com fases diferentes, cada uma
-        animando baseFrequency continuamente (SMIL <animate>) — a
-        combinação nunca se repete de forma previsível e nunca
-        estabiliza numa silhueta fixa, lendo como líquido instável em
-        vez de uma forma com contorno reconhecível.
+        A máscara combina duas regiões: um núcleo circular sólido e
+        estático (sem filtro — sempre nítido, o "foco" do pincel) e um
+        anel externo que passa pela turbulência animada, ondulando só
+        a borda. feComposite "over" funde o núcleo por cima do anel
+        distorcido, garantindo que a distorção nunca invada o centro.
       */}
       <svg aria-hidden className="absolute h-0 w-0">
-        <filter id={filterId} x="-20%" y="-20%" width="140%" height="140%">
-          <feTurbulence
-            type="fractalNoise"
-            baseFrequency="0.012 0.016"
-            numOctaves="2"
-            seed={side === "left" ? 3 : 8}
-            result="noiseA"
-          >
-            {!shouldReduceMotion && (
-              <animate
-                attributeName="baseFrequency"
-                dur="7s"
-                values="0.010 0.014;0.018 0.009;0.012 0.020;0.010 0.014"
-                repeatCount="indefinite"
-              />
-            )}
-          </feTurbulence>
-          <feTurbulence
-            type="turbulence"
-            baseFrequency="0.022 0.02"
-            numOctaves="1"
-            seed={side === "left" ? 11 : 19}
-            result="noiseB"
-          >
-            {!shouldReduceMotion && (
-              <animate
-                attributeName="baseFrequency"
-                dur="5.3s"
-                values="0.025 0.018;0.015 0.03;0.028 0.012;0.025 0.018"
-                repeatCount="indefinite"
-              />
-            )}
-          </feTurbulence>
-          <feMerge result="noise">
-            <feMergeNode in="noiseA" />
-            <feMergeNode in="noiseB" />
-          </feMerge>
-          <feDisplacementMap in="SourceGraphic" in2="noise" scale="30" xChannelSelector="R" yChannelSelector="G" />
-        </filter>
+        <defs>
+          <filter id={`${filterId}-wobble`} x="-40%" y="-40%" width="180%" height="180%">
+            <feTurbulence
+              type="fractalNoise"
+              baseFrequency="0.012 0.016"
+              numOctaves="2"
+              seed={side === "left" ? 3 : 8}
+              result="noiseA"
+            >
+              {!shouldReduceMotion && (
+                <animate
+                  attributeName="baseFrequency"
+                  dur="7s"
+                  values="0.010 0.014;0.018 0.009;0.012 0.020;0.010 0.014"
+                  repeatCount="indefinite"
+                />
+              )}
+            </feTurbulence>
+            <feTurbulence
+              type="turbulence"
+              baseFrequency="0.022 0.02"
+              numOctaves="1"
+              seed={side === "left" ? 11 : 19}
+              result="noiseB"
+            >
+              {!shouldReduceMotion && (
+                <animate
+                  attributeName="baseFrequency"
+                  dur="5.3s"
+                  values="0.025 0.018;0.015 0.03;0.028 0.012;0.025 0.018"
+                  repeatCount="indefinite"
+                />
+              )}
+            </feTurbulence>
+            <feMerge result="noise">
+              <feMergeNode in="noiseA" />
+              <feMergeNode in="noiseB" />
+            </feMerge>
+            <feDisplacementMap
+              in="SourceGraphic"
+              in2="noise"
+              scale="46"
+              xChannelSelector="R"
+              yChannelSelector="G"
+            />
+          </filter>
+
+          <mask id={`${filterId}-mask`} maskUnits="objectBoundingBox" maskContentUnits="userSpaceOnUse">
+            {/* Anel: círculo cheio (levemente maior que o núcleo) distorcido pela turbulência */}
+            <circle
+              ref={ringRef}
+              cx="-1000"
+              cy="-1000"
+              r={SPOTLIGHT_RADIUS}
+              fill="white"
+              filter={`url(#${filterId}-wobble)`}
+            />
+            {/* Núcleo: sólido, nítido, sem filtro — a área de foco estável */}
+            <circle ref={coreRef} cx="-1000" cy="-1000" r={coreRadius} fill="white" />
+          </mask>
+        </defs>
       </svg>
     </div>
   );
