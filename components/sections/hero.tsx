@@ -64,16 +64,16 @@ export function Hero({ id }: { id?: string }) {
         </HeroIntroItem>
       </HeroIntro>
 
-      <HeroIntro className="relative mx-auto flex max-w-6xl justify-center px-6 pb-24 pt-14 md:pb-32 md:pt-20">
+      <HeroIntro className="relative flex w-full justify-center px-6 pb-24 pt-14 md:pb-32 md:pt-20">
         <HeroIntroItem className="relative z-10 w-full max-w-4xl">
           <DashboardMockup />
         </HeroIntroItem>
 
-        <HeroIntroItem className="pointer-events-auto absolute left-[max(-40px,calc(50%-900px))] top-[-20px] z-20 hidden w-[420px] md:block lg:w-[480px]">
+        <HeroIntroItem className="pointer-events-auto absolute left-[-40px] top-[240px] z-20 hidden w-[320px] md:block lg:left-[20px] lg:w-[380px] xl:left-[60px] xl:w-[420px]">
           <HeroRock side="left" />
         </HeroIntroItem>
 
-        <HeroIntroItem className="pointer-events-auto absolute right-[max(-40px,calc(50%-900px))] top-[-20px] z-20 hidden w-[420px] md:block lg:w-[480px]">
+        <HeroIntroItem className="pointer-events-auto absolute right-[-40px] top-[240px] z-20 hidden w-[320px] md:block lg:right-[20px] lg:w-[380px] xl:right-[60px] xl:w-[420px]">
           <HeroRock side="right" />
         </HeroIntroItem>
       </HeroIntro>
