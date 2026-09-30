@@ -7,13 +7,13 @@ import Image from "next/image";
  */
 export function DashboardMockup() {
   return (
-    <div className="relative w-full max-w-4xl">
+    <div className="relative w-full max-w-6xl">
       <Image
         src="/media/hero/tela-mac2-2600.webp"
         alt="Painel CFO as Service da Vispe Capital, exibindo receita recorrente, CAC, LTV/CAC, churn, funil comercial e receita por produto"
         width={2600}
         height={1900}
-        sizes="(max-width: 809px) 100vw, 900px"
+        sizes="(max-width: 809px) 100vw, 1200px"
         className="h-auto w-full drop-shadow-[0_40px_60px_rgba(38,38,38,0.25)]"
         priority
       />
