@@ -69,11 +69,11 @@ export function Hero({ id }: { id?: string }) {
           <DashboardMockup />
         </HeroIntroItem>
 
-        <HeroIntroItem className="pointer-events-auto absolute left-[-40px] top-32 z-20 hidden w-[320px] md:top-44 md:block lg:left-[20px] lg:w-[380px] xl:left-[60px] xl:w-[420px]">
+        <HeroIntroItem className="pointer-events-auto absolute left-[-100px] top-32 z-20 hidden w-[360px] md:top-44 md:block lg:left-[-60px] lg:w-[440px] xl:left-[-20px] xl:w-[480px]">
           <HeroRock side="left" />
         </HeroIntroItem>
 
-        <HeroIntroItem className="pointer-events-auto absolute right-[-40px] top-32 z-20 hidden w-[320px] md:top-44 md:block lg:right-[20px] lg:w-[380px] xl:right-[60px] xl:w-[420px]">
+        <HeroIntroItem className="pointer-events-auto absolute right-[-100px] top-32 z-20 hidden w-[360px] md:top-44 md:block lg:right-[-60px] lg:w-[440px] xl:right-[-20px] xl:w-[480px]">
           <HeroRock side="right" />
         </HeroIntroItem>
       </HeroIntro>
