@@ -64,16 +64,16 @@ export function Hero({ id }: { id?: string }) {
         </HeroIntroItem>
       </HeroIntro>
 
-      <HeroIntro className="relative flex w-full justify-center px-6 pb-24 pt-14 md:pb-32 md:pt-20">
-        <HeroIntroItem className="relative z-10">
+      <HeroIntro className="relative flex w-full justify-center px-6 pb-24 md:pb-32">
+        <HeroIntroItem className="relative z-10 mt-20 md:mt-28">
           <DashboardMockup />
         </HeroIntroItem>
 
-        <HeroIntroItem className="pointer-events-auto absolute left-[-40px] top-[-20px] z-20 hidden w-[320px] md:block lg:left-[20px] lg:w-[380px] xl:left-[60px] xl:w-[420px]">
+        <HeroIntroItem className="pointer-events-auto absolute left-[-40px] top-32 z-20 hidden w-[320px] md:top-44 md:block lg:left-[20px] lg:w-[380px] xl:left-[60px] xl:w-[420px]">
           <HeroRock side="left" />
         </HeroIntroItem>
 
-        <HeroIntroItem className="pointer-events-auto absolute right-[-40px] top-[-20px] z-20 hidden w-[320px] md:block lg:right-[20px] lg:w-[380px] xl:right-[60px] xl:w-[420px]">
+        <HeroIntroItem className="pointer-events-auto absolute right-[-40px] top-32 z-20 hidden w-[320px] md:top-44 md:block lg:right-[20px] lg:w-[380px] xl:right-[60px] xl:w-[420px]">
           <HeroRock side="right" />
         </HeroIntroItem>
       </HeroIntro>
