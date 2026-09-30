@@ -2,7 +2,9 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { site } from "@/content/site";
 import { HeroIntro, HeroIntroItem } from "@/components/sections/hero-intro";
+import { HeroScene } from "@/components/sections/hero-scene";
 import { ValuationReport } from "@/components/showcase/valuation-report";
+import { HeroRock } from "@/components/ui/hero-rock";
 
 const trust = [
   "Sem contrato de fidelidade",
@@ -18,7 +20,9 @@ export function Hero({ id }: { id?: string }) {
       aria-labelledby="hero-heading"
       className="relative isolate overflow-clip bg-bg"
     >
-      <HeroIntro className="relative mx-auto flex max-w-4xl flex-col items-center px-6 pt-28 text-center md:pt-36">
+      <HeroScene />
+
+      <HeroIntro className="relative mx-auto flex max-w-4xl flex-col items-center px-6 pt-20 text-center md:pt-32">
         <HeroIntroItem>
           <p className="text-sm font-semibold text-brand-dark">{site.name}</p>
         </HeroIntroItem>
@@ -61,8 +65,16 @@ export function Hero({ id }: { id?: string }) {
       </HeroIntro>
 
       <HeroIntro className="relative mx-auto flex max-w-5xl justify-center px-6 pb-24 pt-14 md:pb-32 md:pt-20">
-        <HeroIntroItem>
+        <HeroIntroItem className="pointer-events-auto absolute left-[calc(50%-620px)] top-8 hidden w-[220px] md:block lg:w-[260px]">
+          <HeroRock side="left" />
+        </HeroIntroItem>
+
+        <HeroIntroItem className="relative z-10">
           <ValuationReport />
+        </HeroIntroItem>
+
+        <HeroIntroItem className="pointer-events-auto absolute right-[calc(50%-620px)] top-4 hidden w-[220px] md:block lg:w-[260px]">
+          <HeroRock side="right" />
         </HeroIntroItem>
       </HeroIntro>
     </section>
