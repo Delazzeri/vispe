@@ -7,7 +7,7 @@ import Image from "next/image";
  */
 export function DashboardMockup() {
   return (
-    <div className="relative w-full max-w-6xl">
+    <div className="relative w-full max-w-5xl">
       <Image
         src="/media/hero/tela-mac2-2600.webp"
         alt="Painel CFO as Service da Vispe Capital, exibindo receita recorrente, CAC, LTV/CAC, churn, funil comercial e receita por produto"
