@@ -6,6 +6,7 @@ import { cn } from "@/lib/cn";
 
 type HeroRockProps = {
   side: "left" | "right";
+  hoverVariant?: string;
   className?: string;
 };
 
@@ -22,9 +23,9 @@ const LIQUID_MASK = (x: number, y: number) =>
   `radial-gradient(circle ${SPOTLIGHT_RADIUS}px at ${x}px ${y}px, ` +
   `black 0%, black 35%, rgba(0,0,0,0.85) 50%, rgba(0,0,0,0.4) 70%, transparent 100%)`;
 
-export function HeroRock({ side, className }: HeroRockProps) {
+export function HeroRock({ side, hoverVariant, className }: HeroRockProps) {
   const base = `/media/hero/rock-${side}-1000.webp`;
-  const hover = `/media/hero/rock-${side}-hover-1000.webp`;
+  const hover = `/media/hero/rock-${side}-hover${hoverVariant ?? ""}-1000.webp`;
 
   const containerRef = useRef<HTMLDivElement>(null);
   const hoverLayerRef = useRef<HTMLImageElement>(null);
