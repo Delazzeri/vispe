@@ -7,6 +7,15 @@ import { cn } from "@/lib/cn";
 type HeroRockProps = {
   side: "left" | "right";
   hoverVariant?: string;
+  /**
+   * Fator de escala do conteúdo dentro do frame da imagem de hover,
+   * relativo à imagem base — necessário quando a arte de hover foi
+   * exportada com menos margem ao redor da rocha (o objeto "preenche"
+   * mais o canvas), o que a faria parecer maior mesmo com as mesmas
+   * dimensões de arquivo. Ex.: 0.81 encolhe o conteúdo para 81% do
+   * frame, recentralizado, igualando a escala percebida à base.
+   */
+  hoverScale?: number;
   className?: string;
 };
 
@@ -21,7 +30,7 @@ const MOVE_TRANSITION = "opacity 250ms ease-out";
 const LIQUID_MASK = (x: number, y: number) =>
   `radial-gradient(circle ${SPOTLIGHT_RADIUS}px at ${x}px ${y}px, black 0%, black 92%, transparent 100%)`;
 
-export function HeroRock({ side, hoverVariant, className }: HeroRockProps) {
+export function HeroRock({ side, hoverVariant, hoverScale, className }: HeroRockProps) {
   const base = `/media/hero/rock-${side}-1000.webp`;
   const hover = `/media/hero/rock-${side}-hover${hoverVariant ?? ""}-1000.webp`;
   const filterId = useId();
@@ -88,8 +97,11 @@ export function HeroRock({ side, hoverVariant, className }: HeroRockProps) {
         width={1000}
         height={1453}
         sizes={sizes}
-        className="absolute inset-0 h-full w-full select-none object-cover opacity-0"
-        style={{ filter: `url(#${filterId})` }}
+        className="absolute inset-0 h-full w-full select-none object-contain opacity-0"
+        style={{
+          filter: `url(#${filterId})`,
+          transform: hoverScale ? `scale(${hoverScale})` : undefined,
+        }}
       />
 
       <svg aria-hidden className="absolute h-0 w-0">
