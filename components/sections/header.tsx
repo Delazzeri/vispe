@@ -7,7 +7,7 @@ import { MobileMenu } from "@/components/sections/mobile-menu";
 export function Header() {
   return (
     <HeaderChrome>
-      <div className="relative mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+      <div className="relative flex items-center justify-between px-5 py-3 md:px-6">
         <Link href="/" className="shrink-0">
           <Image
             src="/media/brand/logo-vispe-preto-2204.png"

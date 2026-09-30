@@ -32,7 +32,7 @@ export function MobileMenu() {
             animate={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
             exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: -12 }}
             transition={shouldReduceMotion ? { duration: 0.15 } : spring.smooth}
-            className="absolute inset-x-0 top-full border-b border-border bg-bg/95 backdrop-blur-xl"
+            className="absolute inset-x-0 top-[calc(100%+8px)] rounded-3xl border border-border bg-bg/95 shadow-[0_12px_32px_-12px_rgba(38,38,38,0.25)] backdrop-blur-xl"
           >
             <nav aria-label="Navegação principal" className="flex flex-col px-6 py-6">
               {site.nav.map((item) => (

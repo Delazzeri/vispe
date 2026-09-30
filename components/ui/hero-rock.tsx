@@ -1,3 +1,6 @@
+"use client";
+
+import { useRef, useState, type MouseEvent } from "react";
 import Image from "next/image";
 import { cn } from "@/lib/cn";
 
@@ -7,21 +10,35 @@ type HeroRockProps = {
 };
 
 const sizes = "(max-width: 809px) 206px, 500px";
+const SPOTLIGHT_RADIUS = 140; // px — "raio" de revelação ao redor do cursor
 
 export function HeroRock({ side, className }: HeroRockProps) {
   const base = `/media/hero/rock-${side}-1000.webp`;
   const hover = `/media/hero/rock-${side}-hover-1000.webp`;
 
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [spotlight, setSpotlight] = useState<{ x: number; y: number } | null>(null);
+
+  function handleMouseMove(event: MouseEvent<HTMLDivElement>) {
+    const rect = containerRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    setSpotlight({ x: event.clientX - rect.left, y: event.clientY - rect.top });
+  }
+
   return (
-    <div className={cn("group relative", className)}>
+    <div
+      ref={containerRef}
+      className={cn("relative", className)}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={() => setSpotlight(null)}
+    >
       <Image
         src={base}
         alt=""
         width={1000}
         height={1453}
         sizes={sizes}
-        className="w-full h-auto select-none"
-        priority={false}
+        className="h-auto w-full select-none"
       />
       <Image
         src={hover}
@@ -29,7 +46,16 @@ export function HeroRock({ side, className }: HeroRockProps) {
         width={1000}
         height={1453}
         sizes={sizes}
-        className="absolute inset-0 h-full w-full select-none opacity-0 transition-opacity duration-500 ease-out group-hover:opacity-100 group-focus-within:opacity-100"
+        className="absolute inset-0 h-full w-full select-none transition-opacity duration-150 ease-out"
+        style={{
+          opacity: spotlight ? 1 : 0,
+          maskImage: spotlight
+            ? `radial-gradient(circle ${SPOTLIGHT_RADIUS}px at ${spotlight.x}px ${spotlight.y}px, black 0%, transparent 100%)`
+            : undefined,
+          WebkitMaskImage: spotlight
+            ? `radial-gradient(circle ${SPOTLIGHT_RADIUS}px at ${spotlight.x}px ${spotlight.y}px, black 0%, transparent 100%)`
+            : undefined,
+        }}
       />
     </div>
   );

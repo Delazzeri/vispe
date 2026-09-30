@@ -1,28 +1,11 @@
-"use client";
-
-import { useEffect, useState, type ReactNode } from "react";
-import { cn } from "@/lib/cn";
+import type { ReactNode } from "react";
 
 export function HeaderChrome({ children }: { children: ReactNode }) {
-  const [scrolled, setScrolled] = useState(false);
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 8);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
   return (
-    <header
-      className={cn(
-        "sticky top-0 z-50 border-b transition-colors duration-300",
-        scrolled
-          ? "border-border bg-bg/80 backdrop-blur-xl"
-          : "border-transparent bg-transparent",
-      )}
-    >
-      {children}
+    <header className="sticky top-4 z-50 mx-auto w-[min(calc(100%-32px),1100px)] md:top-6">
+      <div className="rounded-full border border-border bg-bg/80 shadow-[0_1px_2px_rgba(38,38,38,0.04),0_12px_32px_-12px_rgba(38,38,38,0.18)] backdrop-blur-xl">
+        {children}
+      </div>
     </header>
   );
 }

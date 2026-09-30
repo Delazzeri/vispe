@@ -8,7 +8,7 @@ export function HeroScene() {
   return (
     <div
       aria-hidden
-      className="absolute inset-x-0 top-0 -z-10 h-[520px] overflow-hidden md:h-[760px]"
+      className="absolute inset-x-0 top-[280px] -z-10 h-[420px] overflow-hidden md:top-[360px] md:h-[620px]"
     >
       {shouldReduceMotion ? (
         // eslint-disable-next-line @next/next/no-img-element
@@ -32,8 +32,8 @@ export function HeroScene() {
           <source src="/media/hero/scene.mp4" type="video/mp4" />
         </video>
       )}
-      <div className="absolute inset-x-0 top-0 h-1/3 bg-gradient-to-b from-bg to-transparent" />
-      <div className="absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-t from-bg to-transparent" />
+      <div className="absolute inset-x-0 top-0 h-2/5 bg-gradient-to-b from-bg to-transparent" />
+      <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-bg to-transparent" />
     </div>
   );
 }
