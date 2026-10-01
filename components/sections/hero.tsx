@@ -22,9 +22,9 @@ export function Hero({ id }: { id?: string }) {
     >
       <HeroScene />
 
-      <HeroIntro className="relative mx-auto flex max-w-4xl flex-col items-center px-6 pt-20 text-center md:pt-32">
+      <HeroIntro className="relative mx-auto flex max-w-4xl flex-col items-center px-6 pt-10 text-center md:pt-16">
         <HeroIntroItem>
-          <p className="mb-[22px] text-sm font-bold text-fg">{site.hero.eyebrow}</p>
+          <p className="mb-3 text-sm font-bold text-fg">{site.hero.eyebrow}</p>
         </HeroIntroItem>
 
         <HeroIntroItem>
@@ -38,7 +38,7 @@ export function Hero({ id }: { id?: string }) {
         </HeroIntroItem>
 
         <HeroIntroItem>
-          <p className="mt-5 max-w-2xl text-balance text-lg text-fg-muted md:text-xl">
+          <p className="mt-4 max-w-2xl text-balance text-lg text-fg-muted md:text-xl">
             {site.hero.description}
           </p>
         </HeroIntroItem>
@@ -46,7 +46,7 @@ export function Hero({ id }: { id?: string }) {
         <HeroIntroItem>
           <Link
             href={site.hero.ctaPrimary.href}
-            className="mt-5 inline-flex items-center gap-2 rounded-full bg-ink px-7 py-4 text-sm font-semibold text-paper transition-transform hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand"
+            className="mt-4 inline-flex items-center gap-2 rounded-full bg-ink px-7 py-4 text-sm font-semibold text-paper transition-transform hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand"
           >
             {site.hero.ctaPrimary.label}
             <ArrowRight className="h-4 w-4" aria-hidden />
@@ -54,7 +54,7 @@ export function Hero({ id }: { id?: string }) {
         </HeroIntroItem>
 
         <HeroIntroItem>
-          <ul className="mt-10 flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
+          <ul className="mt-6 flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
             {trust.map((label) => (
               <li key={label} className="text-xs font-medium text-fg-muted">
                 {label}
