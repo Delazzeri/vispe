@@ -47,6 +47,29 @@ export function Footer() {
               ))}
             </ul>
           </nav>
+          <nav aria-label="Contato">
+            <p className="text-sm font-semibold text-fg">Contato</p>
+            <ul className="mt-3 space-y-2">
+              <li>
+                <Link
+                  href="/contato"
+                  className="text-sm text-fg-muted transition-colors hover:text-fg"
+                >
+                  Fale com a Vispe
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/contato"
+                  className="text-sm text-fg-muted transition-colors hover:text-fg"
+                >
+                  Seja um parceiro
+                </Link>
+              </li>
+            </ul>
+            {/* TODO(content): redes sociais (Instagram, WhatsApp, YouTube,
+                Spotify) — pendentes de confirmação (ver content/site.ts:social). */}
+          </nav>
         </div>
         <p className="mt-12 text-xs text-fg-muted">
           Copyright ©{new Date().getFullYear()} {site.name}. Todos os direitos reservados.

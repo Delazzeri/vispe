@@ -127,8 +127,83 @@ export const site = {
     title: "Nossos clientes",
     subtitle: "Eles escolheram sair do tradicional e escalar valor de verdade",
     // TODO(content): logos e nomes de clientes reais — não expor sem autorização do cliente.
-    logos: [],
+    // Placeholders fictícios abaixo, nunca publicar sem substituir.
+    logos: [
+      "Empresa A",
+      "Empresa B",
+      "Empresa C",
+      "Empresa D",
+      "Empresa E",
+      "Empresa F",
+      "Empresa G",
+      "Empresa H",
+    ],
   },
+
+  // TODO(content): depoimentos reais de clientes, com autorização. Placeholders
+  // fictícios abaixo — nunca publicar como se fossem reais.
+  testimonials: [
+    {
+      quote:
+        "[Depoimento de exemplo — substituir] A Vispe organizou nosso financeiro em poucos meses e conseguimos enxergar onde estávamos perdendo margem.",
+      name: "Cliente Exemplo",
+      role: "Fundador(a), Empresa Exemplo",
+    },
+    {
+      quote:
+        "[Depoimento de exemplo — substituir] O processo de valuation foi decisivo para a negociação com os investidores.",
+      name: "Cliente Exemplo",
+      role: "CEO, Empresa Exemplo",
+    },
+    {
+      quote:
+        "[Depoimento de exemplo — substituir] Ganhamos controladoria de verdade sem contratar um CFO em tempo integral.",
+      name: "Cliente Exemplo",
+      role: "Sócio(a), Empresa Exemplo",
+    },
+  ],
+
+  // TODO(content): texto real do processo de trabalho da Vispe. Placeholder abaixo.
+  showcase: {
+    eyebrow: "Como trabalhamos",
+    title: "[Placeholder] Um processo estruturado, do diagnóstico ao resultado",
+    description:
+      "[Texto de exemplo — substituir] Começamos com um diagnóstico profundo do seu financeiro, estruturamos o plano de ação e acompanhamos a execução lado a lado até o resultado aparecer no caixa.",
+    steps: [
+      { title: "[Exemplo] Diagnóstico", description: "[Texto de exemplo — substituir]" },
+      { title: "[Exemplo] Estruturação", description: "[Texto de exemplo — substituir]" },
+      { title: "[Exemplo] Execução", description: "[Texto de exemplo — substituir]" },
+      { title: "[Exemplo] Resultado", description: "[Texto de exemplo — substituir]" },
+    ],
+  },
+
+  faq: [
+    {
+      question: "O que é o CFO as Service?",
+      answer:
+        "É a estruturação da inteligência financeira do seu negócio — controladoria, fluxo de caixa e indicadores de gestão — sem a necessidade de contratar um diretor financeiro em tempo integral.",
+    },
+    {
+      question: "Preciso ter um financeiro estruturado para contratar a Vispe?",
+      answer:
+        "Não. Trabalhamos desde o diagnóstico inicial, organizando o financeiro do zero quando necessário, até a estruturação de processos mais avançados como M&A e captação.",
+    },
+    {
+      question: "Como funciona o diagnóstico inicial?",
+      answer:
+        "Analisamos a situação financeira atual da empresa e apontamos onde estão as principais perdas de margem e oportunidades de estruturação, antes de qualquer compromisso.",
+    },
+    {
+      question: "A Vispe atende empresas de qualquer porte?",
+      answer:
+        "Atendemos pequenas e médias empresas que já faturam e buscam profissionalizar a gestão financeira, seja para crescer, se preparar para sucessão ou acessar o mercado de capitais.",
+    },
+    {
+      question: "Quais serviços a Vispe oferece além da controladoria?",
+      answer:
+        "M&A, captação de recursos, planejamento tributário, aceleração comercial e valuation — cada um estruturado conforme o momento e a necessidade específica da empresa.",
+    },
+  ],
 
   partners: {
     title: "Nossos parceiros",
