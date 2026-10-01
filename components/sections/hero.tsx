@@ -74,7 +74,7 @@ export function Hero({ id }: { id?: string }) {
         </HeroIntroItem>
 
         <HeroIntroItem className="pointer-events-auto absolute right-[-100px] top-48 z-20 hidden w-[360px] md:top-[248px] md:block lg:right-[-60px] lg:w-[440px] xl:right-[-20px] xl:w-[480px]">
-          <HeroRock side="right" />
+          <HeroRock side="right" hoverVariant="2" hoverScale={0.97} />
         </HeroIntroItem>
       </HeroIntro>
     </section>

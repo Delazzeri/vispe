@@ -13,7 +13,7 @@ export function HeroScene() {
       {shouldReduceMotion ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img
-          src="/media/hero/scene2-poster-1600.jpg"
+          src="/media/hero/scene-poster-1600.jpg"
           alt=""
           className="absolute inset-0 h-full w-full object-cover"
         />
@@ -23,7 +23,7 @@ export function HeroScene() {
             if (el) el.playbackRate = 0.5;
           }}
           className="absolute inset-0 h-full w-full object-cover"
-          poster="/media/hero/scene2-poster-1600.jpg"
+          poster="/media/hero/scene-poster-1600.jpg"
           autoPlay
           muted
           loop
@@ -31,8 +31,8 @@ export function HeroScene() {
           disablePictureInPicture
           preload="auto"
         >
-          <source src="/media/hero/scene2-mobile.mp4" media="(max-width: 809px)" type="video/mp4" />
-          <source src="/media/hero/scene2.mp4" type="video/mp4" />
+          <source src="/media/hero/scene-mobile.mp4" media="(max-width: 809px)" type="video/mp4" />
+          <source src="/media/hero/scene.mp4" type="video/mp4" />
         </video>
       )}
       <div className="absolute inset-x-0 top-0 h-2/5 bg-gradient-to-b from-bg to-transparent" />
