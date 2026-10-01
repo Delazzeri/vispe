@@ -31,6 +31,25 @@ export const site = {
     { label: "Laudos de valuation emitidos", value: "TODO", prefix: "+" },
   ],
 
+  featureChips: {
+    eyebrow: "Soluções",
+    title: "Tudo que sua empresa precisa, em um só lugar",
+    description:
+      "Da controladoria do dia a dia aos eventos de liquidez mais complexos, estruturamos cada etapa com rigor técnico e proximidade de quem entende o seu negócio.",
+    chips: [
+      "Controladoria financeira",
+      "M&A",
+      "Captação de recursos",
+      "Planejamento tributário",
+      "Aceleração comercial",
+      "Valuation",
+      "Due diligence",
+      "Turnaround financeiro",
+      "BPO financeiro",
+      "Partnership",
+    ],
+  },
+
   services: [
     {
       slug: "ma",
