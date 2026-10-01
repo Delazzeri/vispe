@@ -1,4 +1,5 @@
 import { Hero } from "@/components/sections/hero";
+import { TrustBar } from "@/components/sections/trust-bar";
 import { FeatureChips } from "@/components/sections/feature-chips";
 import { CategoryBlocks } from "@/components/sections/category-blocks";
 import { Showcase } from "@/components/sections/showcase";
@@ -11,6 +12,7 @@ export default function HomePage() {
   return (
     <>
       <Hero id="hero" />
+      <TrustBar />
       <FeatureChips id="solucoes" />
       <CategoryBlocks id="servicos" />
       <Showcase id="como-trabalhamos" />

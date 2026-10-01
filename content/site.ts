@@ -22,13 +22,10 @@ export const site = {
       "Transformamos negócios comuns em ativos de alto valor, prontos para atrair investidores e chegar a um evento de liquidez milionário.",
   },
 
-  // TODO(content): números reais — o site atual renderiza esses contadores via JS
-  // (client-side animation), não foi possível capturar os valores finais no fetch.
-  // Confirmar com o time antes de publicar.
   metrics: [
-    { label: "Equity gerenciado", value: "TODO", prefix: "+R$", suffix: "bi" },
-    { label: "M&A transacionados", value: "TODO", prefix: "+R$", suffix: "mi" },
-    { label: "Laudos de valuation emitidos", value: "TODO", prefix: "+" },
+    { label: "Equity gerenciado", value: "2", prefix: "+R$", suffix: "Bi" },
+    { label: "M&A transacionado", value: "700", prefix: "+R$", suffix: "Mi" },
+    { label: "Laudos de valuation emitidos", value: "300", prefix: "+", suffix: "" },
   ],
 
   featureChips: {
