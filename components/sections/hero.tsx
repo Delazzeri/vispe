@@ -65,15 +65,15 @@ export function Hero({ id }: { id?: string }) {
       </HeroIntro>
 
       <HeroIntro className="relative flex w-full justify-center px-6 pb-24 md:pb-32">
-        <HeroIntroItem className="relative z-10 mt-2 md:mt-3">
+        <HeroIntroItem className="relative z-10 mt-1 md:mt-1.5">
           <DashboardMockup />
         </HeroIntroItem>
 
-        <HeroIntroItem className="pointer-events-auto absolute left-[-100px] top-48 z-20 hidden w-[360px] md:top-[248px] md:block lg:left-[-60px] lg:w-[440px] xl:left-[-20px] xl:w-[480px]">
+        <HeroIntroItem className="pointer-events-auto absolute left-[-100px] top-14 z-20 hidden w-[360px] md:top-16 md:block lg:left-[-60px] lg:w-[440px] xl:left-[-20px] xl:w-[480px]">
           <HeroRock side="left" hoverVariant="2" hoverScale={0.81} />
         </HeroIntroItem>
 
-        <HeroIntroItem className="pointer-events-auto absolute right-[-100px] top-48 z-20 hidden w-[360px] md:top-[248px] md:block lg:right-[-60px] lg:w-[440px] xl:right-[-20px] xl:w-[480px]">
+        <HeroIntroItem className="pointer-events-auto absolute right-[-100px] top-14 z-20 hidden w-[360px] md:top-16 md:block lg:right-[-60px] lg:w-[440px] xl:right-[-20px] xl:w-[480px]">
           <HeroRock side="right" hoverVariant="2" hoverScale={0.97} />
         </HeroIntroItem>
       </HeroIntro>
