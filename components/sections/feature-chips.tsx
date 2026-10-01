@@ -24,7 +24,7 @@ export function FeatureChips({ id }: { id?: string }) {
   const { eyebrow, title, description, chips } = site.featureChips;
 
   return (
-    <section id={id} aria-labelledby="feature-chips-heading" className="bg-bg py-24 md:py-32">
+    <section id={id} aria-labelledby="feature-chips-heading" className="bg-bg pb-24 pt-6 md:pb-32 md:pt-8">
       <div className="mx-auto max-w-3xl px-6 text-center">
         <Reveal>
           <p className="text-sm font-bold text-brand-dark">{eyebrow}</p>

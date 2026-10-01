@@ -3,7 +3,7 @@ import { site } from "@/content/site";
 
 export function TrustBar({ id }: { id?: string }) {
   return (
-    <section id={id} aria-label="Resultados da Vispe Capital" className="bg-bg py-12 md:py-16">
+    <section id={id} aria-label="Resultados da Vispe Capital" className="bg-bg pb-10 pt-6 md:pb-12 md:pt-8">
       <ul className="mx-auto flex max-w-4xl flex-wrap items-center justify-center gap-x-12 gap-y-8 px-6">
         {site.metrics.map((metric, index) => (
           <Reveal key={metric.label} delay={index * 0.06}>
