@@ -4,7 +4,7 @@ import { site } from "@/content/site";
 
 export function Testimonials({ id }: { id?: string }) {
   return (
-    <section id={id} aria-labelledby="testimonials-heading" className="bg-surface py-24 md:py-32">
+    <section id={id} aria-labelledby="testimonials-heading" className="bg-bg py-24 md:py-32">
       <div className="mx-auto max-w-6xl px-6">
         <Reveal>
           <h2
@@ -19,7 +19,7 @@ export function Testimonials({ id }: { id?: string }) {
         <div className="mt-14 grid gap-6 md:grid-cols-3">
           {site.testimonials.map((testimonial, index) => (
             <Reveal key={testimonial.name + index} delay={index * 0.08}>
-              <figure className="h-full rounded-3xl border border-border bg-bg p-7">
+              <figure className="h-full rounded-3xl border border-border bg-surface p-7">
                 <Quote className="h-6 w-6 text-brand-dark" aria-hidden />
                 <blockquote className="mt-4 text-balance text-sm leading-relaxed text-fg">
                   {testimonial.quote}

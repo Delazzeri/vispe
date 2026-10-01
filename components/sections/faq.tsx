@@ -16,7 +16,7 @@ function faqJsonLd() {
 
 export function FAQ({ id }: { id?: string }) {
   return (
-    <section id={id} aria-labelledby="faq-heading" className="bg-surface py-24 md:py-32">
+    <section id={id} aria-labelledby="faq-heading" className="bg-bg py-24 md:py-32">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd()) }}

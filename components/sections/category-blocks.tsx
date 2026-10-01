@@ -22,11 +22,7 @@ const icons: Record<string, LucideIcon> = {
 
 export function CategoryBlocks({ id }: { id?: string }) {
   return (
-    <section
-      id={id}
-      aria-labelledby="category-blocks-heading"
-      className="bg-surface py-24 md:py-32"
-    >
+    <section id={id} aria-labelledby="category-blocks-heading" className="bg-bg py-24 md:py-32">
       <div className="mx-auto max-w-6xl px-6">
         <Reveal className="max-w-2xl">
           <h2
@@ -43,7 +39,7 @@ export function CategoryBlocks({ id }: { id?: string }) {
             const Icon = icons[service.slug];
             return (
               <Reveal key={service.slug} delay={index * 0.06}>
-                <article className="h-full rounded-3xl border border-border bg-bg p-7">
+                <article className="h-full rounded-3xl border border-border bg-surface p-7">
                   <Icon className="h-6 w-6 text-brand-dark" aria-hidden />
                   <h3 className="mt-5 text-lg font-semibold text-fg">{service.name}</h3>
                   <p className="mt-2 text-sm leading-relaxed text-fg-muted">

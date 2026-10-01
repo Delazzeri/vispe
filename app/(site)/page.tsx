@@ -6,7 +6,6 @@ import { Showcase } from "@/components/sections/showcase";
 import { Testimonials } from "@/components/sections/testimonials";
 import { LogoWall } from "@/components/sections/logo-wall";
 import { FAQ } from "@/components/sections/faq";
-import { FinalCTA } from "@/components/sections/final-cta";
 
 export default function HomePage() {
   return (
@@ -19,7 +18,6 @@ export default function HomePage() {
       <Testimonials id="depoimentos" />
       <LogoWall id="clientes" />
       <FAQ id="faq" />
-      <FinalCTA id="contato-final" />
     </>
   );
 }
