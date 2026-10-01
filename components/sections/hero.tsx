@@ -24,7 +24,7 @@ export function Hero({ id }: { id?: string }) {
 
       <HeroIntro className="relative mx-auto flex max-w-4xl flex-col items-center px-6 pt-20 text-center md:pt-32">
         <HeroIntroItem>
-          <p className="text-sm font-semibold text-brand-dark">{site.name}</p>
+          <p className="text-sm font-bold text-fg">{site.hero.eyebrow}</p>
         </HeroIntroItem>
 
         <HeroIntroItem>

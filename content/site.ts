@@ -5,12 +5,13 @@ export const site = {
   locale: "pt-BR",
 
   hero: {
+    eyebrow: "Sua controladoria financeira",
     h1: "Inteligência financeira estratégica",
     subheadline:
       "Pare de perder dinheiro por falta de controle financeiro. Organizamos o seu financeiro e aumentamos o seu lucro.",
     description:
-      "Estruturamos a inteligência financeira do seu negócio, aumentando caixa e maximizando a margem de lucro — sem precisar contratar um diretor executivo em tempo integral.",
-    ctaPrimary: { label: "Agendar diagnóstico de lucro gratuito", href: "/contato" },
+      "Aumentamos seu caixa e maximizamos sua margem de lucro, sem precisar contratar um diretor executivo em tempo integral.",
+    ctaPrimary: { label: "Potencialize seu lucro agora", href: "/contato" },
     ctaSecondary: { label: "Como funciona o CFO as Service", href: "#servicos" },
   },
 

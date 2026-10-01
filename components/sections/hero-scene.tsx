@@ -19,6 +19,9 @@ export function HeroScene() {
         />
       ) : (
         <video
+          ref={(el) => {
+            if (el) el.playbackRate = 0.5;
+          }}
           className="absolute inset-0 h-full w-full object-cover"
           poster="/media/hero/scene2-poster-1600.jpg"
           autoPlay
