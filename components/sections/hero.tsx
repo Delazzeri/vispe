@@ -65,7 +65,7 @@ export function Hero({ id }: { id?: string }) {
       </HeroIntro>
 
       <HeroIntro className="relative flex w-full justify-center px-6 pb-24 md:pb-32">
-        <HeroIntroItem className="relative z-10 mt-20 md:mt-28">
+        <HeroIntroItem className="relative z-10 mt-10 md:mt-14">
           <DashboardMockup />
         </HeroIntroItem>
 
