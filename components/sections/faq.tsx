@@ -22,7 +22,7 @@ export function FAQ({ id }: { id?: string }) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd()) }}
       />
 
-      <div className="mx-auto max-w-3xl px-6">
+      <div className="mx-auto max-w-4xl px-6">
         <Reveal>
           <h2
             id="faq-heading"
@@ -33,18 +33,18 @@ export function FAQ({ id }: { id?: string }) {
           </h2>
         </Reveal>
 
-        <div className="mt-12 divide-y divide-border">
+        <div className="mt-12 grid gap-4 sm:grid-cols-2">
           {site.faq.map((item, index) => (
             <Reveal key={item.question} delay={index * 0.05}>
-              <details className="group py-5">
-                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-left text-base font-semibold text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand">
-                  {item.question}
+              <details className="group rounded-3xl bg-surface p-6 open:sm:col-span-2">
+                <summary className="flex cursor-pointer list-none items-start gap-4 text-left text-base font-semibold text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand">
                   <Plus
-                    className="h-5 w-5 shrink-0 text-brand-dark transition-transform group-open:rotate-45"
+                    className="mt-0.5 h-5 w-5 shrink-0 text-brand-dark transition-transform group-open:rotate-45"
                     aria-hidden
                   />
+                  {item.question}
                 </summary>
-                <p className="mt-3 text-sm leading-relaxed text-fg-muted">{item.answer}</p>
+                <p className="mt-3 pl-9 text-sm leading-relaxed text-fg-muted">{item.answer}</p>
               </details>
             </Reveal>
           ))}
