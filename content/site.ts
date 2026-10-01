@@ -56,35 +56,41 @@ export const site = {
       name: "M&A — Fusões e Aquisições",
       description:
         "Compramos, vendemos e fundimos empresas com estratégia para maximizar o retorno.",
+      includes: ["Mapeamento de compradores", "Negociação", "Due diligence", "Fechamento do deal"],
     },
     {
       slug: "captacao-de-recursos",
       name: "Captação de Recursos",
       description:
         "Estruturação e conexão com investidores, bancos e fundos para impulsionar o crescimento.",
+      includes: ["Estruturação da rodada", "Rede de investidores", "Pitch deck", "Negociação de termos"],
     },
     {
       slug: "planejamento-tributario",
       name: "Planejamento Tributário",
       description:
         "Pare de pagar mais imposto do que deve. Redução legal da carga tributária com estratégia.",
+      includes: ["Diagnóstico tributário", "Reorganização societária", "Enquadramento fiscal", "Compliance"],
     },
     {
       slug: "controladoria-financeira",
       name: "Controladoria Financeira",
       description:
         "Gestão financeira estratégica que transforma números em decisões e faturamento em lucro real.",
+      includes: ["Fluxo de caixa", "DRE gerencial", "Indicadores financeiros", "Rotina de fechamento"],
     },
     {
       slug: "aceleracao-comercial",
       name: "Aceleração Comercial",
       description:
         "Estruturamos a sua operação comercial do zero: processos claros, inteligência de dados e um time focado em trazer contratos de alta margem.",
+      includes: ["Funil comercial", "Playbook de vendas", "Inteligência de dados", "Gestão de time"],
     },
     {
       slug: "valuation",
       name: "Valuation",
       description: "O valor real da sua empresa calculado com precisão. Você negocia com poder.",
+      includes: ["Laudo técnico", "Múltiplos de mercado", "Fluxo de caixa descontado", "Relatório para negociação"],
     },
   ],
 
