@@ -21,15 +21,11 @@ const chip: Variants = {
 
 export function FeatureChips({ id }: { id?: string }) {
   const shouldReduceMotion = useReducedMotion();
-  const { eyebrow, title, description, chips } = site.featureChips;
+  const { title, description, chips } = site.featureChips;
 
   return (
     <section id={id} aria-labelledby="feature-chips-heading" className="bg-bg pb-24 pt-6 md:pb-32 md:pt-8">
       <div className="mx-auto max-w-3xl px-6 text-center">
-        <Reveal>
-          <p className="text-sm font-bold text-brand-dark">{eyebrow}</p>
-        </Reveal>
-
         <Reveal delay={0.05}>
           <h2
             id="feature-chips-heading"
@@ -45,11 +41,11 @@ export function FeatureChips({ id }: { id?: string }) {
         </Reveal>
 
         {shouldReduceMotion ? (
-          <ul aria-label="Soluções oferecidas" className="mt-10 flex flex-wrap justify-center gap-3">
+          <ul aria-label="Soluções oferecidas" className="mt-10 flex flex-wrap justify-center gap-2">
             {chips.map((label) => (
               <li
                 key={label}
-                className="rounded-full border border-border bg-surface px-4 py-2 text-sm font-medium text-fg"
+                className="rounded-full border border-border bg-surface px-3 py-1.5 text-xs font-medium text-fg"
               >
                 {label}
               </li>
@@ -58,7 +54,7 @@ export function FeatureChips({ id }: { id?: string }) {
         ) : (
           <motion.ul
             aria-label="Soluções oferecidas"
-            className="mt-10 flex flex-wrap justify-center gap-3"
+            className="mt-10 flex flex-wrap justify-center gap-2"
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, amount: 0.3 }}
@@ -68,7 +64,7 @@ export function FeatureChips({ id }: { id?: string }) {
               <motion.li
                 key={label}
                 variants={chip}
-                className="rounded-full border border-border bg-surface px-4 py-2 text-sm font-medium text-fg"
+                className="rounded-full border border-border bg-surface px-3 py-1.5 text-xs font-medium text-fg"
               >
                 {label}
               </motion.li>
