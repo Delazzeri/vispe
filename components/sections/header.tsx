@@ -33,7 +33,7 @@ export function Header() {
 
         <Link
           href="/contato"
-          className="hidden rounded-full bg-ink px-4 py-2 text-sm font-semibold text-paper transition-transform hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand md:inline-block"
+          className="hidden rounded-lg bg-ink px-4 py-2 text-sm font-semibold text-paper transition-transform hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand md:inline-block"
         >
           Agendar diagnóstico
         </Link>
