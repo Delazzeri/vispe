@@ -24,13 +24,13 @@ export function Hero({ id }: { id?: string }) {
 
       <HeroIntro className="relative mx-auto flex max-w-4xl flex-col items-center px-6 pt-20 text-center md:pt-32">
         <HeroIntroItem>
-          <p className="text-sm font-bold text-fg">{site.hero.eyebrow}</p>
+          <p className="mb-[22px] text-sm font-bold text-fg">{site.hero.eyebrow}</p>
         </HeroIntroItem>
 
         <HeroIntroItem>
           <h1
             id="hero-heading"
-            className="mt-4 text-balance text-4xl font-bold tracking-tight text-fg md:text-7xl"
+            className="text-balance text-4xl font-bold tracking-tight text-fg md:text-7xl"
             style={{ letterSpacing: "-0.03em" }}
           >
             {site.hero.h1}
@@ -46,7 +46,7 @@ export function Hero({ id }: { id?: string }) {
         <HeroIntroItem>
           <Link
             href={site.hero.ctaPrimary.href}
-            className="mt-6 inline-flex items-center gap-2 rounded-full bg-ink px-7 py-4 text-sm font-semibold text-paper transition-transform hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand"
+            className="mt-5 inline-flex items-center gap-2 rounded-full bg-ink px-7 py-4 text-sm font-semibold text-paper transition-transform hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand"
           >
             {site.hero.ctaPrimary.label}
             <ArrowRight className="h-4 w-4" aria-hidden />
@@ -54,7 +54,7 @@ export function Hero({ id }: { id?: string }) {
         </HeroIntroItem>
 
         <HeroIntroItem>
-          <ul className="mt-6 flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
+          <ul className="mt-10 flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
             {trust.map((label) => (
               <li key={label} className="text-xs font-medium text-fg-muted">
                 {label}
