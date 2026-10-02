@@ -44,7 +44,7 @@ export function Fin({ id }: { id?: string }) {
           className="h-auto w-full"
         />
       ) : (
-        <div ref={ref} className="relative h-[1300px]">
+        <div ref={ref} className="relative h-[calc(1300px+100vh)]">
           <div className="pointer-events-none sticky top-0 h-screen w-full overflow-hidden">
             <motion.div style={{ scale, opacity }} className="h-full w-full">
               <Image
