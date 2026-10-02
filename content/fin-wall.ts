@@ -1,0 +1,314 @@
+// Parede de widgets da seção 24 Fin (padrão "widget wall" do CTA da referência).
+// TODO(content): todos os valores abaixo são ILUSTRATIVOS — compõem o mockup
+// do produto, não representam dados reais de clientes nem da Vispe.
+
+export type WidgetSize = "s" | "m" | "l";
+export type WidgetTone = "default" | "brand" | "accent" | "muted";
+export type WidgetIcon =
+  | "wallet"
+  | "bank"
+  | "in"
+  | "out"
+  | "receipt"
+  | "file"
+  | "calendar"
+  | "bell"
+  | "check"
+  | "alert"
+  | "percent"
+  | "target"
+  | "shield"
+  | "piggy"
+  | "trend"
+  | "video";
+
+type Base = { id: string; size: WidgetSize; hideOnMobile?: boolean };
+
+export type FinWidget = Base &
+  (
+    | {
+        kind: "stat";
+        label: string;
+        value: string;
+        icon?: WidgetIcon;
+        delta?: { text: string; trend: "up" | "down" };
+      }
+    | { kind: "gauge"; label: string; value: number; display: string; tone: WidgetTone }
+    | {
+        kind: "sparkline";
+        label: string;
+        value: string;
+        points: number[];
+        compare?: number[];
+        delta?: string;
+        axis?: [string, string];
+      }
+    | {
+        kind: "list";
+        title?: string;
+        rows: { label: string; value?: string; tone?: WidgetTone; marker?: "open" | "done" | "dot" }[];
+      }
+    | { kind: "bars"; title: string; bars: { label: string; value: number }[] }
+    | { kind: "calendar"; month: string; days: { weekday: string; day: string }[]; active: number }
+    | { kind: "event"; day: string; month: string; title: string; detail: string; value?: string }
+    | { kind: "notification"; icon: WidgetIcon; eyebrow?: string; title: string; body: string }
+    | { kind: "progress"; label: string; display: string; value: number; caption: string }
+    | { kind: "badge"; icon: WidgetIcon; label: string }
+    | { kind: "search"; placeholder: string }
+    | { kind: "clock" }
+  );
+
+export const finWall: FinWidget[] = [
+  // — linha 1
+  {
+    id: "cash-flow-30d",
+    kind: "sparkline",
+    size: "l",
+    label: "Fluxo de caixa · 30 dias",
+    value: "+R$ 48.320",
+    points: [12, 18, 15, 22, 20, 28, 25, 31, 29, 36, 34, 41],
+    compare: [10, 12, 14, 13, 17, 16, 19, 21, 20, 23, 22, 25],
+    axis: ["01 set", "30 set"],
+  },
+  { id: "in-today", kind: "stat", size: "s", label: "Entradas", value: "18k", icon: "in" },
+  { id: "out-today", kind: "stat", size: "s", label: "Saídas", value: "9,4k", icon: "out" },
+  {
+    id: "balance",
+    kind: "stat",
+    size: "m",
+    label: "Saldo consolidado",
+    value: "R$ 312.480",
+    icon: "wallet",
+    delta: { text: "+2,4% hoje", trend: "up" },
+  },
+  { id: "net-margin", kind: "gauge", size: "s", label: "Margem líquida", value: 18, display: "18%", tone: "brand" },
+  {
+    id: "calendar",
+    kind: "calendar",
+    size: "m",
+    month: "Outubro",
+    days: [
+      { weekday: "Seg", day: "06" },
+      { weekday: "Ter", day: "07" },
+      { weekday: "Qua", day: "08" },
+      { weekday: "Qui", day: "09" },
+      { weekday: "Sex", day: "10" },
+    ],
+    active: 2,
+  },
+
+  // — linha 2
+  {
+    id: "payables",
+    kind: "list",
+    size: "m",
+    rows: [
+      { label: "Fornecedor A", value: "Hoje", marker: "open", tone: "default" },
+      { label: "Aluguel", value: "Amanhã", marker: "open", tone: "muted" },
+      { label: "Energia", value: "Vencido", marker: "open", tone: "accent" },
+    ],
+  },
+  {
+    id: "cash-runway",
+    kind: "progress",
+    size: "m",
+    label: "Projeção de caixa",
+    display: "4,2 meses",
+    value: 70,
+    caption: "Cobertura das despesas fixas",
+  },
+  { id: "clock", kind: "clock", size: "s" },
+  {
+    id: "income-statement",
+    kind: "list",
+    size: "m",
+    title: "DRE · setembro",
+    rows: [
+      { label: "Receita", value: "R$ 186k" },
+      { label: "Custos", value: "−R$ 121k", tone: "muted" },
+      { label: "Lucro", value: "R$ 65k", tone: "brand" },
+    ],
+  },
+  { id: "default-rate", kind: "gauge", size: "s", label: "Inadimplência", value: 3, display: "3%", tone: "accent" },
+  {
+    id: "cash-alert",
+    kind: "notification",
+    size: "m",
+    icon: "alert",
+    eyebrow: "Alerta de caixa",
+    title: "Saldo abaixo do mínimo",
+    body: "Projetado em 12 dias",
+  },
+
+  // — linha 3
+  {
+    id: "revenue",
+    kind: "stat",
+    size: "m",
+    label: "Receita do mês",
+    value: "R$ 186.200",
+    icon: "trend",
+    delta: { text: "+12% vs agosto", trend: "up" },
+  },
+  { id: "gross-margin", kind: "gauge", size: "s", label: "Margem bruta", value: 42, display: "42%", tone: "default" },
+  {
+    id: "ytd-profit",
+    kind: "sparkline",
+    size: "l",
+    label: "Lucro acumulado · 2026",
+    value: "R$ 512.900",
+    points: [8, 14, 19, 27, 33, 38, 46, 52, 61],
+    delta: "+21% no ano",
+    axis: ["Jan", "Set"],
+  },
+  { id: "revenue-goal", kind: "gauge", size: "s", label: "Meta", value: 82, display: "82%", tone: "brand" },
+  {
+    id: "bank-balances",
+    kind: "list",
+    size: "m",
+    title: "Saldo por banco",
+    rows: [
+      { label: "Banco 1", value: "R$ 184k", marker: "dot" },
+      { label: "Banco 2", value: "R$ 96k", marker: "dot" },
+      { label: "Banco 3", value: "R$ 32k", marker: "dot" },
+    ],
+    hideOnMobile: true,
+  },
+
+  // — linha 4
+  {
+    id: "next-due",
+    kind: "event",
+    size: "m",
+    day: "15",
+    month: "Out",
+    title: "Folha de pagamento",
+    detail: "Próximo vencimento",
+    value: "R$ 42k",
+    hideOnMobile: true,
+  },
+  {
+    id: "expenses-by-category",
+    kind: "bars",
+    size: "m",
+    title: "Despesas por categoria",
+    bars: [
+      { label: "Pessoal", value: 82 },
+      { label: "Impostos", value: 54 },
+      { label: "Operação", value: 37 },
+    ],
+  },
+  { id: "tax-regime", kind: "badge", size: "s", icon: "shield", label: "Presumido", hideOnMobile: true },
+  {
+    id: "ebitda",
+    kind: "sparkline",
+    size: "m",
+    label: "EBITDA",
+    value: "R$ 71k",
+    points: [20, 24, 22, 27, 30, 29, 34],
+    hideOnMobile: true,
+  },
+  { id: "reconciliation", kind: "badge", size: "s", icon: "check", label: "98%" },
+  {
+    id: "payment-confirmed",
+    kind: "notification",
+    size: "m",
+    icon: "receipt",
+    eyebrow: "Agora",
+    title: "Pagamento confirmado",
+    body: "Boleto do cliente recebido",
+  },
+
+  // — linha 5
+  {
+    id: "receivables",
+    kind: "list",
+    size: "m",
+    title: "A receber",
+    rows: [
+      { label: "Cliente A", value: "R$ 12,4k" },
+      { label: "Cliente B", value: "R$ 8,9k" },
+      { label: "Cliente C", value: "R$ 5,1k" },
+    ],
+    hideOnMobile: true,
+  },
+  { id: "avg-ticket", kind: "stat", size: "s", label: "Ticket", value: "2,8k", icon: "receipt", hideOnMobile: true },
+  {
+    id: "break-even",
+    kind: "progress",
+    size: "m",
+    label: "Ponto de equilíbrio",
+    display: "78%",
+    value: 78,
+    caption: "Atingido no mês",
+    hideOnMobile: true,
+  },
+  {
+    id: "taxes",
+    kind: "list",
+    size: "m",
+    title: "Impostos do mês",
+    rows: [
+      { label: "PIS/COFINS", value: "R$ 6,8k" },
+      { label: "ISS", value: "R$ 3,7k" },
+      { label: "Total", value: "R$ 14,2k", tone: "brand" },
+    ],
+    hideOnMobile: true,
+  },
+  { id: "fixed-cost", kind: "stat", size: "s", label: "Custo fixo", value: "58k", icon: "bank", hideOnMobile: true },
+  {
+    id: "tax-savings",
+    kind: "stat",
+    size: "m",
+    label: "Economia tributária no ano",
+    value: "R$ 38.600",
+    icon: "piggy",
+    hideOnMobile: true,
+  },
+
+  // — linha 6
+  { id: "search", kind: "search", size: "m", placeholder: "Buscar lançamento…", hideOnMobile: true },
+  {
+    id: "monthly-report",
+    kind: "notification",
+    size: "m",
+    icon: "file",
+    eyebrow: "Relatório pronto",
+    title: "Fechamento de setembro",
+    body: "PDF · 12 páginas",
+    hideOnMobile: true,
+  },
+  {
+    id: "cfo-meeting",
+    kind: "event",
+    size: "m",
+    day: "09",
+    month: "Out",
+    title: "Revisão mensal com o CFO",
+    detail: "10:00 – 11:00",
+    hideOnMobile: true,
+  },
+  {
+    id: "tasks",
+    kind: "list",
+    size: "m",
+    rows: [
+      { label: "Conciliar extratos", marker: "done", tone: "muted" },
+      { label: "Aprovar pagamentos", marker: "open" },
+      { label: "Emitir notas", marker: "open" },
+    ],
+    hideOnMobile: true,
+  },
+  {
+    id: "market",
+    kind: "list",
+    size: "m",
+    title: "Indicadores",
+    rows: [
+      { label: "Selic", value: "—" },
+      { label: "IPCA 12m", value: "—" },
+      { label: "CDI", value: "—" },
+    ],
+    hideOnMobile: true,
+  },
+];
