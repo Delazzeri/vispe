@@ -6,17 +6,17 @@ import { motion, useScroll, useTransform, useReducedMotion } from "motion/react"
 
 /**
  * Transição de seção, não uma seção de conteúdo: a imagem preenche a
- * viewport inteira (pinned) e o scroll conduz um zoom — entra em 400% de
- * escala e 5% de opacidade, passa por 100%/100% no meio da seção, e termina
- * em 30% de escala e 5% de opacidade.
+ * viewport inteira (pinned) e o scroll conduz um zoom — entra em 300% de
+ * escala e 5% de opacidade, atinge 100%/100% aos 30% do scroll e segura até
+ * 70%, depois termina em 30% de escala e 5% de opacidade.
  */
 export function Mari({ id }: { id?: string }) {
   const ref = useRef<HTMLDivElement>(null);
   const shouldReduceMotion = useReducedMotion();
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end end"] });
 
-  const scale = useTransform(scrollYProgress, [0, 0.5, 1], [4, 1, 0.3]);
-  const opacity = useTransform(scrollYProgress, [0, 0.5, 1], [0.05, 1, 0.05]);
+  const scale = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [3, 1, 1, 0.3]);
+  const opacity = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0.05, 1, 1, 0.05]);
 
   if (shouldReduceMotion) {
     return (
