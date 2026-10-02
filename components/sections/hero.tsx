@@ -29,9 +29,9 @@ export function Hero({ id }: { id?: string }) {
             <Image
               src="/media/brand/simbolo-vispe-preto-326.png"
               alt=""
-              width={20}
-              height={20}
-              className="h-5 w-5"
+              width={24}
+              height={24}
+              className="h-6 w-6"
             />
             {site.hero.eyebrow}
           </p>

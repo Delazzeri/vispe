@@ -185,8 +185,10 @@ export const site = {
     ],
   },
 
-  // TODO(content): depoimentos reais de clientes, com autorização. Placeholders
-  // fictícios abaixo — nunca publicar como se fossem reais.
+  // TODO(content): depoimentos reais de clientes, com autorização — inclusive
+  // foto (avatarUrl) quando o cliente autorizar uso de imagem. Placeholders
+  // fictícios abaixo — nunca publicar como se fossem reais. `source: "x"`
+  // marca depoimentos vindos de rede social (recebem o selo no card).
   testimonials: [
     {
       quote:
@@ -195,14 +197,16 @@ export const site = {
       handle: "@clienteexemplo",
       role: "Fundador(a), Empresa Exemplo",
       rating: 5,
+      source: undefined as "x" | undefined,
     },
     {
       quote:
-        "[Depoimento de exemplo — substituir] O processo de valuation foi decisivo para a negociação com os investidores.",
+        "[Depoimento de exemplo — substituir] O processo de valuation foi decisivo para a negociação com os investidores. Hoje conseguimos justificar cada número do nosso financeiro na mesa de negociação, sem depender de planilha avulsa.",
       name: "Cliente Exemplo",
       handle: "@clienteexemplo",
       role: "CEO, Empresa Exemplo",
       rating: 5,
+      source: "x" as "x" | undefined,
     },
     {
       quote:
@@ -211,14 +215,16 @@ export const site = {
       handle: "@clienteexemplo",
       role: "Sócio(a), Empresa Exemplo",
       rating: 5,
+      source: undefined as "x" | undefined,
     },
     {
       quote:
-        "[Depoimento de exemplo — substituir] A captação de recursos que estruturamos com a Vispe mudou o patamar da empresa.",
+        "[Depoimento de exemplo — substituir] A captação de recursos que estruturamos com a Vispe mudou o patamar da empresa. O time acompanhou cada etapa da negociação, trouxe clareza para decisões que antes travavam por falta de dado confiável, e isso fez toda diferença no fechamento.",
       name: "Cliente Exemplo",
       handle: "@clienteexemplo",
       role: "Fundador(a), Empresa Exemplo",
       rating: 5,
+      source: undefined as "x" | undefined,
     },
     {
       quote:
@@ -227,6 +233,7 @@ export const site = {
       handle: "@clienteexemplo",
       role: "Diretor(a) financeiro(a), Empresa Exemplo",
       rating: 5,
+      source: "x" as "x" | undefined,
     },
     {
       quote:
@@ -235,6 +242,7 @@ export const site = {
       handle: "@clienteexemplo",
       role: "Sócio(a), Empresa Exemplo",
       rating: 5,
+      source: undefined as "x" | undefined,
     },
   ],
 

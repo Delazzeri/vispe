@@ -16,10 +16,10 @@ export function Testimonials({ id }: { id?: string }) {
           </h2>
         </Reveal>
 
-        <div className="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-14 columns-1 gap-6 md:columns-2 lg:columns-3">
           {site.testimonials.map((testimonial, index) => (
-            <Reveal key={testimonial.name + index} delay={index * 0.06}>
-              <TestimonialCard className="h-full" {...testimonial} />
+            <Reveal key={testimonial.name + index} delay={index * 0.06} className="mb-6">
+              <TestimonialCard {...testimonial} />
             </Reveal>
           ))}
         </div>
