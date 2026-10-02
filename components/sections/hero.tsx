@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import { site } from "@/content/site";
 import { HeroIntro, HeroIntroItem } from "@/components/sections/hero-intro";
@@ -24,7 +25,16 @@ export function Hero({ id }: { id?: string }) {
 
       <HeroIntro className="relative mx-auto flex max-w-4xl flex-col items-center px-6 pt-10 text-center md:pt-16">
         <HeroIntroItem>
-          <p className="mb-3 text-sm font-bold text-fg">{site.hero.eyebrow}</p>
+          <p className="mb-3 flex items-center justify-center gap-2 text-[20px] font-semibold text-ink">
+            <Image
+              src="/media/brand/simbolo-vispe-preto-326.png"
+              alt=""
+              width={20}
+              height={20}
+              className="h-5 w-5"
+            />
+            {site.hero.eyebrow}
+          </p>
         </HeroIntroItem>
 
         <HeroIntroItem>
