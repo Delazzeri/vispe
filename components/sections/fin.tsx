@@ -34,7 +34,7 @@ export function Fin({ id }: { id?: string }) {
   );
 
   return (
-    <section id={id} aria-labelledby="fin-heading" className="relative bg-ink">
+    <section id={id} aria-labelledby="fin-heading" className="relative overflow-hidden bg-ink">
       {shouldReduceMotion ? (
         <Image
           src="/media/motion/motion-mari.png"
@@ -45,18 +45,17 @@ export function Fin({ id }: { id?: string }) {
         />
       ) : (
         <div ref={ref} className="relative h-[1300px]">
-          <motion.div
-            style={{ scale, opacity }}
-            className="pointer-events-none sticky top-0 h-screen w-full overflow-hidden"
-          >
-            <Image
-              src="/media/motion/motion-mari.png"
-              alt="Painel da Mari mostrando CNPJs analisados, empresas em janela de venda e volume de mercado mapeado em tempo real."
-              fill
-              className="object-fill"
-              sizes="100vw"
-            />
-          </motion.div>
+          <div className="pointer-events-none sticky top-0 h-screen w-full overflow-hidden">
+            <motion.div style={{ scale, opacity }} className="h-full w-full">
+              <Image
+                src="/media/motion/motion-mari.png"
+                alt="Painel da Mari mostrando CNPJs analisados, empresas em janela de venda e volume de mercado mapeado em tempo real."
+                fill
+                className="object-fill"
+                sizes="100vw"
+              />
+            </motion.div>
+          </div>
         </div>
       )}
 
