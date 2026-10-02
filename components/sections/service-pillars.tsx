@@ -42,8 +42,15 @@ export function ServicePillars({ id }: { id?: string }) {
 
                 <div className="mt-6">
                   <p
-                    className="text-balance text-[60px] font-bold leading-[60px]"
-                    style={{ color: "#000000" }}
+                    className="whitespace-nowrap font-bold"
+                    style={{
+                      color: "#000000",
+                      // 60px cabe em ~9 caracteres num card de 320px; palavras
+                      // mais longas (ORGANIZAÇÃO, CRESCIMENTO) encolhem
+                      // proporcionalmente para caber numa linha só.
+                      fontSize: `min(60px, ${(9 / pillar.shortLabel.length) * 60}px)`,
+                      lineHeight: 1,
+                    }}
                   >
                     {pillar.shortLabel}
                   </p>
