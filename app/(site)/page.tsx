@@ -5,6 +5,7 @@ import { CategoryBlocks } from "@/components/sections/category-blocks";
 import { Showcase } from "@/components/sections/showcase";
 import { Testimonials } from "@/components/sections/testimonials";
 import { LogoWall } from "@/components/sections/logo-wall";
+import { FinalCTA } from "@/components/sections/final-cta";
 import { FAQ } from "@/components/sections/faq";
 
 export default function HomePage() {
@@ -17,6 +18,7 @@ export default function HomePage() {
       <Showcase id="como-trabalhamos" />
       <Testimonials id="depoimentos" />
       <LogoWall id="clientes" />
+      <FinalCTA id="contato" />
       <FAQ id="faq" />
     </>
   );
