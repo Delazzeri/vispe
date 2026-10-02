@@ -20,8 +20,8 @@ type HeroRockProps = {
 };
 
 const sizes = "(max-width: 809px) 206px, 500px";
-const SPOTLIGHT_RADIUS = 130; // px — raio total do reveal ao redor do cursor
-const CORE_RATIO = 0.62; // fração do raio que fica sólida/estável, sem distorção
+const SPOTLIGHT_RADIUS = 150; // px — raio total do reveal ao redor do cursor
+const CORE_RATIO = 0.3; // fração do raio que fica sólida/estável, sem distorção
 const LEAVE_DELAY = 1200; // ms antes de começar a desfazer o reveal ao tirar o mouse
 const LEAVE_TRANSITION = "opacity 1800ms ease-out";
 const MOVE_TRANSITION = "opacity 250ms ease-out";
@@ -117,7 +117,7 @@ export function HeroRock({ side, hoverScale, className }: HeroRockProps) {
           <filter id={`${filterId}-wobble`} x="-40%" y="-40%" width="180%" height="180%">
             <feTurbulence
               type="fractalNoise"
-              baseFrequency="0.012 0.016"
+              baseFrequency="0.006 0.008"
               numOctaves="2"
               seed={side === "left" ? 3 : 8}
               result="noiseA"
@@ -126,14 +126,14 @@ export function HeroRock({ side, hoverScale, className }: HeroRockProps) {
                 <animate
                   attributeName="baseFrequency"
                   dur="7s"
-                  values="0.010 0.014;0.018 0.009;0.012 0.020;0.010 0.014"
+                  values="0.005 0.007;0.009 0.005;0.006 0.010;0.005 0.007"
                   repeatCount="indefinite"
                 />
               )}
             </feTurbulence>
             <feTurbulence
               type="turbulence"
-              baseFrequency="0.022 0.02"
+              baseFrequency="0.011 0.01"
               numOctaves="1"
               seed={side === "left" ? 11 : 19}
               result="noiseB"
@@ -142,7 +142,7 @@ export function HeroRock({ side, hoverScale, className }: HeroRockProps) {
                 <animate
                   attributeName="baseFrequency"
                   dur="5.3s"
-                  values="0.025 0.018;0.015 0.03;0.028 0.012;0.025 0.018"
+                  values="0.012 0.009;0.008 0.015;0.014 0.006;0.012 0.009"
                   repeatCount="indefinite"
                 />
               )}
@@ -154,7 +154,7 @@ export function HeroRock({ side, hoverScale, className }: HeroRockProps) {
             <feDisplacementMap
               in="SourceGraphic"
               in2="noise"
-              scale="46"
+              scale="90"
               xChannelSelector="R"
               yChannelSelector="G"
             />
