@@ -73,6 +73,30 @@ export const site = {
     description: "Cada frente do seu financeiro, com processo, entrega e resultado claros.",
   },
 
+  servicePillars: [
+    {
+      slug: "organizacao",
+      shortLabel: "ORGANIZAÇÃO",
+      tagline: "Organize o seu financeiro",
+      name: "Organização",
+      includes: ["Fluxo de caixa", "DRE gerencial", "Rotina de fechamento", "Indicadores financeiros"],
+    },
+    {
+      slug: "margem",
+      shortLabel: "MARGEM",
+      tagline: "Multiplique o seu lucro",
+      name: "Margem",
+      includes: ["Planejamento tributário", "Controladoria financeira", "Redução de custos", "Precificação"],
+    },
+    {
+      slug: "crescimento",
+      shortLabel: "CRESCIMENTO",
+      tagline: "Prepare-se para o próximo salto",
+      name: "Crescimento",
+      includes: ["Captação de recursos", "M&A", "Valuation", "Aceleração comercial"],
+    },
+  ],
+
   // TODO(content): os campos `widgets` abaixo são ilustrativos (mini-cards de
   // UI inspirados no dashboard real), não dados de cliente — substituir pelos
   // indicadores reais de cada frente quando disponíveis.
