@@ -254,6 +254,18 @@ export const site = {
     },
   ],
 
+  // TODO(content): "24 Fin" é um produto ainda em definição — nome, logo e
+  // copy abaixo são placeholders fictícios para fechar o layout, substituir
+  // quando a marca e o posicionamento reais estiverem prontos.
+  fin: {
+    name: "24 Fin",
+    title: "Seu CFO virtual, disponível 24 horas",
+    description:
+      "[Conteúdo de exemplo — substituir] Fluxo de caixa, indicadores e alertas financeiros organizados pela Vispe, acompanhando sua empresa todos os dias do mês.",
+    ctaLabel: "Conhecer a 24 Fin",
+    ctaHref: "/contato",
+  },
+
   showcase: {
     title: "Organize seu financeiro, multiplique seu lucro",
     description:
