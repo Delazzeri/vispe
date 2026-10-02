@@ -1,4 +1,4 @@
-import { Star } from "lucide-react";
+import { ImageIcon, Star, User } from "lucide-react";
 import { cn } from "@/lib/cn";
 
 type TestimonialCardProps = {
@@ -8,6 +8,10 @@ type TestimonialCardProps = {
   role?: string;
   rating?: number;
   avatarUrl?: string;
+  /** Placeholder visual de foto de perfil pendente (sem foto real autorizada ainda). */
+  avatarPlaceholder?: boolean;
+  /** Placeholder de mídia anexa ao depoimento (screenshot/foto pendente). */
+  mediaPlaceholder?: boolean;
   source?: "x";
   className?: string;
 };
@@ -44,6 +48,8 @@ export function TestimonialCard({
   role,
   rating,
   avatarUrl,
+  avatarPlaceholder,
+  mediaPlaceholder,
   source,
   className,
 }: TestimonialCardProps) {
@@ -62,6 +68,13 @@ export function TestimonialCard({
             alt=""
             className="h-10 w-10 shrink-0 rounded-full object-cover"
           />
+        ) : avatarPlaceholder ? (
+          <span
+            aria-hidden
+            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-border"
+          >
+            <User className="h-5 w-5 text-fg-muted" aria-hidden />
+          </span>
         ) : (
           <span
             aria-hidden
@@ -82,6 +95,15 @@ export function TestimonialCard({
       </blockquote>
 
       {rating ? <Rating rating={rating} className="mt-4" /> : null}
+
+      {mediaPlaceholder ? (
+        <div
+          className="mt-4 flex aspect-video items-center justify-center rounded-2xl bg-border/50"
+          aria-hidden
+        >
+          <ImageIcon className="h-8 w-8 text-fg-muted" aria-hidden />
+        </div>
+      ) : null}
     </figure>
   );
 }

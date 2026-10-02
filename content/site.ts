@@ -225,6 +225,7 @@ export const site = {
       role: "Fundador(a), Empresa Exemplo",
       rating: 5,
       source: undefined as "x" | undefined,
+      avatarPlaceholder: true,
     },
     {
       quote:
@@ -234,6 +235,8 @@ export const site = {
       role: "Diretor(a) financeiro(a), Empresa Exemplo",
       rating: 5,
       source: "x" as "x" | undefined,
+      avatarPlaceholder: true,
+      mediaPlaceholder: true,
     },
     {
       quote:
