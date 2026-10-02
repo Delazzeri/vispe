@@ -79,7 +79,7 @@ export function FeatureChips({ id }: { id?: string }) {
         )}
       </div>
 
-      <Reveal delay={0.15} className="mx-auto mt-14 max-w-[960px] px-6">
+      <Reveal delay={0.15} className="mx-auto mt-14 max-w-[1104px] px-6">
         <VideoPlaceholder title={video.title} />
       </Reveal>
 
