@@ -4,7 +4,7 @@ import { site } from "@/content/site";
 
 export function Testimonials({ id }: { id?: string }) {
   return (
-    <section id={id} aria-labelledby="testimonials-heading" className="bg-surface py-24 md:py-32">
+    <section id={id} aria-labelledby="testimonials-heading" className="bg-bg py-24 md:py-32">
       <div className="mx-auto max-w-6xl px-6">
         <Reveal className="text-center">
           <h2

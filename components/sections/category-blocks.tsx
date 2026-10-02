@@ -21,7 +21,7 @@ const icons: Record<string, LucideIcon> = {
 
 export function CategoryBlocks({ id }: { id?: string }) {
   return (
-    <section id={id} aria-labelledby="category-blocks-heading" className="bg-surface py-24 md:py-32">
+    <section id={id} aria-labelledby="category-blocks-heading" className="bg-bg py-24 md:py-32">
       <div className="mx-auto max-w-6xl px-6">
         <Reveal className="max-w-2xl">
           <h2
@@ -38,7 +38,7 @@ export function CategoryBlocks({ id }: { id?: string }) {
             const Icon = icons[service.slug];
             return (
               <Reveal key={service.slug} delay={index * 0.06}>
-                <article className="h-full rounded-3xl bg-bg p-8">
+                <article className="h-full rounded-3xl bg-surface p-8">
                   <Icon className="h-7 w-7 text-brand-dark" aria-hidden />
                   <h3 className="mt-5 text-xl font-semibold text-fg">{service.name}</h3>
                   <p className="mt-2 text-sm leading-relaxed text-fg-muted">
@@ -53,12 +53,12 @@ export function CategoryBlocks({ id }: { id?: string }) {
                     {service.widgets.map((widget) => (
                       <div
                         key={widget.label}
-                        className="rounded-2xl bg-ink px-4 py-3"
+                        className="rounded-2xl bg-bg px-4 py-3 shadow-[0_1px_2px_rgba(38,38,38,0.04)]"
                       >
-                        <p className="text-base font-bold tracking-tight text-paper">
+                        <p className="text-base font-bold tracking-tight text-fg">
                           {widget.value}
                         </p>
-                        <p className="mt-0.5 text-xs text-paper/60">{widget.label}</p>
+                        <p className="mt-0.5 text-xs text-fg-muted">{widget.label}</p>
                       </div>
                     ))}
                   </div>
