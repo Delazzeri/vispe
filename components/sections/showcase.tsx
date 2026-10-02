@@ -21,7 +21,7 @@ export function Showcase({ id }: { id?: string }) {
         </Reveal>
       </div>
 
-      <Reveal delay={0.1} className="mx-auto mt-14 max-w-4xl px-6">
+      <Reveal delay={0.1} className="mx-auto mt-14 max-w-7xl px-6">
         <VideoPlaceholder title={video.title} />
       </Reveal>
     </section>
