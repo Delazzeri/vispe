@@ -12,7 +12,7 @@ export function Showcase({ id }: { id?: string }) {
           <p className="text-sm font-bold text-brand-dark">{eyebrow}</p>
           <h2
             id="showcase-heading"
-            className="mt-3 text-balance text-3xl font-bold tracking-tight text-fg md:text-5xl"
+            className="mt-3 text-balance text-3xl font-bold tracking-tight text-fg md:text-[60px] md:leading-[1.1]"
             style={{ letterSpacing: "-0.02em" }}
           >
             {title}

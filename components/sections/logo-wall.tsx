@@ -11,7 +11,7 @@ export function LogoWall({ id }: { id?: string }) {
         <Reveal>
           <h2
             id="logo-wall-heading"
-            className="text-balance text-3xl font-bold tracking-tight text-fg md:text-5xl"
+            className="text-balance text-3xl font-bold tracking-tight text-fg md:text-[60px] md:leading-[1.1]"
             style={{ letterSpacing: "-0.02em" }}
           >
             {title}
