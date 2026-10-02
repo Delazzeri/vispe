@@ -6,7 +6,6 @@ import { Showcase } from "@/components/sections/showcase";
 import { Testimonials } from "@/components/sections/testimonials";
 import { Fin } from "@/components/sections/fin";
 import { ServicePillars } from "@/components/sections/service-pillars";
-import { LogoWall } from "@/components/sections/logo-wall";
 import { FAQ } from "@/components/sections/faq";
 
 export default function HomePage() {
@@ -20,7 +19,6 @@ export default function HomePage() {
       <Testimonials id="depoimentos" />
       <Fin id="fin" />
       <ServicePillars />
-      <LogoWall id="clientes" />
       <FAQ id="faq" />
     </>
   );
