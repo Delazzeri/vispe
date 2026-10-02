@@ -33,23 +33,32 @@ export function ServicePillars({ id }: { id?: string }) {
                     "md:-mt-6 md:min-h-[560px] md:pb-10 md:shadow-[0_24px_64px_-24px_rgba(38,38,38,0.25)]",
                 )}
               >
-                <h3 className="text-xl font-bold tracking-tight text-ink">{pillar.name}</h3>
+                <h3
+                  className="text-[25px] font-bold leading-[30px]"
+                  style={{ color: "#000000" }}
+                >
+                  Pilar {index + 1}
+                </h3>
 
                 <div className="mt-6">
                   <p
-                    className="text-balance text-2xl font-extrabold tracking-tight text-ink"
-                    style={{ letterSpacing: "-0.02em" }}
+                    className="text-balance text-[60px] font-bold leading-[60px]"
+                    style={{ color: "#000000" }}
                   >
                     {pillar.shortLabel}
                   </p>
-                  <p className="mt-2 text-sm text-fg-muted">{pillar.tagline}</p>
+                  <p className="mt-3 text-[12px]" style={{ color: "#65666a" }}>
+                    {pillar.tagline}
+                  </p>
                 </div>
 
                 <ul className="mt-8 w-full space-y-4 text-left">
                   {pillar.includes.map((item) => (
                     <li key={item} className="flex items-start gap-3">
                       <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-fg-muted" aria-hidden />
-                      <span className="text-sm text-fg">{item}</span>
+                      <span className="text-[14px]" style={{ color: "#000000" }}>
+                        {item}
+                      </span>
                     </li>
                   ))}
                 </ul>
