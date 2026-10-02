@@ -29,7 +29,7 @@ export function FeatureChips({ id }: { id?: string }) {
     <section
       id={id}
       aria-labelledby="feature-chips-heading"
-      className="bg-bg pb-16 pt-6 md:pb-20 md:pt-8"
+      className="bg-bg pb-4 pt-6 md:pt-8"
     >
       <div className="mx-auto max-w-3xl px-6 text-center">
         <Reveal delay={0.05}>
