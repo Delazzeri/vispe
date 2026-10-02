@@ -239,7 +239,6 @@ export const site = {
   ],
 
   showcase: {
-    eyebrow: "Organização financeira",
     title: "Organize seu financeiro, multiplique seu lucro",
     description:
       "Controladoria, fluxo de caixa e indicadores de gestão em um só lugar — para você decidir com clareza, não com achismo.",

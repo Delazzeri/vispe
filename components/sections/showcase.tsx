@@ -3,16 +3,15 @@ import { VideoPlaceholder } from "@/components/ui/video-placeholder";
 import { site } from "@/content/site";
 
 export function Showcase({ id }: { id?: string }) {
-  const { eyebrow, title, description, video } = site.showcase;
+  const { title, description, video } = site.showcase;
 
   return (
     <section id={id} aria-labelledby="showcase-heading" className="bg-bg py-24 md:py-32">
       <div className="mx-auto max-w-3xl px-6 text-center">
         <Reveal>
-          <p className="text-sm font-bold text-brand-dark">{eyebrow}</p>
           <h2
             id="showcase-heading"
-            className="mt-3 text-balance text-3xl font-bold tracking-tight text-fg md:text-[48px] md:leading-[48px]"
+            className="text-balance text-3xl font-bold tracking-tight text-ink md:text-[48px] md:leading-[48px]"
             style={{ letterSpacing: "-0.05em" }}
           >
             {title}

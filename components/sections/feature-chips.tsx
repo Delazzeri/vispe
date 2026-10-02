@@ -35,7 +35,7 @@ export function FeatureChips({ id }: { id?: string }) {
         <Reveal delay={0.05}>
           <h2
             id="feature-chips-heading"
-            className="mt-3 text-balance text-3xl font-bold tracking-tight text-fg md:text-[48px] md:leading-[48px]"
+            className="mt-3 text-balance text-3xl font-bold tracking-tight text-ink md:text-[48px] md:leading-[48px]"
             style={{ letterSpacing: "-0.05em" }}
           >
             {title}

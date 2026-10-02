@@ -9,7 +9,7 @@ export function Testimonials({ id }: { id?: string }) {
         <Reveal className="text-center">
           <h2
             id="testimonials-heading"
-            className="text-balance text-3xl font-bold tracking-tight text-fg md:text-[48px] md:leading-[48px]"
+            className="text-balance text-3xl font-bold tracking-tight text-ink md:text-[48px] md:leading-[48px]"
             style={{ letterSpacing: "-0.05em" }}
           >
             O que nossos clientes falam da gente

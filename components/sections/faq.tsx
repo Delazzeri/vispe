@@ -26,7 +26,7 @@ export function FAQ({ id }: { id?: string }) {
         <Reveal>
           <h2
             id="faq-heading"
-            className="text-balance text-center text-3xl font-bold tracking-tight text-fg md:text-[48px] md:leading-[48px]"
+            className="text-balance text-center text-3xl font-bold tracking-tight text-ink md:text-[48px] md:leading-[48px]"
             style={{ letterSpacing: "-0.05em" }}
           >
             Perguntas frequentes
