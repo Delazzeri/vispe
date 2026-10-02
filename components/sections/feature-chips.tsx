@@ -3,6 +3,8 @@
 import { motion, useReducedMotion, type Variants } from "motion/react";
 import { stagger } from "@/components/motion/presets";
 import { Reveal } from "@/components/motion/reveal";
+import { VideoPlaceholder } from "@/components/ui/video-placeholder";
+import { TestimonialCard } from "@/components/ui/testimonial-card";
 import { site } from "@/content/site";
 
 const container: Variants = {
@@ -21,10 +23,14 @@ const chip: Variants = {
 
 export function FeatureChips({ id }: { id?: string }) {
   const shouldReduceMotion = useReducedMotion();
-  const { title, description, chips } = site.featureChips;
+  const { title, description, chips, video } = site.featureChips;
 
   return (
-    <section id={id} aria-labelledby="feature-chips-heading" className="bg-bg pb-24 pt-6 md:pb-32 md:pt-8">
+    <section
+      id={id}
+      aria-labelledby="feature-chips-heading"
+      className="bg-bg pb-24 pt-6 md:pb-32 md:pt-8"
+    >
       <div className="mx-auto max-w-3xl px-6 text-center">
         <Reveal delay={0.05}>
           <h2
@@ -71,11 +77,15 @@ export function FeatureChips({ id }: { id?: string }) {
             ))}
           </motion.ul>
         )}
-
-        {/* TODO(content): vídeo overview (lazy, com poster) + depoimento em
-            destaque — pendente de material institucional real. Ver
-            docs/reference-analysis.md item 4 (VideoEmbed + Quote). */}
       </div>
+
+      <Reveal delay={0.15} className="mx-auto mt-14 max-w-4xl px-6">
+        <VideoPlaceholder title={video.title} />
+      </Reveal>
+
+      <Reveal delay={0.2} className="mx-auto mt-8 max-w-md px-6">
+        <TestimonialCard {...site.featuredTestimonial} />
+      </Reveal>
     </section>
   );
 }

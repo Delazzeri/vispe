@@ -1,13 +1,14 @@
 import { Reveal } from "@/components/motion/reveal";
+import { VideoPlaceholder } from "@/components/ui/video-placeholder";
 import { site } from "@/content/site";
 
 export function Showcase({ id }: { id?: string }) {
-  const { eyebrow, title, description, steps } = site.showcase;
+  const { eyebrow, title, description, video } = site.showcase;
 
   return (
     <section id={id} aria-labelledby="showcase-heading" className="bg-bg py-24 md:py-32">
-      <div className="mx-auto max-w-6xl px-6">
-        <Reveal className="max-w-2xl">
+      <div className="mx-auto max-w-3xl px-6 text-center">
+        <Reveal>
           <p className="text-sm font-bold text-brand-dark">{eyebrow}</p>
           <h2
             id="showcase-heading"
@@ -18,21 +19,11 @@ export function Showcase({ id }: { id?: string }) {
           </h2>
           <p className="mt-5 text-balance text-lg text-fg-muted">{description}</p>
         </Reveal>
-
-        <ol className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {steps.map((step, index) => (
-            <Reveal key={step.title} delay={index * 0.08}>
-              <li className="h-full list-none rounded-3xl border border-border bg-surface p-6">
-                <span className="text-xs font-semibold text-fg-muted">
-                  {String(index + 1).padStart(2, "0")}
-                </span>
-                <h3 className="mt-3 text-base font-semibold text-fg">{step.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-fg-muted">{step.description}</p>
-              </li>
-            </Reveal>
-          ))}
-        </ol>
       </div>
+
+      <Reveal delay={0.1} className="mx-auto mt-14 max-w-4xl px-6">
+        <VideoPlaceholder title={video.title} />
+      </Reveal>
     </section>
   );
 }

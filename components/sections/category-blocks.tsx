@@ -5,7 +5,6 @@ import {
   LineChart,
   Target,
   Scale,
-  Check,
   type LucideIcon,
 } from "lucide-react";
 import { Reveal } from "@/components/motion/reveal";
@@ -34,28 +33,35 @@ export function CategoryBlocks({ id }: { id?: string }) {
           </h2>
         </Reveal>
 
-        <div className="mt-14 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-14 grid gap-6 md:grid-cols-2">
           {site.services.map((service, index) => {
             const Icon = icons[service.slug];
             return (
               <Reveal key={service.slug} delay={index * 0.06}>
-                <article className="h-full rounded-3xl border border-border bg-surface p-7">
-                  <Icon className="h-6 w-6 text-brand-dark" aria-hidden />
-                  <h3 className="mt-5 text-lg font-semibold text-fg">{service.name}</h3>
+                <article className="h-full rounded-3xl bg-surface p-8">
+                  <Icon className="h-7 w-7 text-brand-dark" aria-hidden />
+                  <h3 className="mt-5 text-xl font-semibold text-fg">{service.name}</h3>
                   <p className="mt-2 text-sm leading-relaxed text-fg-muted">
                     {service.description}
                   </p>
-                  <p className="mt-5 text-xs font-semibold uppercase tracking-wide text-fg-muted">
-                    Inclui
+                  <p className="mt-5 text-xs leading-relaxed text-fg-muted">
+                    <span className="font-semibold text-fg">Inclui: </span>
+                    {service.includes.join(", ")}
                   </p>
-                  <ul className="mt-3 space-y-2">
-                    {service.includes.map((item) => (
-                      <li key={item} className="flex items-start gap-2 text-sm text-fg">
-                        <Check className="mt-0.5 h-4 w-4 shrink-0 text-brand-dark" aria-hidden />
-                        {item}
-                      </li>
+
+                  <div className="mt-6 flex flex-wrap gap-3">
+                    {service.widgets.map((widget) => (
+                      <div
+                        key={widget.label}
+                        className="rounded-2xl bg-bg px-4 py-3 shadow-[0_1px_2px_rgba(38,38,38,0.04)]"
+                      >
+                        <p className="text-base font-bold tracking-tight text-fg">
+                          {widget.value}
+                        </p>
+                        <p className="mt-0.5 text-xs text-fg-muted">{widget.label}</p>
+                      </div>
                     ))}
-                  </ul>
+                  </div>
                 </article>
               </Reveal>
             );

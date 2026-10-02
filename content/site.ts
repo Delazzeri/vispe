@@ -45,8 +45,27 @@ export const site = {
       "BPO financeiro",
       "Partnership",
     ],
+    // TODO(content): vídeo overview real (YouTube/Vimeo), poster e id/URL do embed.
+    video: {
+      title: "Como funciona a Vispe Capital",
+      // TODO(content): id real do vídeo no YouTube/Vimeo.
+      embedUrl: undefined as string | undefined,
+    },
   },
 
+  // TODO(content): depoimento real em destaque (abaixo do vídeo da seção de
+  // soluções). Placeholder fictício — nunca publicar como se fosse real.
+  featuredTestimonial: {
+    quote:
+      "[Depoimento de exemplo — substituir] Finalmente consegui enxergar para onde estava indo o lucro da empresa. O time da Vispe fala a nossa língua.",
+    name: "Cliente Exemplo",
+    role: "Fundador(a), Empresa Exemplo",
+    rating: 5,
+  },
+
+  // TODO(content): os campos `widgets` abaixo são ilustrativos (mini-cards de
+  // UI inspirados no dashboard real), não dados de cliente — substituir pelos
+  // indicadores reais de cada frente quando disponíveis.
   services: [
     {
       slug: "ma",
@@ -54,6 +73,10 @@ export const site = {
       description:
         "Compramos, vendemos e fundimos empresas com estratégia para maximizar o retorno.",
       includes: ["Mapeamento de compradores", "Negociação", "Due diligence", "Fechamento do deal"],
+      widgets: [
+        { label: "Deals em andamento", value: "3" },
+        { label: "Etapa atual", value: "Due diligence" },
+      ],
     },
     {
       slug: "captacao-de-recursos",
@@ -61,6 +84,10 @@ export const site = {
       description:
         "Estruturação e conexão com investidores, bancos e fundos para impulsionar o crescimento.",
       includes: ["Estruturação da rodada", "Rede de investidores", "Pitch deck", "Negociação de termos"],
+      widgets: [
+        { label: "Investidores na rede", value: "120+" },
+        { label: "Rodada", value: "Série A" },
+      ],
     },
     {
       slug: "planejamento-tributario",
@@ -68,6 +95,10 @@ export const site = {
       description:
         "Pare de pagar mais imposto do que deve. Redução legal da carga tributária com estratégia.",
       includes: ["Diagnóstico tributário", "Reorganização societária", "Enquadramento fiscal", "Compliance"],
+      widgets: [
+        { label: "Economia estimada", value: "-18%" },
+        { label: "Regime", value: "Lucro real" },
+      ],
     },
     {
       slug: "controladoria-financeira",
@@ -75,6 +106,10 @@ export const site = {
       description:
         "Gestão financeira estratégica que transforma números em decisões e faturamento em lucro real.",
       includes: ["Fluxo de caixa", "DRE gerencial", "Indicadores financeiros", "Rotina de fechamento"],
+      widgets: [
+        { label: "Margem líquida", value: "18,4%" },
+        { label: "Fechamento", value: "Mensal" },
+      ],
     },
     {
       slug: "aceleracao-comercial",
@@ -82,12 +117,20 @@ export const site = {
       description:
         "Estruturamos a sua operação comercial do zero: processos claros, inteligência de dados e um time focado em trazer contratos de alta margem.",
       includes: ["Funil comercial", "Playbook de vendas", "Inteligência de dados", "Gestão de time"],
+      widgets: [
+        { label: "Conversão do funil", value: "+24%" },
+        { label: "Ticket médio", value: "+12%" },
+      ],
     },
     {
       slug: "valuation",
       name: "Valuation",
       description: "O valor real da sua empresa calculado com precisão. Você negocia com poder.",
       includes: ["Laudo técnico", "Múltiplos de mercado", "Fluxo de caixa descontado", "Relatório para negociação"],
+      widgets: [
+        { label: "Múltiplo aplicado", value: "4,8x" },
+        { label: "Método", value: "Fluxo de caixa" },
+      ],
     },
   ],
 
@@ -144,34 +187,62 @@ export const site = {
       quote:
         "[Depoimento de exemplo — substituir] A Vispe organizou nosso financeiro em poucos meses e conseguimos enxergar onde estávamos perdendo margem.",
       name: "Cliente Exemplo",
+      handle: "@clienteexemplo",
       role: "Fundador(a), Empresa Exemplo",
+      rating: 5,
     },
     {
       quote:
         "[Depoimento de exemplo — substituir] O processo de valuation foi decisivo para a negociação com os investidores.",
       name: "Cliente Exemplo",
+      handle: "@clienteexemplo",
       role: "CEO, Empresa Exemplo",
+      rating: 5,
     },
     {
       quote:
         "[Depoimento de exemplo — substituir] Ganhamos controladoria de verdade sem contratar um CFO em tempo integral.",
       name: "Cliente Exemplo",
+      handle: "@clienteexemplo",
       role: "Sócio(a), Empresa Exemplo",
+      rating: 5,
+    },
+    {
+      quote:
+        "[Depoimento de exemplo — substituir] A captação de recursos que estruturamos com a Vispe mudou o patamar da empresa.",
+      name: "Cliente Exemplo",
+      handle: "@clienteexemplo",
+      role: "Fundador(a), Empresa Exemplo",
+      rating: 5,
+    },
+    {
+      quote:
+        "[Depoimento de exemplo — substituir] Equipe próxima, técnica e que realmente entende a realidade de quem toca o negócio.",
+      name: "Cliente Exemplo",
+      handle: "@clienteexemplo",
+      role: "Diretor(a) financeiro(a), Empresa Exemplo",
+      rating: 5,
+    },
+    {
+      quote:
+        "[Depoimento de exemplo — substituir] Em poucos meses já conseguimos reduzir a carga tributária de forma legal e segura.",
+      name: "Cliente Exemplo",
+      handle: "@clienteexemplo",
+      role: "Sócio(a), Empresa Exemplo",
+      rating: 5,
     },
   ],
 
-  // TODO(content): texto real do processo de trabalho da Vispe. Placeholder abaixo.
   showcase: {
-    eyebrow: "Como trabalhamos",
-    title: "[Placeholder] Um processo estruturado, do diagnóstico ao resultado",
+    eyebrow: "Organização financeira",
+    title: "Organize seu financeiro, multiplique seu lucro",
     description:
-      "[Texto de exemplo — substituir] Começamos com um diagnóstico profundo do seu financeiro, estruturamos o plano de ação e acompanhamos a execução lado a lado até o resultado aparecer no caixa.",
-    steps: [
-      { title: "[Exemplo] Diagnóstico", description: "[Texto de exemplo — substituir]" },
-      { title: "[Exemplo] Estruturação", description: "[Texto de exemplo — substituir]" },
-      { title: "[Exemplo] Execução", description: "[Texto de exemplo — substituir]" },
-      { title: "[Exemplo] Resultado", description: "[Texto de exemplo — substituir]" },
-    ],
+      "Controladoria, fluxo de caixa e indicadores de gestão em um só lugar — para você decidir com clareza, não com achismo.",
+    // TODO(content): vídeo overview real (YouTube/Vimeo), poster e id/URL do embed.
+    video: {
+      title: "Como a Vispe organiza o seu financeiro",
+      embedUrl: undefined as string | undefined,
+    },
   },
 
   faq: [
