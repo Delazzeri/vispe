@@ -20,7 +20,7 @@ export function Mari({ id }: { id?: string }) {
 
   if (shouldReduceMotion) {
     return (
-      <section id={id} aria-label="Mari, o radar de oportunidades de venda da Vispe" className="bg-bg">
+      <section id={id} aria-label="Mari, o radar de oportunidades de venda da Vispe" className="bg-ink">
         <Image
           src="/media/motion/motion-mari.png"
           alt="Painel da Mari mostrando CNPJs analisados, empresas em janela de venda e volume de mercado mapeado em tempo real."
@@ -37,7 +37,7 @@ export function Mari({ id }: { id?: string }) {
       id={id}
       ref={ref}
       aria-label="Mari, o radar de oportunidades de venda da Vispe"
-      className="relative h-[250vh] bg-bg"
+      className="relative h-[250vh] bg-ink"
     >
       <div className="sticky top-0 flex h-screen items-center justify-center overflow-hidden">
         <motion.div
