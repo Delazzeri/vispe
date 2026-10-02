@@ -185,6 +185,11 @@ export const site = {
     ],
   },
 
+  testimonialsSection: {
+    title: "Empresários que crescem com a gente",
+    description: "Feedback real de empresários que confiam na Vispe Capital.",
+  },
+
   // TODO(content): depoimentos reais de clientes, com autorização — inclusive
   // foto (avatarUrl) quando o cliente autorizar uso de imagem. Placeholders
   // fictícios abaixo — nunca publicar como se fossem reais. `source: "x"`
