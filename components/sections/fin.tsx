@@ -7,7 +7,7 @@ export function Fin({ id }: { id?: string }) {
   const { name, title, description, ctaLabel, ctaHref } = site.fin;
 
   return (
-    <section id={id} aria-labelledby="fin-heading" className="bg-ink py-24 md:py-32">
+    <section id={id} aria-labelledby="fin-heading" className="bg-ink pt-[400px] pb-24 md:pb-32">
       <div className="mx-auto max-w-2xl px-6 text-center">
         <Reveal>
           <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-brand text-base font-bold text-brand-fg">
