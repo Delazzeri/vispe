@@ -32,7 +32,7 @@ export function HeroScene() {
           preload="auto"
         >
           <source src="/media/hero/scene-mobile.mp4" media="(max-width: 809px)" type="video/mp4" />
-          <source src="/media/hero/scene.mp4" type="video/mp4" />
+          <source src="/media/hero/scene3.mp4" type="video/mp4" />
         </video>
       )}
       <div className="absolute inset-x-0 top-0 h-2/5 bg-gradient-to-b from-bg to-transparent" />
