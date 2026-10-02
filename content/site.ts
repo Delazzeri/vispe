@@ -63,6 +63,11 @@ export const site = {
     rating: 5,
   },
 
+  categoryBlocks: {
+    title: "Soluções para cada etapa do seu financeiro",
+    description: "De operações societárias a controladoria do dia a dia, no mesmo time.",
+  },
+
   // TODO(content): os campos `widgets` abaixo são ilustrativos (mini-cards de
   // UI inspirados no dashboard real), não dados de cliente — substituir pelos
   // indicadores reais de cada frente quando disponíveis.

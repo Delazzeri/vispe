@@ -20,18 +20,26 @@ const icons: Record<string, LucideIcon> = {
 };
 
 export function CategoryBlocks({ id }: { id?: string }) {
+  const { title, description } = site.categoryBlocks;
+
   return (
     <section id={id} aria-labelledby="category-blocks-heading" className="bg-bg py-24 md:py-32">
       <div className="mx-auto max-w-6xl px-6">
-        <Reveal className="max-w-2xl">
-          <h2
-            id="category-blocks-heading"
-            className="text-balance text-3xl font-bold tracking-tight text-fg md:text-5xl"
-            style={{ letterSpacing: "-0.02em" }}
-          >
-            Sua empresa muito mais valiosa
-          </h2>
-        </Reveal>
+        <div className="mx-auto max-w-3xl text-center">
+          <Reveal>
+            <h2
+              id="category-blocks-heading"
+              className="text-balance text-3xl font-bold tracking-tight text-fg md:text-5xl"
+              style={{ letterSpacing: "-0.02em" }}
+            >
+              {title}
+            </h2>
+          </Reveal>
+
+          <Reveal delay={0.05}>
+            <p className="mt-5 text-balance text-lg text-fg-muted">{description}</p>
+          </Reveal>
+        </div>
 
         <div className="mt-14 grid gap-6 md:grid-cols-2">
           {site.services.map((service, index) => {
