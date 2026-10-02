@@ -11,8 +11,9 @@ import { site } from "@/content/site";
  * Transição de seção, não uma seção de conteúdo comum: a imagem da Mari
  * preenche a viewport inteira (pinned) e o scroll conduz um zoom — entra em
  * 300% de escala e 5% de opacidade, atinge 100%/100% aos 25% do scroll,
- * segura até 55%, depois encolhe e recua atrás do bloco de conteúdo da
- * 24 Fin, que surge por cima na segunda metade da seção.
+ * segura até 55%, depois encolhe e recua. O bloco de conteúdo da 24 Fin é
+ * estático (sem motion próprio) e fica atrás da imagem na pilha, revelado
+ * conforme ela encolhe/perde opacidade.
  */
 export function Mari({ id }: { id?: string }) {
   const { name, title, description, ctaLabel, ctaHref } = site.fin;
@@ -22,8 +23,6 @@ export function Mari({ id }: { id?: string }) {
 
   const scale = useTransform(scrollYProgress, [0, 0.25, 0.55, 0.8], [3, 1, 1, 0.3]);
   const opacity = useTransform(scrollYProgress, [0, 0.25, 0.55, 0.8], [0.05, 1, 1, 0.05]);
-  const finOpacity = useTransform(scrollYProgress, [0.6, 0.85], [0, 1]);
-  const finY = useTransform(scrollYProgress, [0.6, 0.85], [24, 0]);
 
   if (shouldReduceMotion) {
     return (
@@ -66,10 +65,7 @@ export function Mari({ id }: { id?: string }) {
           />
         </motion.div>
 
-        <motion.div
-          style={{ opacity: finOpacity, y: finY }}
-          className="relative mx-auto flex h-full max-w-2xl flex-col items-center justify-center px-6 text-center"
-        >
+        <div className="relative mx-auto flex h-full max-w-2xl flex-col items-center justify-center px-6 text-center">
           <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand text-base font-bold text-brand-fg">
             24
           </span>
@@ -85,7 +81,7 @@ export function Mari({ id }: { id?: string }) {
             {ctaLabel}
             <ArrowRight className="h-4 w-4" aria-hidden />
           </Link>
-        </motion.div>
+        </div>
       </div>
     </section>
   );
