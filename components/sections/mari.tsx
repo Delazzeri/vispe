@@ -14,8 +14,8 @@ export function Mari({ id }: { id?: string }) {
   const shouldReduceMotion = useReducedMotion();
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end end"] });
 
-  const scale = useTransform(scrollYProgress, [0, 0.85], [0.3, 1]);
-  const opacity = useTransform(scrollYProgress, [0, 0.6], [0, 1]);
+  const scale = useTransform(scrollYProgress, [0, 0.85], [0.45, 1]);
+  const opacity = useTransform(scrollYProgress, [0, 0.2], [0.15, 1]);
   const radius = useTransform(scrollYProgress, [0, 0.85], [32, 0]);
 
   if (shouldReduceMotion) {
