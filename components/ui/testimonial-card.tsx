@@ -19,7 +19,12 @@ export function TestimonialCard({
   className,
 }: TestimonialCardProps) {
   return (
-    <figure className={cn("rounded-3xl bg-surface p-7", className)}>
+    <figure
+      className={cn(
+        "rounded-3xl border border-border bg-bg p-7 shadow-[0_1px_2px_rgba(38,38,38,0.04)]",
+        className,
+      )}
+    >
       <figcaption className="flex items-center gap-3">
         <span
           aria-hidden
