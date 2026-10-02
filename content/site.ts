@@ -68,12 +68,18 @@ export const site = {
     description: "De operações societárias a controladoria do dia a dia, no mesmo time.",
   },
 
+  servicesCarousel: {
+    title: "Explore nossas soluções",
+    description: "Cada frente do seu financeiro, com processo, entrega e resultado claros.",
+  },
+
   // TODO(content): os campos `widgets` abaixo são ilustrativos (mini-cards de
   // UI inspirados no dashboard real), não dados de cliente — substituir pelos
   // indicadores reais de cada frente quando disponíveis.
   services: [
     {
       slug: "ma",
+      shortLabel: "M&A",
       name: "M&A — Fusões e Aquisições",
       description:
         "Compramos, vendemos e fundimos empresas com estratégia para maximizar o retorno.",
@@ -85,6 +91,7 @@ export const site = {
     },
     {
       slug: "captacao-de-recursos",
+      shortLabel: "CAPTAÇÃO",
       name: "Captação de Recursos",
       description:
         "Estruturação e conexão com investidores, bancos e fundos para impulsionar o crescimento.",
@@ -96,6 +103,7 @@ export const site = {
     },
     {
       slug: "planejamento-tributario",
+      shortLabel: "TRIBUTÁRIO",
       name: "Planejamento Tributário",
       description:
         "Pare de pagar mais imposto do que deve. Redução legal da carga tributária com estratégia.",
@@ -107,6 +115,7 @@ export const site = {
     },
     {
       slug: "controladoria-financeira",
+      shortLabel: "CONTROL",
       name: "Controladoria Financeira",
       description:
         "Gestão financeira estratégica que transforma números em decisões e faturamento em lucro real.",
@@ -118,6 +127,7 @@ export const site = {
     },
     {
       slug: "aceleracao-comercial",
+      shortLabel: "COMERCIAL",
       name: "Aceleração Comercial",
       description:
         "Estruturamos a sua operação comercial do zero: processos claros, inteligência de dados e um time focado em trazer contratos de alta margem.",
@@ -129,6 +139,7 @@ export const site = {
     },
     {
       slug: "valuation",
+      shortLabel: "VALUATION",
       name: "Valuation",
       description: "O valor real da sua empresa calculado com precisão. Você negocia com poder.",
       includes: ["Laudo técnico", "Múltiplos de mercado", "Fluxo de caixa descontado", "Relatório para negociação"],
