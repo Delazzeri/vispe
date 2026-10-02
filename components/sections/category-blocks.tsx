@@ -23,7 +23,7 @@ export function CategoryBlocks({ id }: { id?: string }) {
   const { title, description } = site.categoryBlocks;
 
   return (
-    <section id={id} aria-labelledby="category-blocks-heading" className="bg-bg py-24 md:py-32">
+    <section id={id} aria-labelledby="category-blocks-heading" className="bg-bg pt-24 pb-12 md:pt-32 md:pb-16">
       <div className="mx-auto max-w-6xl px-6">
         <div className="mx-auto max-w-3xl text-center">
           <Reveal>

@@ -6,7 +6,7 @@ export function Showcase({ id }: { id?: string }) {
   const { title, description, video } = site.showcase;
 
   return (
-    <section id={id} aria-labelledby="showcase-heading" className="bg-bg py-24 md:py-32">
+    <section id={id} aria-labelledby="showcase-heading" className="bg-bg pt-12 pb-24 md:pt-16 md:pb-32">
       <div className="mx-auto max-w-3xl px-6 text-center">
         <Reveal>
           <h2
