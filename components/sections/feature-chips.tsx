@@ -4,7 +4,7 @@ import { motion, useReducedMotion, type Variants } from "motion/react";
 import { stagger } from "@/components/motion/presets";
 import { Reveal } from "@/components/motion/reveal";
 import { VideoPlaceholder } from "@/components/ui/video-placeholder";
-import { TestimonialCard } from "@/components/ui/testimonial-card";
+import { FeaturedTestimonial } from "@/components/ui/featured-testimonial";
 import { site } from "@/content/site";
 
 const container: Variants = {
@@ -83,8 +83,8 @@ export function FeatureChips({ id }: { id?: string }) {
         <VideoPlaceholder title={video.title} />
       </Reveal>
 
-      <Reveal delay={0.2} className="mx-auto mt-8 max-w-md px-6">
-        <TestimonialCard {...site.featuredTestimonial} />
+      <Reveal delay={0.2} className="mx-auto mt-10 max-w-xl px-6">
+        <FeaturedTestimonial {...site.featuredTestimonial} />
       </Reveal>
     </section>
   );
