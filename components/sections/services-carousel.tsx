@@ -107,15 +107,15 @@ export function ServicesCarousel({ id }: { id?: string }) {
                   cardRefs.current[index] = el;
                 }}
                 className={cn(
-                  "grid w-[360px] shrink-0 snap-center grid-rows-[auto_auto_1fr_auto] rounded-3xl bg-surface px-7 py-8 text-center shadow-[0_1px_2px_rgba(38,38,38,0.04),0_4px_12px_-4px_rgba(38,38,38,0.1)] transition-transform duration-300 md:w-[420px] md:min-h-[500px]",
+                  "grid w-[280px] shrink-0 snap-center grid-rows-[auto_auto_1fr_auto] rounded-3xl bg-surface px-6 py-8 text-center shadow-[0_1px_2px_rgba(38,38,38,0.04),0_4px_12px_-4px_rgba(38,38,38,0.1)] transition-transform duration-300 md:w-[320px] md:min-h-[500px]",
                   isActive ? "scale-105" : "scale-90 opacity-70",
                 )}
               >
-                <h3 className="text-2xl font-bold tracking-tight text-fg">{service.name}</h3>
+                <h3 className="text-2xl font-bold tracking-tight text-ink">{service.name}</h3>
 
                 <div className="mt-6">
                   <p
-                    className="text-balance text-5xl font-extrabold tracking-tight text-fg"
+                    className="text-balance text-5xl font-extrabold tracking-tight text-ink"
                     style={{ letterSpacing: "-0.03em" }}
                   >
                     {service.shortLabel}
