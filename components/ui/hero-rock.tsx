@@ -7,7 +7,6 @@ import { cn } from "@/lib/cn";
 
 type HeroRockProps = {
   side: "left" | "right";
-  hoverVariant?: string;
   /**
    * Fator de escala do conteúdo dentro do frame da imagem de hover,
    * relativo à imagem base — necessário quando a arte de hover foi
@@ -27,9 +26,9 @@ const LEAVE_DELAY = 1200; // ms antes de começar a desfazer o reveal ao tirar o
 const LEAVE_TRANSITION = "opacity 1800ms ease-out";
 const MOVE_TRANSITION = "opacity 250ms ease-out";
 
-export function HeroRock({ side, hoverVariant, hoverScale, className }: HeroRockProps) {
-  const base = `/media/hero/rock-${side}-1000.webp`;
-  const hover = `/media/hero/rock-${side}-hover${hoverVariant ?? ""}-1000.webp`;
+export function HeroRock({ side, hoverScale, className }: HeroRockProps) {
+  const base = `/media/hero/padrao-${side}-1000.webp`;
+  const hover = `/media/hero/ouro-hover-${side}-1000.webp`;
   const filterId = useId();
 
   const containerRef = useRef<HTMLDivElement>(null);
@@ -87,7 +86,7 @@ export function HeroRock({ side, hoverVariant, hoverScale, className }: HeroRock
         src={base}
         alt=""
         width={1000}
-        height={1453}
+        height={1454}
         sizes={sizes}
         className="h-auto w-full select-none"
       />
@@ -96,7 +95,7 @@ export function HeroRock({ side, hoverVariant, hoverScale, className }: HeroRock
         src={hover}
         alt=""
         width={1000}
-        height={1453}
+        height={1454}
         sizes={sizes}
         className="absolute inset-0 h-full w-full select-none object-contain opacity-0"
         style={{

@@ -83,11 +83,11 @@ export function Hero({ id }: { id?: string }) {
         </HeroIntroItem>
 
         <HeroIntroItem className="pointer-events-auto absolute left-[max(-40px,calc(50%-900px))] top-20 z-20 hidden w-[360px] md:top-24 md:block lg:w-[440px] xl:w-[480px]">
-          <HeroRock side="left" hoverVariant="2" hoverScale={0.81} />
+          <HeroRock side="left" />
         </HeroIntroItem>
 
         <HeroIntroItem className="pointer-events-auto absolute right-[max(-40px,calc(50%-900px))] top-20 z-20 hidden w-[360px] md:top-24 md:block lg:w-[440px] xl:w-[480px]">
-          <HeroRock side="right" hoverVariant="2" hoverScale={0.97} />
+          <HeroRock side="right" />
         </HeroIntroItem>
       </HeroIntro>
     </section>
