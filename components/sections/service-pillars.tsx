@@ -28,16 +28,17 @@ export function ServicePillars({ id }: { id?: string }) {
             <Reveal key={pillar.slug} delay={index * 0.06}>
               <div
                 className={cn(
-                  "grid w-[350px] grid-rows-[auto_auto_1fr_auto] rounded-3xl bg-surface px-6 py-8 text-center shadow-[0_1px_2px_rgba(38,38,38,0.04),0_4px_12px_-4px_rgba(38,38,38,0.1)]",
-                  isCenter && "md:w-[400px] md:scale-105 md:shadow-[0_24px_64px_-24px_rgba(38,38,38,0.25)]",
+                  "grid w-[320px] grid-rows-[auto_auto_1fr_auto] rounded-3xl bg-surface px-6 py-8 text-center shadow-[0_1px_2px_rgba(38,38,38,0.04),0_4px_12px_-4px_rgba(38,38,38,0.1)]",
+                  isCenter &&
+                    "md:w-[280px] md:min-h-[620px] md:scale-105 md:shadow-[0_24px_64px_-24px_rgba(38,38,38,0.25)]",
                 )}
               >
-                <h3 className="text-2xl font-bold tracking-tight text-ink">{pillar.name}</h3>
+                <h3 className="text-xl font-bold tracking-tight text-ink">{pillar.name}</h3>
 
                 <div className="mt-6">
                   <p
-                    className="text-balance text-5xl font-extrabold tracking-tight text-ink"
-                    style={{ letterSpacing: "-0.03em" }}
+                    className="text-balance text-2xl font-extrabold tracking-tight text-ink"
+                    style={{ letterSpacing: "-0.02em" }}
                   >
                     {pillar.shortLabel}
                   </p>
