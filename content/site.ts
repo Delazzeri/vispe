@@ -262,7 +262,9 @@ export const site = {
     title: "Seu CFO virtual, disponível 24 horas",
     description:
       "[Conteúdo de exemplo — substituir] Fluxo de caixa, indicadores e alertas financeiros organizados pela Vispe, acompanhando sua empresa todos os dias do mês.",
-    ctaLabel: "Conhecer a 24 Fin",
+    ctaLabel: "Baixar a 24 Fin",
+    // TODO(content): confirmar se 24 Fin terá app para download ou será
+    // somente web — ajustar label/destino do CTA conforme a plataforma real.
     ctaHref: "/contato",
   },
 
