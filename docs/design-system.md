@@ -8,8 +8,8 @@
 
 ```css
 @theme {
-  --color-bg:          #ffffff;   /* fundo base — tema claro fixo */
-  --color-surface:     #f2f2f2;   /* cards, seções alternadas — cor de apoio oficial */
+  --color-bg:          #f2f2f2;   /* fundo base — tema claro fixo */
+  --color-surface:     #ffffff;   /* cards, chips e outros destaques — brancos sobre o fundo acinzentado */
   --color-glass:       rgba(255, 255, 255, 0.6); /* superfícies translúcidas sobre imagem/vídeo */
   --color-border:      rgba(38, 38, 38, 0.12);
   --color-fg:          #262626;   /* texto principal — cor de apoio oficial (não preto puro) */
@@ -32,9 +32,10 @@ Componentes usam apenas tokens semânticos (`bg-surface`, `text-fg-muted`), nunc
 
 ## Tipografia
 
-- Fonte única (display + texto): **Geist** (open-source, geometria grotesk próxima a interfaces de produto moderno) via `next/font/google`, `display: swap`.
-- Decisão de marca: o manual da Vispe especifica Montserrat/Barlow/Gotham; por pedido explícito do time, o site institucional usa Geist como substituição moderna — aplica-se apenas a este projeto web, não sobrescreve o manual para outras peças (impressos, apresentações, social).
+- Fonte única (display + texto): **Inter** (via `next/font/google`, `display: swap`), aplicada com tracking apertado em títulos para aproximar do corte "Display" da família.
+- Decisão de marca: o manual da Vispe especifica Montserrat/Barlow/Gotham; por pedido explícito do time, o site institucional usa Inter como substituição moderna (anteriormente Geist) — aplica-se apenas a este projeto web, não sobrescreve o manual para outras peças (impressos, apresentações, social).
 - Pesos: 400 (texto), 500 (destaques), 600 (subtítulos), 700 (H1/H2).
+- H2 de seção: `font-size: 48px`, `line-height: 48px`, `letter-spacing: -2.4px` (-0.05em) no desktop — valores medidos na referência cooldock.app.
 - Escala fluida com `clamp()`: H1 hero ~ `clamp(2.5rem, 6vw, 4.5rem)`, tracking levemente negativo em títulos grandes.
 - Largura de leitura: parágrafos até ~65ch.
 
