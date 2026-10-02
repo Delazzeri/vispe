@@ -21,7 +21,7 @@ export function ServicePillars({ id }: { id?: string }) {
         </Reveal>
       </div>
 
-      <div className="mx-auto mt-14 flex max-w-5xl flex-col items-center gap-6 px-6 md:flex-row md:items-end md:justify-center">
+      <div className="mx-auto mt-14 flex max-w-5xl flex-col items-center gap-6 px-6 md:flex-row md:items-start md:justify-center">
         {site.servicePillars.map((pillar, index) => {
           const isCenter = index === 1;
           return (
@@ -30,7 +30,7 @@ export function ServicePillars({ id }: { id?: string }) {
                 className={cn(
                   "grid w-[320px] grid-rows-[auto_auto_1fr_auto] rounded-3xl bg-surface px-6 py-8 text-center shadow-[0_1px_2px_rgba(38,38,38,0.04),0_4px_12px_-4px_rgba(38,38,38,0.1)]",
                   isCenter &&
-                    "md:w-[280px] md:min-h-[620px] md:scale-105 md:shadow-[0_24px_64px_-24px_rgba(38,38,38,0.25)]",
+                    "md:-mt-6 md:min-h-[560px] md:pb-10 md:shadow-[0_24px_64px_-24px_rgba(38,38,38,0.25)]",
                 )}
               >
                 <h3 className="text-xl font-bold tracking-tight text-ink">{pillar.name}</h3>
