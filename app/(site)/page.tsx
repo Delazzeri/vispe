@@ -5,7 +5,7 @@ import { CategoryBlocks } from "@/components/sections/category-blocks";
 import { Showcase } from "@/components/sections/showcase";
 import { Testimonials } from "@/components/sections/testimonials";
 import { Fin } from "@/components/sections/fin";
-import { ScreenshotMarquee } from "@/components/sections/screenshot-marquee";
+import { ServicesCarousel } from "@/components/sections/services-carousel";
 import { LogoWall } from "@/components/sections/logo-wall";
 import { FAQ } from "@/components/sections/faq";
 
@@ -19,7 +19,7 @@ export default function HomePage() {
       <Showcase id="como-trabalhamos" />
       <Testimonials id="depoimentos" />
       <Fin id="fin" />
-      <ScreenshotMarquee />
+      <ServicesCarousel />
       <LogoWall id="clientes" />
       <FAQ id="faq" />
     </>
