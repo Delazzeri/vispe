@@ -5,18 +5,18 @@ import Image from "next/image";
 import { motion, useScroll, useTransform, useReducedMotion } from "motion/react";
 
 /**
- * Transição de seção, não uma seção de conteúdo: o scroll "revela" a Mari
- * crescendo de um retângulo pequeno e transparente até cobrir a viewport
- * inteira, de forma pinned, antes de liberar o scroll para a seção seguinte.
+ * Transição de seção, não uma seção de conteúdo: a imagem preenche a
+ * viewport inteira (pinned) e o scroll conduz um zoom — entra em 400% de
+ * escala e 5% de opacidade, passa por 100%/100% no meio da seção, e termina
+ * em 30% de escala e 5% de opacidade.
  */
 export function Mari({ id }: { id?: string }) {
   const ref = useRef<HTMLDivElement>(null);
   const shouldReduceMotion = useReducedMotion();
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end end"] });
 
-  const scale = useTransform(scrollYProgress, [0, 0.4, 0.6, 1], [0.45, 1, 1, 0.45]);
-  const opacity = useTransform(scrollYProgress, [0, 0.12, 0.88, 1], [0.15, 1, 1, 0.15]);
-  const radius = useTransform(scrollYProgress, [0, 0.4, 0.6, 1], [32, 0, 0, 32]);
+  const scale = useTransform(scrollYProgress, [0, 0.5, 1], [4, 1, 0.3]);
+  const opacity = useTransform(scrollYProgress, [0, 0.5, 1], [0.05, 1, 0.05]);
 
   if (shouldReduceMotion) {
     return (
@@ -39,17 +39,13 @@ export function Mari({ id }: { id?: string }) {
       aria-label="Mari, o radar de oportunidades de venda da Vispe"
       className="relative h-[250vh] bg-ink"
     >
-      <div className="sticky top-0 flex h-screen items-center justify-center overflow-hidden">
-        <motion.div
-          style={{ scale, opacity, borderRadius: radius }}
-          className="h-full w-full overflow-hidden"
-        >
+      <div className="sticky top-0 h-screen w-full overflow-hidden">
+        <motion.div style={{ scale, opacity }} className="h-full w-full">
           <Image
             src="/media/motion/motion-mari.png"
             alt="Painel da Mari mostrando CNPJs analisados, empresas em janela de venda e volume de mercado mapeado em tempo real."
-            width={1897}
-            height={862}
-            className="h-full w-full object-cover"
+            fill
+            className="object-fill"
             sizes="100vw"
           />
         </motion.div>
