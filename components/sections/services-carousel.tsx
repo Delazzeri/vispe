@@ -107,7 +107,7 @@ export function ServicesCarousel({ id }: { id?: string }) {
                   cardRefs.current[index] = el;
                 }}
                 className={cn(
-                  "grid w-[280px] shrink-0 snap-center grid-rows-[auto_auto_1fr_auto] rounded-3xl bg-surface px-6 py-8 text-center shadow-[0_1px_2px_rgba(38,38,38,0.04),0_4px_12px_-4px_rgba(38,38,38,0.1)] transition-transform duration-300 md:w-[320px] md:min-h-[500px]",
+                  "grid w-[350px] shrink-0 snap-center grid-rows-[auto_auto_1fr_auto] rounded-3xl bg-surface px-6 py-8 text-center shadow-[0_1px_2px_rgba(38,38,38,0.04),0_4px_12px_-4px_rgba(38,38,38,0.1)] transition-transform duration-300 md:w-[400px] md:min-h-[500px]",
                   isActive ? "scale-105" : "scale-90 opacity-70",
                 )}
               >
@@ -134,7 +134,7 @@ export function ServicesCarousel({ id }: { id?: string }) {
 
                 <Link
                   href="/contato"
-                  className="mt-8 inline-flex w-full items-center justify-center gap-2 rounded-full bg-ink px-6 py-4 text-sm font-semibold text-paper transition-transform hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand"
+                  className="mt-8 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-ink px-6 py-4 text-sm font-semibold text-paper transition-transform hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand"
                 >
                   Conhecer solução
                   <ArrowRight className="h-4 w-4" aria-hidden />
