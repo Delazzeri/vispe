@@ -38,7 +38,10 @@ export function Hero({ id }: { id?: string }) {
         </HeroIntroItem>
 
         <HeroIntroItem>
-          <p className="mt-4 max-w-2xl text-balance text-lg text-fg-muted md:text-xl">
+          <p
+            className="mt-5 max-w-2xl text-balance text-lg"
+            style={{ color: "#5f6062" }}
+          >
             {site.hero.description}
           </p>
         </HeroIntroItem>
