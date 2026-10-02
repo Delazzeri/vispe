@@ -32,8 +32,10 @@ Componentes usam apenas tokens semânticos (`bg-surface`, `text-fg-muted`), nunc
 
 ## Tipografia
 
-- Fonte única (display + texto): **Inter** (via `next/font/google`, `display: swap`), aplicada com tracking apertado em títulos para aproximar do corte "Display" da família.
-- Decisão de marca: o manual da Vispe especifica Montserrat/Barlow/Gotham; por pedido explícito do time, o site institucional usa Inter como substituição moderna (anteriormente Geist) — aplica-se apenas a este projeto web, não sobrescreve o manual para outras peças (impressos, apresentações, social).
+- Fonte: stack `"Inter Display", Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif` — mesmo stack usado pela referência cooldock.app.
+  - **Inter Display**: corte estático da família Inter otimizado para texto grande (títulos), distribuído via rsms.me/inter (SIL OFL) e hospedado localmente em `public/fonts/inter-display/` + `next/font/local` (pesos 400/500/600/700).
+  - **Inter**: fallback via `next/font/google` (`display: swap`), cobre pesos/estilos que o corte Display não tem.
+- Decisão de marca: o manual da Vispe especifica Montserrat/Barlow/Gotham; por pedido explícito do time, o site institucional usa Inter/Inter Display como substituição moderna (anteriormente Geist) — aplica-se apenas a este projeto web, não sobrescreve o manual para outras peças (impressos, apresentações, social).
 - Pesos: 400 (texto), 500 (destaques), 600 (subtítulos), 700 (H1/H2).
 - H2 de seção: `font-size: 48px`, `line-height: 48px`, `letter-spacing: -2.4px` (-0.05em) no desktop — valores medidos na referência cooldock.app.
 - Escala fluida com `clamp()`: H1 hero ~ `clamp(2.5rem, 6vw, 4.5rem)`, tracking levemente negativo em títulos grandes.
