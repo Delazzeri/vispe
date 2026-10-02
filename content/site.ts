@@ -80,6 +80,7 @@ export const site = {
     {
       slug: "ma",
       shortLabel: "M&A",
+      tagline: "Compre, venda ou funda com estratégia",
       name: "M&A — Fusões e Aquisições",
       description:
         "Compramos, vendemos e fundimos empresas com estratégia para maximizar o retorno.",
@@ -92,6 +93,7 @@ export const site = {
     {
       slug: "captacao-de-recursos",
       shortLabel: "CAPTAÇÃO",
+      tagline: "Conecte-se a quem investe no seu crescimento",
       name: "Captação de Recursos",
       description:
         "Estruturação e conexão com investidores, bancos e fundos para impulsionar o crescimento.",
@@ -104,6 +106,7 @@ export const site = {
     {
       slug: "planejamento-tributario",
       shortLabel: "TRIBUTÁRIO",
+      tagline: "Pague só o imposto que você deve",
       name: "Planejamento Tributário",
       description:
         "Pare de pagar mais imposto do que deve. Redução legal da carga tributária com estratégia.",
@@ -116,6 +119,7 @@ export const site = {
     {
       slug: "controladoria-financeira",
       shortLabel: "CONTROL",
+      tagline: "Organize o seu financeiro",
       name: "Controladoria Financeira",
       description:
         "Gestão financeira estratégica que transforma números em decisões e faturamento em lucro real.",
@@ -128,6 +132,7 @@ export const site = {
     {
       slug: "aceleracao-comercial",
       shortLabel: "COMERCIAL",
+      tagline: "Venda mais, com margem melhor",
       name: "Aceleração Comercial",
       description:
         "Estruturamos a sua operação comercial do zero: processos claros, inteligência de dados e um time focado em trazer contratos de alta margem.",
@@ -140,6 +145,7 @@ export const site = {
     {
       slug: "valuation",
       shortLabel: "VALUATION",
+      tagline: "Saiba o real valor da sua empresa",
       name: "Valuation",
       description: "O valor real da sua empresa calculado com precisão. Você negocia com poder.",
       includes: ["Laudo técnico", "Múltiplos de mercado", "Fluxo de caixa descontado", "Relatório para negociação"],

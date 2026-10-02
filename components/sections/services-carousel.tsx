@@ -107,26 +107,23 @@ export function ServicesCarousel({ id }: { id?: string }) {
                   cardRefs.current[index] = el;
                 }}
                 className={cn(
-                  "flex w-[360px] shrink-0 snap-center flex-col items-center rounded-3xl bg-surface p-10 text-center shadow-[0_1px_2px_rgba(38,38,38,0.04),0_4px_12px_-4px_rgba(38,38,38,0.1)] transition-transform duration-300 md:w-[420px]",
+                  "grid w-[360px] shrink-0 snap-center grid-rows-[auto_auto_1fr_auto] rounded-3xl bg-surface px-7 py-8 text-center shadow-[0_1px_2px_rgba(38,38,38,0.04),0_4px_12px_-4px_rgba(38,38,38,0.1)] transition-transform duration-300 md:w-[420px] md:min-h-[500px]",
                   isActive ? "scale-105" : "scale-90 opacity-70",
                 )}
               >
-                <p className="text-xs font-bold tracking-wider text-brand-dark">
-                  {service.shortLabel}
-                </p>
-                <h3
-                  className={cn(
-                    "mt-2 text-2xl font-bold tracking-tight text-fg",
-                    isActive && "text-brand-dark",
-                  )}
-                >
-                  {service.name}
-                </h3>
-                <p className="mt-4 text-sm leading-relaxed text-fg-muted">
-                  {service.description}
-                </p>
+                <h3 className="text-2xl font-bold tracking-tight text-fg">{service.name}</h3>
 
-                <ul className="mt-8 w-full flex-1 space-y-4 text-left">
+                <div className="mt-6">
+                  <p
+                    className="text-balance text-5xl font-extrabold tracking-tight text-fg"
+                    style={{ letterSpacing: "-0.03em" }}
+                  >
+                    {service.shortLabel}
+                  </p>
+                  <p className="mt-2 text-sm text-fg-muted">{service.tagline}</p>
+                </div>
+
+                <ul className="mt-8 w-full space-y-4 text-left">
                   {service.includes.map((item) => (
                     <li key={item} className="flex items-start gap-3">
                       <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-fg-muted" aria-hidden />
@@ -137,7 +134,7 @@ export function ServicesCarousel({ id }: { id?: string }) {
 
                 <Link
                   href="/contato"
-                  className="mt-8 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-bg px-6 py-3.5 text-sm font-semibold text-fg transition-transform hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand"
+                  className="mt-8 inline-flex w-full items-center justify-center gap-2 rounded-full bg-ink px-6 py-4 text-sm font-semibold text-paper transition-transform hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand"
                 >
                   Conhecer solução
                   <ArrowRight className="h-4 w-4" aria-hidden />
