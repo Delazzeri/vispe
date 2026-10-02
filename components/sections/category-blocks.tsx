@@ -38,7 +38,7 @@ export function CategoryBlocks({ id }: { id?: string }) {
             const Icon = icons[service.slug];
             return (
               <Reveal key={service.slug} delay={index * 0.06}>
-                <article className="h-full rounded-3xl bg-surface p-8">
+                <article className="h-full rounded-3xl bg-surface p-8 shadow-[0_1px_2px_rgba(38,38,38,0.04),0_4px_12px_-4px_rgba(38,38,38,0.1)]">
                   <Icon className="h-7 w-7 text-brand-dark" aria-hidden />
                   <h3 className="mt-5 text-xl font-semibold text-fg">{service.name}</h3>
                   <p className="mt-2 text-sm leading-relaxed text-fg-muted">

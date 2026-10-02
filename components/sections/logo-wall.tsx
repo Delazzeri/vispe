@@ -25,7 +25,7 @@ export function LogoWall({ id }: { id?: string }) {
           {logos.map((logo) => (
             <span
               key={logo}
-              className="flex h-16 w-44 shrink-0 items-center justify-center rounded-2xl border border-border bg-surface text-sm font-semibold text-fg-muted"
+              className="flex h-16 w-44 shrink-0 items-center justify-center rounded-2xl bg-surface text-sm font-semibold text-fg-muted shadow-[0_1px_2px_rgba(38,38,38,0.04),0_4px_12px_-4px_rgba(38,38,38,0.1)]"
             >
               {logo}
             </span>
