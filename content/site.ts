@@ -254,16 +254,6 @@ export const site = {
     },
   ],
 
-  mari: {
-    eyebrow: "Mari",
-    title: "Você não decide quando vender sua empresa. O mercado decide.",
-    description:
-      "A Mari monitora o mercado em tempo real e avisa quando a sua empresa está na janela certa para vender — sem depender de achismo ou de propostas que chegam fora de hora.",
-    ctaLabel: "Conhecer a Mari",
-    // TODO(content): confirmar URL final do produto Mari.
-    ctaHref: "/contato",
-  },
-
   showcase: {
     title: "Organize seu financeiro, multiplique seu lucro",
     description:
