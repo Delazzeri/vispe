@@ -1,4 +1,4 @@
-import { ImageIcon, Star, User } from "lucide-react";
+import { ImageIcon, User } from "lucide-react";
 import { cn } from "@/lib/cn";
 
 type TestimonialCardProps = {
@@ -24,17 +24,24 @@ function XMark({ className }: { className?: string }) {
   );
 }
 
+function StarIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden>
+      <path
+        d="M 9.749 15.477 L 14.879 18.632 C 15.151 18.797 15.496 18.782 15.753 18.594 C 16.01 18.406 16.128 18.082 16.053 17.772 L 14.658 11.886 L 19.223 7.948 C 19.461 7.739 19.552 7.409 19.455 7.108 C 19.357 6.806 19.09 6.592 18.774 6.563 L 12.783 6.075 L 10.475 0.488 C 10.354 0.193 10.068 0 9.749 0 C 9.431 0 9.144 0.193 9.023 0.488 L 6.715 6.075 L 0.724 6.563 C 0.406 6.59 0.136 6.806 0.038 7.109 C -0.06 7.412 0.034 7.745 0.275 7.953 L 4.84 11.89 L 3.445 17.772 C 3.37 18.082 3.488 18.406 3.745 18.594 C 4.002 18.782 4.347 18.797 4.619 18.632 Z"
+        transform="translate(2.251, 2.25)"
+      />
+    </svg>
+  );
+}
+
 function Rating({ rating, className }: { rating: number; className?: string }) {
   return (
     <div className={cn("flex gap-0.5", className)} aria-label={`Avaliação ${rating} de 5 estrelas`}>
       {Array.from({ length: 5 }).map((_, index) => (
-        <Star
+        <StarIcon
           key={index}
-          className={cn(
-            "h-4 w-4",
-            index < rating ? "fill-brand text-brand" : "fill-border text-border",
-          )}
-          aria-hidden
+          className={cn("h-4 w-4", index < rating ? "text-brand" : "text-border")}
         />
       ))}
     </div>
