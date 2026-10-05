@@ -1,17 +1,58 @@
 import Link from "next/link";
 import Image from "next/image";
 import { HeroScene } from "@/components/sections/hero-scene";
+import { SocialLinks } from "@/components/ui/social-links";
+import { blogPosts } from "@/content/blog";
 import { site } from "@/content/site";
 
-const linkClass = "text-base text-ink";
+const linkClass =
+  "text-sm text-ink transition-colors hover:text-brand-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-dark rounded-sm";
 const headingClass = "text-base font-bold text-ink";
 
+type FooterLink = { label: string; href: string };
+
+function FooterColumn({ title, links }: { title: string; links: readonly FooterLink[] }) {
+  return (
+    <nav aria-label={title}>
+      <p className={headingClass}>{title}</p>
+      <ul className="mt-4 space-y-3">
+        {links.map((link) => (
+          <li key={link.label}>
+            {link.href.startsWith("/") ? (
+              <Link href={link.href} className={linkClass}>
+                {link.label}
+              </Link>
+            ) : (
+              <a href={link.href} className={linkClass}>
+                {link.label}
+              </a>
+            )}
+          </li>
+        ))}
+      </ul>
+    </nav>
+  );
+}
+
+function FooterSocial() {
+  return (
+    <div className="mt-6">
+      <p className="text-xs font-semibold text-fg-muted">{site.footer.socialLabel}</p>
+      <SocialLinks className="mt-3" />
+    </div>
+  );
+}
+
 export function Footer() {
+  const { footer } = site;
+  const { company, services, content, contact } = footer.columns;
+  const year = new Date().getFullYear();
+
   return (
     <footer className="overflow-hidden bg-bg">
       <div className="relative z-10 mx-auto max-w-6xl px-6 pt-16 md:pt-20">
-        <div className="grid gap-12 lg:grid-cols-[306px_repeat(3,minmax(0,1fr))]">
-          <div>
+        <div className="grid gap-12 sm:grid-cols-2 lg:grid-cols-[306px_repeat(4,minmax(0,1fr))] lg:gap-10">
+          <div className="sm:col-span-2 lg:col-span-1">
             <div className="flex items-center gap-3">
               <Image
                 src="/media/brand/simbolo-vispe-preto-326.png"
@@ -23,69 +64,50 @@ export function Footer() {
               <span className="text-base font-semibold text-ink">{site.name}</span>
             </div>
             <p
-              className="mt-4 max-w-xs text-balance text-xl font-bold text-ink"
+              className="mt-4 max-w-xs text-balance text-xl font-bold text-ink first-letter:uppercase"
               style={{ letterSpacing: "-0.04em" }}
             >
-              Organizamos o seu financeiro e aumentamos o seu lucro
+              {site.tagline.toLowerCase()}
             </p>
-            <p className="mt-3 max-w-xs text-sm leading-5 text-ink">
-              Controladoria, margem e crescimento em um só parceiro: do caixa do dia a dia aos
-              eventos de liquidez da sua empresa.
-            </p>
+            <p className="mt-3 max-w-xs text-sm leading-5 text-fg-muted">{footer.description}</p>
             <Link
-              href="/contato"
-              className="mt-6 inline-flex rounded-xl bg-ink px-4 py-2 text-[13px] font-semibold leading-4 text-paper transition-transform hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand"
+              href={footer.cta.href}
+              className="mt-6 inline-flex rounded-lg bg-ink px-4 py-2 text-[13px] font-semibold leading-4 text-paper transition-transform hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand"
             >
-              Agendar diagnóstico
+              {footer.cta.label}
             </Link>
-            <p className="mt-5 text-xs text-ink">
-              © {new Date().getFullYear()} {site.name}. Todos os direitos reservados.
-            </p>
+            <FooterSocial />
           </div>
 
-          <nav aria-label="Links institucionais">
-            <p className={headingClass}>Institucional</p>
-            <ul className="mt-4 space-y-3">
-              {site.nav.map((item) => (
-                <li key={item.href}>
-                  <Link href={item.href} className={linkClass}>
-                    {item.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
+          <FooterColumn title={company.title} links={company.links} />
+          <FooterColumn
+            title={services.title}
+            links={site.services.map((service) => ({
+              label: services.labels[service.slug] ?? service.name,
+              href: services.href,
+            }))}
+          />
+          <FooterColumn
+            title={content.title}
+            links={[
+              // Mais recentes primeiro; posts novos entram sozinhos.
+              ...[...blogPosts]
+                .sort((a, b) => b.publishedAt.localeCompare(a.publishedAt))
+                .slice(0, content.postsLimit)
+                .map((post) => ({ label: post.title, href: `/blog/${post.slug}` })),
+              { label: content.moreLabel, href: content.moreHref },
+            ]}
+          />
+          <FooterColumn title={contact.title} links={contact.links} />
+        </div>
 
-          <nav aria-label="Soluções">
-            <p className={headingClass}>Soluções</p>
-            <ul className="mt-4 space-y-3">
-              {site.services.map((service) => (
-                <li key={service.slug}>
-                  <Link href={`/produtos/${service.slug}`} className={linkClass}>
-                    {service.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
-
-          <nav aria-label="Contato">
-            <p className={headingClass}>Fale conosco</p>
-            <ul className="mt-4 space-y-3">
-              <li>
-                <Link href="/contato" className={linkClass}>
-                  Fale com a Vispe
-                </Link>
-              </li>
-              <li>
-                <Link href="/contato" className={linkClass}>
-                  Seja um parceiro
-                </Link>
-              </li>
-            </ul>
-            {/* TODO(content): redes sociais (Instagram, WhatsApp, YouTube,
-                Spotify) — pendentes de confirmação (ver content/site.ts:social). */}
-          </nav>
+        <div className="mt-12 flex flex-col gap-2 border-t border-border pt-6 text-xs text-fg-muted sm:flex-row sm:items-center sm:justify-between">
+          <p>
+            © {year} {site.name}. {footer.rights}
+          </p>
+          <a href="#main-content" className="rounded-sm transition-colors hover:text-brand-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-dark">
+            {footer.backToTop}
+          </a>
         </div>
       </div>
 

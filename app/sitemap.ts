@@ -7,6 +7,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: site.url, changeFrequency: "weekly", priority: 1 },
     { url: new URL("/sobre", site.url).toString(), changeFrequency: "monthly", priority: 0.6 },
     { url: new URL("/contato", site.url).toString(), changeFrequency: "monthly", priority: 0.6 },
+    { url: new URL("/trabalhe-conosco", site.url).toString(), changeFrequency: "monthly", priority: 0.5 },
   ];
 
   const blogRoutes: MetadataRoute.Sitemap = blogPosts.map((post) => ({

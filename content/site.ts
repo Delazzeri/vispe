@@ -22,10 +22,27 @@ export const site = {
       "Transformamos negócios comuns em ativos de alto valor, prontos para atrair investidores e chegar a um evento de liquidez milionário.",
   },
 
-  metrics: [
-    { label: "Equity gerenciado", value: "2", prefix: "+R$", suffix: "Bi" },
-    { label: "M&A transacionado", value: "700", prefix: "+R$", suffix: "Mi" },
-    { label: "Laudos de valuation emitidos", value: "300", prefix: "+", suffix: "" },
+  // Selos de resultado (imagens em public/media/award/) — o alt repete o
+  // texto do selo para manter o conteúdo indexável.
+  awards: [
+    {
+      src: "/media/award/+2bi.png",
+      width: 714,
+      height: 765,
+      alt: "Selo 2026: mais de R$ 2 bilhões em equity gerenciado",
+    },
+    {
+      src: "/media/award/+700.png",
+      width: 741,
+      height: 766,
+      alt: "Selo 2026: mais de R$ 700 milhões em M&A transacionado",
+    },
+    {
+      src: "/media/award/+300.png",
+      width: 764,
+      height: 765,
+      alt: "Selo 2026: mais de 300 laudos de valuation emitidos",
+    },
   ],
 
   featureChips: {
@@ -57,10 +74,12 @@ export const site = {
   // soluções). Placeholder fictício — nunca publicar como se fosse real.
   featuredTestimonial: {
     quote:
-      "[Depoimento de exemplo — substituir] Finalmente consegui enxergar para onde estava indo o lucro da empresa. O time da Vispe fala a nossa língua.",
-    name: "Cliente Exemplo",
-    role: "Fundador(a), Empresa Exemplo",
+      "Somos clientes há alguns anos e passamos por todas as etapas da reestruturação e organização da empresa. Os resultados têm sido excelentes, serviço de qualidade e confiança. Temos orgulho de ser clientes e temos certeza de que vocês se sairão bem juntos.",
+    name: "NavegMAIS Telecom",
+    role: "Provedor de Internet",
     rating: 5,
+    // Logo do cliente no lugar da inicial.
+    logo: { src: "/media/clients/navegmais.png" } as { src: string } | undefined,
   },
 
   categoryBlocks: {
@@ -445,11 +464,52 @@ export const site = {
     { label: "Blog", href: "/#blog" },
   ],
 
+  // Footer: só links para páginas/âncoras que existem hoje. Política de
+  // privacidade e termos entram aqui quando as páginas forem criadas.
+  footer: {
+    description:
+      "Aumentamos seu caixa e maximizamos sua margem de lucro, sem precisar contratar um diretor executivo em tempo integral.",
+    cta: { label: "Agendar diagnóstico", href: "/contato" },
+    socialLabel: "Siga a Vispe",
+    columns: {
+      company: {
+        title: "Empresa",
+        links: [
+          { label: "Quem somos", href: "/sobre" },
+          { label: "Depoimentos", href: "/#depoimentos" },
+          { label: "Equity", href: "/#equity" },
+          { label: "Trabalhe conosco", href: "/trabalhe-conosco" },
+          { label: "Perguntas frequentes", href: "/#faq" },
+        ],
+      },
+      services: {
+        title: "Soluções",
+        href: "/#servicos",
+        // Rótulo mais curto só no footer (o nome completo segue nas seções).
+        labels: { ma: "Fusões e Aquisições" } as Record<string, string>,
+      },
+      content: { title: "Conteúdo", postsLimit: 3, moreLabel: "Ver todos os artigos", moreHref: "/#blog" },
+      contact: {
+        title: "Atendimento",
+        links: [
+          { label: "Fale com a Vispe", href: "/contato" },
+          { label: "Agende um diagnóstico", href: "/contato" },
+          { label: "CFO virtual 24 Fin", href: "/#fin" },
+        ],
+      },
+    },
+    rights: "Todos os direitos reservados.",
+    backToTop: "Voltar ao topo ↑",
+  },
+
   social: {
-    // TODO(content): confirmar handles/URLs exatos antes de publicar no footer.
-    instagram: undefined,
-    whatsapp: undefined,
-    youtube: undefined,
-    spotify: undefined,
+    // TODO(content): preencher as URLs oficiais. Enquanto estiverem
+    // undefined, o footer mostra o ícone sem link.
+    instagram: undefined as string | undefined,
+    facebook: undefined as string | undefined,
+    linkedin: undefined as string | undefined,
+    spotify: undefined as string | undefined,
+    youtube: undefined as string | undefined,
+    whatsapp: undefined as string | undefined,
   },
 } as const;
