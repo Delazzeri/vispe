@@ -2,14 +2,15 @@ import { CheckCircle2, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/cn";
 import { Reveal } from "@/components/motion/reveal";
+import { HeroRock } from "@/components/ui/hero-rock";
 import { site } from "@/content/site";
 
 export function ServicePillars({ id }: { id?: string }) {
   const { title, description } = site.servicesCarousel;
 
   return (
-    <section id={id} aria-label="Soluções da Vispe Capital" className="bg-bg py-24 md:py-32">
-      <div className="mx-auto max-w-3xl px-6 text-center">
+    <section id={id} aria-label="Soluções da Vispe Capital" className="relative overflow-hidden bg-bg py-24 md:py-32">
+      <div className="relative z-10 mx-auto max-w-3xl px-6 text-center">
         <Reveal>
           <h2
             className="text-balance text-3xl font-bold tracking-tight text-ink md:text-[48px] md:leading-[48px]"
@@ -21,16 +22,25 @@ export function ServicePillars({ id }: { id?: string }) {
         </Reveal>
       </div>
 
-      <div className="mx-auto mt-14 flex max-w-5xl flex-col items-center gap-6 px-6 md:flex-row md:items-start md:justify-center">
+      <div className="relative mx-auto mt-24 max-w-7xl px-6">
+        {/* Rochas atrás dos cards, metade escondida, como na referência */}
+        <div className="pointer-events-none absolute -left-[260px] z-0 -translate-y-1/2 hidden w-[425px] md:block" style={{ top: "calc(50% + 30px)" }}>
+          <HeroRock side="left" trackSection />
+        </div>
+        <div className="pointer-events-none absolute -right-[260px] z-0 -translate-y-1/2 hidden w-[425px] md:block" style={{ top: "calc(50% - 50px)" }}>
+          <HeroRock side="right" trackSection />
+        </div>
+
+        <div className="relative z-10 flex flex-col items-center gap-6 md:flex-row md:items-start md:justify-center md:gap-5">
         {site.servicePillars.map((pillar, index) => {
           const isCenter = index === 1;
           return (
             <Reveal key={pillar.slug} delay={index * 0.06}>
               <div
                 className={cn(
-                  "grid w-[320px] grid-rows-[auto_auto_1fr_auto] rounded-3xl bg-surface px-6 py-8 text-center shadow-[0_1px_2px_rgba(38,38,38,0.04),0_4px_12px_-4px_rgba(38,38,38,0.1)]",
+                  "grid w-[320px] max-w-full md:w-[386px] grid-cols-[minmax(0,1fr)] grid-rows-[auto_auto_1fr_auto] rounded-3xl bg-surface px-6 pb-12 pt-8 text-center md:min-h-[490px] md:pb-10 shadow-[0_1px_2px_rgba(38,38,38,0.04),0_4px_12px_-4px_rgba(38,38,38,0.1)]",
                   isCenter &&
-                    "md:-mt-6 md:min-h-[560px] md:pb-10 md:shadow-[0_24px_64px_-24px_rgba(38,38,38,0.25)]",
+                    "md:-mt-10 md:min-h-[570px] md:pb-10 md:shadow-[0_24px_64px_-24px_rgba(38,38,38,0.25)]",
                 )}
               >
                 <h3
@@ -40,15 +50,15 @@ export function ServicePillars({ id }: { id?: string }) {
                   Pilar {index + 1}
                 </h3>
 
-                <div className="mt-6">
+                <div className="mt-6 min-w-0" style={{ containerType: "inline-size" }}>
                   <p
                     className="whitespace-nowrap font-bold"
                     style={{
                       color: "#000000",
-                      // 60px cabe em ~9 caracteres num card de 320px; palavras
-                      // mais longas (ORGANIZAÇÃO, CRESCIMENTO) encolhem
-                      // proporcionalmente para caber numa linha só.
-                      fontSize: `min(60px, ${(9 / pillar.shortLabel.length) * 60}px)`,
+                      // Dimensiona pela largura real do container (cqw): ~0.78em
+                      // por caractere em caixa alta bold, então a palavra sempre
+                      // cabe em uma linha, teto de 60px.
+                      fontSize: `min(60px, ${(100 / (pillar.shortLabel.length * 0.78)).toFixed(2)}cqw)`,
                       lineHeight: 1,
                     }}
                   >
@@ -74,13 +84,14 @@ export function ServicePillars({ id }: { id?: string }) {
                   href="/contato"
                   className="mt-8 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-ink px-6 py-4 text-sm font-semibold text-paper transition-transform hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand"
                 >
-                  Conhecer solução
+                  {pillar.cta}
                   <ArrowRight className="h-4 w-4" aria-hidden />
                 </Link>
               </div>
             </Reveal>
           );
         })}
+        </div>
       </div>
     </section>
   );

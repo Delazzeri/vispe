@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useRef, type MouseEvent } from "react";
+import { useEffect, useId, useRef } from "react";
 import Image from "next/image";
 import { useReducedMotion } from "motion/react";
 import { cn } from "@/lib/cn";
@@ -16,17 +16,21 @@ type HeroRockProps = {
    * frame, recentralizado, igualando a escala percebida à base.
    */
   hoverScale?: number;
+  /** Escuta o mouse na <section> inteira (útil quando outros elementos cobrem a rocha). */
+  trackSection?: boolean;
+  /** Raio do reveal em px (padrão 75). */
+  spotlightRadius?: number;
   className?: string;
 };
 
 const sizes = "(max-width: 809px) 206px, 500px";
-const SPOTLIGHT_RADIUS = 150; // px — raio total do reveal ao redor do cursor
+const SPOTLIGHT_RADIUS = 75; // px — raio padrão do reveal ao redor do cursor
 const CORE_RATIO = 0.3; // fração do raio que fica sólida/estável, sem distorção
 const LEAVE_DELAY = 1200; // ms antes de começar a desfazer o reveal ao tirar o mouse
-const LEAVE_TRANSITION = "opacity 1800ms ease-out";
-const MOVE_TRANSITION = "opacity 250ms ease-out";
+const LEAVE_TRANSITION = "opacity 5000ms ease-out";
+const MOVE_TRANSITION = "opacity 1400ms ease-out";
 
-export function HeroRock({ side, hoverScale, className }: HeroRockProps) {
+export function HeroRock({ side, hoverScale, trackSection, spotlightRadius = SPOTLIGHT_RADIUS, className }: HeroRockProps) {
   const base = `/media/hero/padrao-${side}-1000.webp`;
   const hover = `/media/hero/ouro-hover-${side}-1000.webp`;
   const filterId = useId();
@@ -38,7 +42,7 @@ export function HeroRock({ side, hoverScale, className }: HeroRockProps) {
   const leaveTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const shouldReduceMotion = useReducedMotion();
 
-  function handleMouseMove(event: MouseEvent<HTMLDivElement>) {
+  function handleMouseMove(event: { clientX: number; clientY: number }) {
     const rect = containerRef.current?.getBoundingClientRect();
     if (!rect) return;
     const x = event.clientX - rect.left;
@@ -73,14 +77,27 @@ export function HeroRock({ side, hoverScale, className }: HeroRockProps) {
     }, LEAVE_DELAY);
   }
 
-  const coreRadius = SPOTLIGHT_RADIUS * CORE_RATIO;
+  useEffect(() => {
+    if (!trackSection) return;
+    const host = containerRef.current?.closest("section");
+    if (!host) return;
+    host.addEventListener("mousemove", handleMouseMove);
+    host.addEventListener("mouseleave", handleMouseLeave);
+    return () => {
+      host.removeEventListener("mousemove", handleMouseMove);
+      host.removeEventListener("mouseleave", handleMouseLeave);
+    };
+    // handlers só usam refs e props estáveis
+  }, [trackSection]);
+
+  const coreRadius = spotlightRadius * CORE_RATIO;
 
   return (
     <div
       ref={containerRef}
       className={cn("relative", className)}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
+      onMouseMove={trackSection ? undefined : handleMouseMove}
+      onMouseLeave={trackSection ? undefined : handleMouseLeave}
     >
       <Image
         src={base}
@@ -166,7 +183,7 @@ export function HeroRock({ side, hoverScale, className }: HeroRockProps) {
               ref={ringRef}
               cx="-1000"
               cy="-1000"
-              r={SPOTLIGHT_RADIUS}
+              r={spotlightRadius}
               fill="white"
               filter={`url(#${filterId}-wobble)`}
             />

@@ -22,22 +22,25 @@ export function FAQ({ id }: { id?: string }) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd()) }}
       />
 
-      <div className="mx-auto max-w-4xl px-6">
+      <div className="mx-auto max-w-5xl px-6">
         <Reveal>
           <h2
             id="faq-heading"
             className="text-balance text-center text-3xl font-bold tracking-tight text-ink md:text-[48px] md:leading-[48px]"
             style={{ letterSpacing: "-0.05em" }}
           >
-            Perguntas frequentes
+            {site.faqIntro.title}
           </h2>
+          <p className="mx-auto mt-5 max-w-2xl text-balance text-center text-lg text-fg-muted">
+            {site.faqIntro.subtitle}
+          </p>
         </Reveal>
 
         <div className="mt-12 grid gap-4 sm:grid-cols-2">
           {site.faq.map((item, index) => (
             <Reveal key={item.question} delay={index * 0.05}>
               <details className="group rounded-3xl bg-surface p-6 shadow-[0_1px_2px_rgba(38,38,38,0.04),0_4px_12px_-4px_rgba(38,38,38,0.1)] open:sm:col-span-2">
-                <summary className="flex cursor-pointer list-none items-start gap-4 text-left text-base font-semibold text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand">
+                <summary className="flex cursor-pointer list-none items-start gap-4 text-left text-sm font-semibold text-ink lg:whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand">
                   <Plus
                     className="mt-0.5 h-5 w-5 shrink-0 text-brand-dark transition-transform group-open:rotate-45"
                     aria-hidden

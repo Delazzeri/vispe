@@ -68,9 +68,20 @@ export const site = {
     description: "De operações societárias a controladoria do dia a dia, no mesmo time.",
   },
 
+  // TODO(content): trocar os placeholders por imagens/telas reais da Vispe
+  // (ex.: dashboards e relatórios) em /public/media/.
+  showcaseCarousel: [
+    { id: "placeholder-1", label: "Imagem ilustrativa 1" },
+    { id: "placeholder-2", label: "Imagem ilustrativa 2" },
+    { id: "placeholder-3", label: "Imagem ilustrativa 3" },
+    { id: "placeholder-4", label: "Imagem ilustrativa 4" },
+    { id: "placeholder-5", label: "Imagem ilustrativa 5" },
+  ],
+
   servicesCarousel: {
-    title: "Explore nossas soluções",
-    description: "Cada frente do seu financeiro, com processo, entrega e resultado claros.",
+    title: "Pilares do Equity",
+    description:
+      "Os três pilares que sustentam o valor da sua empresa, do caixa ao próximo salto.",
   },
 
   servicePillars: [
@@ -79,6 +90,7 @@ export const site = {
       shortLabel: "ORGANIZAÇÃO",
       tagline: "Organize o seu financeiro",
       name: "Organização",
+      cta: "Quero me organizar",
       includes: ["Diagnóstico Financeiro", "BPO Financeiro", "Due Diligence"],
     },
     {
@@ -86,6 +98,7 @@ export const site = {
       shortLabel: "MARGEM",
       tagline: "Multiplique o seu lucro",
       name: "Margem",
+      cta: "Quero maximizar os lucros",
       includes: [
         "Gestão Financeira",
         "Planejamento Tributário",
@@ -99,6 +112,7 @@ export const site = {
       shortLabel: "CRESCIMENTO",
       tagline: "Prepare-se para o próximo salto",
       name: "Crescimento",
+      cta: "Quero crescer minha empresa",
       includes: ["Aceleração Comercial", "Fusões e Aquisições", "Captação de Recursos"],
     },
   ],
@@ -326,6 +340,18 @@ export const site = {
     },
   },
 
+  // TODO(content): validar respostas com o time da Vispe antes de publicar.
+  blog: {
+    title: "Blog da Vispe",
+    subtitle:
+      "Conteúdo prático sobre gestão financeira, equity e crescimento para donos de empresa.",
+  },
+
+  faqIntro: {
+    title: "Perguntas frequentes",
+    subtitle: "Tire suas dúvidas sobre como a Vispe organiza o seu financeiro e aumenta o seu lucro.",
+  },
+
   faq: [
     {
       question: "O que é o CFO as Service?",
@@ -333,7 +359,7 @@ export const site = {
         "É a estruturação da inteligência financeira do seu negócio — controladoria, fluxo de caixa e indicadores de gestão — sem a necessidade de contratar um diretor financeiro em tempo integral.",
     },
     {
-      question: "Preciso ter um financeiro estruturado para contratar a Vispe?",
+      question: "Preciso de um financeiro estruturado?",
       answer:
         "Não. Trabalhamos desde o diagnóstico inicial, organizando o financeiro do zero quando necessário, até a estruturação de processos mais avançados como M&A e captação.",
     },
@@ -343,14 +369,49 @@ export const site = {
         "Analisamos a situação financeira atual da empresa e apontamos onde estão as principais perdas de margem e oportunidades de estruturação, antes de qualquer compromisso.",
     },
     {
-      question: "A Vispe atende empresas de qualquer porte?",
+      question: "Vocês atendem empresas de qualquer porte?",
       answer:
         "Atendemos pequenas e médias empresas que já faturam e buscam profissionalizar a gestão financeira, seja para crescer, se preparar para sucessão ou acessar o mercado de capitais.",
     },
     {
-      question: "Quais serviços a Vispe oferece além da controladoria?",
+      question: "Quais outros serviços vocês oferecem?",
       answer:
         "M&A, captação de recursos, planejamento tributário, aceleração comercial e valuation — cada um estruturado conforme o momento e a necessidade específica da empresa.",
+    },
+    {
+      question: "Como funciona o BPO Financeiro?",
+      answer:
+        "Assumimos a rotina financeira da sua empresa — contas a pagar e a receber, conciliação e fluxo de caixa — para que você tenha informação confiável e tempo livre para tocar o negócio.",
+    },
+    {
+      question: "O que é Valuation?",
+      answer:
+        "É a avaliação do valor real da sua empresa, com base em resultados, perspectivas e riscos. Serve de referência para vender, buscar sócios, captar recursos ou planejar a sucessão.",
+    },
+    {
+      question: "O que é Due Diligence?",
+      answer:
+        "É uma análise detalhada das finanças, contratos e riscos de uma empresa antes de uma compra, fusão ou investimento, para que a decisão seja tomada com dados e sem surpresas.",
+    },
+    {
+      question: "Quando faz sentido pensar em M&A?",
+      answer:
+        "Quando a empresa quer crescer comprando operações, se unir a um parceiro estratégico ou vender o negócio. Estruturamos o processo para maximizar o retorno em cada etapa.",
+    },
+    {
+      question: "O que é Turnaround Financeiro?",
+      answer:
+        "É o plano de recuperação para empresas com caixa pressionado ou margens em queda: reorganizamos custos, dívidas e processos para devolver a saúde financeira ao negócio.",
+    },
+    {
+      question: "Como funciona a captação de recursos?",
+      answer:
+        "Preparamos a empresa e os números para apresentar a investidores e instituições, e apoiamos a escolha da melhor fonte de recurso para o seu momento.",
+    },
+    {
+      question: "Como o planejamento tributário ajuda?",
+      answer:
+        "Revisamos a estrutura fiscal da empresa para identificar o enquadramento mais eficiente e reduzir a carga tributária dentro da lei, liberando margem para o seu lucro.",
     },
   ],
 
@@ -374,11 +435,14 @@ export const site = {
       "Preencha o formulário e um especialista da Vispe Capital entrará em contato, com a clareza de quem já transformou centenas de empresas Brasil afora.",
   },
 
+  // Âncoras da home ("/#id" funciona também a partir das páginas internas).
   nav: [
-    { label: "Soluções", href: "#servicos" },
-    { label: "Educação", href: "#educacao" },
-    { label: "Sobre", href: "/sobre" },
-    { label: "Contato", href: "/contato" },
+    { label: "Sobre", href: "/#solucoes" },
+    { label: "Soluções", href: "/#servicos" },
+    { label: "Feedbacks", href: "/#depoimentos" },
+    { label: "Equity", href: "/#equity" },
+    { label: "FAQ", href: "/#faq" },
+    { label: "Blog", href: "/#blog" },
   ],
 
   social: {

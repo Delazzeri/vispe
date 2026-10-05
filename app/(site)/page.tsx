@@ -5,7 +5,9 @@ import { CategoryBlocks } from "@/components/sections/category-blocks";
 import { Showcase } from "@/components/sections/showcase";
 import { Testimonials } from "@/components/sections/testimonials";
 import { Fin } from "@/components/sections/fin";
+import { ImageCarousel } from "@/components/sections/image-carousel";
 import { ServicePillars } from "@/components/sections/service-pillars";
+import { Blog } from "@/components/sections/blog";
 import { FAQ } from "@/components/sections/faq";
 
 export default function HomePage() {
@@ -18,7 +20,9 @@ export default function HomePage() {
       <Showcase id="como-trabalhamos" />
       <Testimonials id="depoimentos" />
       <Fin id="fin" />
-      <ServicePillars />
+      <ImageCarousel />
+      <ServicePillars id="equity" />
+      <Blog id="blog" />
       <FAQ id="faq" />
     </>
   );

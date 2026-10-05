@@ -23,14 +23,14 @@ export function Marquee({ children, direction = "left", speed = 30, className }:
   return (
     <div className={cn("group flex overflow-hidden", className)}>
       <div
-        className="flex shrink-0 items-center gap-8 motion-safe:animate-[marquee_linear_infinite] group-hover:[animation-play-state:paused]"
+        className="flex shrink-0 items-center gap-8 pr-8 motion-safe:animate-[marquee_linear_infinite] group-hover:[animation-play-state:paused]"
         style={trackStyle}
       >
         {children}
       </div>
       <div
         aria-hidden
-        className="flex shrink-0 items-center gap-8 motion-safe:animate-[marquee_linear_infinite] group-hover:[animation-play-state:paused]"
+        className="flex shrink-0 items-center gap-8 pr-8 motion-safe:animate-[marquee_linear_infinite] group-hover:[animation-play-state:paused]"
         style={trackStyle}
       >
         {children}
