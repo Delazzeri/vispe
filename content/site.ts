@@ -22,26 +22,23 @@ export const site = {
       "Transformamos negócios comuns em ativos de alto valor, prontos para atrair investidores e chegar a um evento de liquidez milionário.",
   },
 
-  // Selos de resultado (imagens em public/media/award/) — o alt repete o
-  // texto do selo para manter o conteúdo indexável.
+  // Selos de resultado (public/media/award/, versão em inglês em en-US/ com o
+  // mesmo nome). O alt repete o texto do selo para manter o conteúdo indexável.
   awards: [
     {
-      src: "/media/award/+2bi.png",
-      width: 714,
-      height: 765,
-      alt: "Selo 2026: mais de R$ 2 bilhões em equity gerenciado",
+      file: "+2bi.png",
+      "pt-BR": { width: 714, height: 765, alt: "Selo 2026: mais de R$ 2 bilhões em equity gerenciado" },
+      "en-US": { width: 655, height: 766, alt: "2026 seal: over R$ 2 billion in managed equity" },
     },
     {
-      src: "/media/award/+700.png",
-      width: 741,
-      height: 766,
-      alt: "Selo 2026: mais de R$ 700 milhões em M&A transacionado",
+      file: "+700.png",
+      "pt-BR": { width: 741, height: 766, alt: "Selo 2026: mais de R$ 700 milhões em M&A transacionado" },
+      "en-US": { width: 684, height: 766, alt: "2026 seal: over R$ 700 million in M&A transactions" },
     },
     {
-      src: "/media/award/+300.png",
-      width: 764,
-      height: 765,
-      alt: "Selo 2026: mais de 300 laudos de valuation emitidos",
+      file: "+300.png",
+      "pt-BR": { width: 764, height: 765, alt: "Selo 2026: mais de 300 laudos de valuation emitidos" },
+      "en-US": { width: 719, height: 765, alt: "2026 seal: over 300 valuation reports issued" },
     },
   ],
 
