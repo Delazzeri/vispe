@@ -54,7 +54,8 @@ export async function generateMetadata({ params }: LayoutProps<"/[locale]">): Pr
   return {
     metadataBase: new URL(brand.url),
     ...buildMetadata({
-      title: brand.name,
+      // Home: "Inteligência financeira estratégica | Vispe Capital".
+      title: getSite(resolveLocale(locale)).hero.h1,
       description: getSite(resolveLocale(locale)).hero.description,
       locale: resolveLocale(locale),
     }),

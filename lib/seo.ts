@@ -45,7 +45,8 @@ export function buildMetadata({
     url: locale === defaultLocale ? "/og" : "/og/en",
     alt: `${brand.name} — ${getSite(locale).tagline}`,
   };
-  const fullTitle = `${title} — ${brand.name}`;
+  // Separador "|" no título da aba: "Página | Vispe Capital".
+  const fullTitle = `${title} | ${brand.name}`;
   const openGraphBase = {
     title: fullTitle,
     description,
