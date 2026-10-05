@@ -508,6 +508,7 @@ export const site = {
     pillar: "Pilar {n}",
     rating: "Avaliação {rating} de 5 estrelas",
     videoPlaceholder: "Vídeo em produção (placeholder)",
+    dashboardSrc: "/media/hero/tela-mac-3-2600.webp",
     dashboardAlt:
       "Painel CFO as Service da Vispe Capital, exibindo receita recorrente, CAC, LTV/CAC, churn, funil comercial e receita por produto",
     home: "Início",

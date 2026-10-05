@@ -478,6 +478,7 @@ export const site: SiteContent = {
     pillar: "Pillar {n}",
     rating: "Rated {rating} out of 5 stars",
     videoPlaceholder: "Video in production (placeholder)",
+    dashboardSrc: "/media/hero/tela-mac-us-2600.webp",
     dashboardAlt:
       "Vispe Capital's CFO as a Service dashboard, showing recurring revenue, CAC, LTV/CAC, churn, sales funnel and revenue by product",
     home: "Home",

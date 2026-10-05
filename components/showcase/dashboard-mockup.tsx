@@ -11,7 +11,7 @@ export function DashboardMockup() {
   return (
     <div className="relative w-full max-w-6xl">
       <Image
-        src="/media/hero/tela-mac-3-2600.webp"
+        src={ui.dashboardSrc}
         alt={ui.dashboardAlt}
         width={2600}
         height={1900}
