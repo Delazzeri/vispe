@@ -1,24 +1,20 @@
 import Image from "next/image";
-import { useLocale } from "next-intl";
 import { Reveal } from "@/components/motion/reveal";
-import { site } from "@/content/site";
-import { defaultLocale, resolveLocale } from "@/i18n/routing";
+import { useSite } from "@/content/site";
 
 export function TrustBar({ id }: { id?: string }) {
-  const locale = resolveLocale(useLocale());
-  // Selos em inglês ficam em award/en-US/ com o mesmo nome de arquivo.
-  const dir = locale === defaultLocale ? "/media/award/" : `/media/award/${locale}/`;
+  const site = useSite();
 
   return (
-    <section id={id} aria-label="Resultados da Vispe Capital" className="bg-bg pb-10 pt-6 md:pb-12 md:pt-8">
+    <section id={id} aria-label={site.ui.resultsLabel} className="bg-bg pb-10 pt-6 md:pb-12 md:pt-8">
       <ul className="mx-auto flex max-w-4xl flex-wrap items-center justify-center gap-x-10 gap-y-6 px-6 md:gap-x-16">
         {site.awards.map((award, index) => {
-          const { width, height, alt } = award[locale];
+          const { src, width, height, alt } = award;
           return (
-            <li key={award.file}>
+            <li key={src}>
               <Reveal delay={index * 0.06}>
                 <Image
-                  src={`${dir}${award.file}`}
+                  src={src}
                   alt={alt}
                   width={width}
                   height={height}

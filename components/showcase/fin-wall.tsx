@@ -1,4 +1,4 @@
-import { finWall } from "@/content/fin-wall";
+import { useFinWall } from "@/content/fin-wall";
 import { cn } from "@/lib/cn";
 import { Widget } from "./widgets/widgets";
 
@@ -8,6 +8,7 @@ import { Widget } from "./widgets/widgets";
  * para a composição das linhas não "quebrar" em larguras intermediárias.
  */
 export function FinWall({ className }: { className?: string }) {
+  const finWall = useFinWall();
   return (
     <div
       aria-hidden

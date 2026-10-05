@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { useSite } from "@/content/site";
 
 /**
  * Screenshot real do dashboard CFO as Service, já entregue com moldura
@@ -6,11 +7,12 @@ import Image from "next/image";
  * contato suave para "pousar" a tela sobre a cena do hero.
  */
 export function DashboardMockup() {
+  const { ui } = useSite();
   return (
     <div className="relative w-full max-w-6xl">
       <Image
         src="/media/hero/tela-mac-3-2600.webp"
-        alt="Painel CFO as Service da Vispe Capital, exibindo receita recorrente, CAC, LTV/CAC, churn, funil comercial e receita por produto"
+        alt={ui.dashboardAlt}
         width={2600}
         height={1900}
         sizes="(max-width: 809px) 100vw, 1200px"

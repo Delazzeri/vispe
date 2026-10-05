@@ -173,8 +173,9 @@ export function getReadingMinutes(post: BlogPost): number {
   return Math.max(1, Math.round(words / 200));
 }
 
-export function formatPostDate(isoDate: string): string {
-  return new Intl.DateTimeFormat("pt-BR", {
+/** Data no formato do idioma da interface (o artigo em si é sempre pt-BR). */
+export function formatPostDate(isoDate: string, locale: string = "pt-BR"): string {
+  return new Intl.DateTimeFormat(locale, {
     day: "numeric",
     month: "long",
     year: "numeric",

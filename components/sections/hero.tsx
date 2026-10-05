@@ -1,20 +1,14 @@
 import { LocaleLink as Link } from "@/components/ui/locale-link";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
-import { site } from "@/content/site";
+import { useSite } from "@/content/site";
 import { HeroIntro, HeroIntroItem } from "@/components/sections/hero-intro";
 import { HeroScene } from "@/components/sections/hero-scene";
 import { DashboardMockup } from "@/components/showcase/dashboard-mockup";
 import { HeroRock } from "@/components/ui/hero-rock";
 
-const trust = [
-  "Sem contrato de fidelidade",
-  "Time dedicado ao seu caixa",
-  "Diagnóstico sem custo",
-  "Pronto para eventos de liquidez",
-];
-
 export function Hero({ id }: { id?: string }) {
+  const site = useSite();
   return (
     <section
       id={id}
@@ -68,7 +62,7 @@ export function Hero({ id }: { id?: string }) {
 
         <HeroIntroItem>
           <ul className="mt-6 flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
-            {trust.map((label) => (
+            {site.hero.bullets.map((label) => (
               <li key={label} className="text-xs font-medium text-fg-muted">
                 {label}
               </li>

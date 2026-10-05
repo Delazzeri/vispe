@@ -1,5 +1,6 @@
 import Image from "next/image";
-import { site } from "@/content/site";
+import { brand, useSite } from "@/content/site";
+import { format } from "@/content/types";
 import { cn } from "@/lib/cn";
 
 type SocialNetwork = "instagram" | "facebook" | "linkedin" | "spotify" | "youtube";
@@ -40,13 +41,14 @@ function SocialLogo({ network, tone }: { network: SocialNetwork; tone: Tone }) {
   );
 }
 
-/** Logos das redes da Vispe (URLs em content/site.ts:social). */
+/** Logos das redes da Vispe (URLs em content/brand.ts:social). */
 export function SocialLinks({ tone = "light", className }: { tone?: Tone; className?: string }) {
+  const { ui } = useSite();
   return (
     <ul className={cn("flex gap-3", className)}>
       {socialNetworks.map(({ network, label }) => {
-        const url = site.social[network];
-        const name = `${label} da ${site.name}`;
+        const url = brand.social[network];
+        const name = format(ui.socialProfile, { network: label });
         return (
           <li key={network}>
             {url ? (

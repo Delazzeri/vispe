@@ -7,12 +7,14 @@ import {
   type ApplicationField,
   type ApplicationState,
 } from "@/app/[locale]/(site)/trabalhe-conosco/actions";
-import type { careers } from "@/content/careers";
+import type { CareersContent } from "@/content/careers";
+import type { Locale } from "@/i18n/routing";
 import { cn } from "@/lib/cn";
 
 type CareersFormProps = {
-  copy: (typeof careers)["form"];
-  messages: (typeof careers)["messages"];
+  locale: Locale;
+  copy: CareersContent["form"];
+  messages: CareersContent["messages"];
   hrEmail: string;
   maxBytes: number;
 };
@@ -72,7 +74,7 @@ function formatSize(bytes: number) {
   return bytes < 1024 * 1024 ? `${Math.round(bytes / 1024)} KB` : `${(bytes / 1024 / 1024).toFixed(1)} MB`;
 }
 
-export function CareersForm({ copy, messages, hrEmail, maxBytes }: CareersFormProps) {
+export function CareersForm({ locale, copy, messages, hrEmail, maxBytes }: CareersFormProps) {
   const [state, setState] = useState<ApplicationState>({ status: "idle" });
   const [file, setFile] = useState<File>();
   const [fileError, setFileError] = useState<string>();
@@ -143,6 +145,7 @@ export function CareersForm({ copy, messages, hrEmail, maxBytes }: CareersFormPr
 
   return (
     <form onSubmit={onSubmit} noValidate className="relative mt-10 space-y-10">
+      <input type="hidden" name="locale" value={locale} />
       <div aria-live="polite">
         {state.status === "invalid" && (
           <p className="flex items-center gap-2 rounded-xl bg-accent-soft/40 px-4 py-3 text-sm font-medium text-fg">
@@ -320,7 +323,7 @@ export function CareersForm({ copy, messages, hrEmail, maxBytes }: CareersFormPr
 
       {/* Honeypot: fora da tela e fora da ordem de tabulação. */}
       <div aria-hidden className="absolute -left-full h-0 w-0 overflow-hidden">
-        <label htmlFor="company">Empresa</label>
+        <label htmlFor="company">{fields.honeypot}</label>
         <input id="company" name="company" type="text" tabIndex={-1} autoComplete="off" />
       </div>
 

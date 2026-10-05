@@ -1,12 +1,12 @@
 import { Plus } from "lucide-react";
 import { Reveal } from "@/components/motion/reveal";
-import { site } from "@/content/site";
+import { useSite, type SiteContent } from "@/content/site";
 
-function faqJsonLd() {
+function faqJsonLd(faq: SiteContent["faq"]) {
   return {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    mainEntity: site.faq.map((item) => ({
+    mainEntity: faq.map((item) => ({
       "@type": "Question",
       name: item.question,
       acceptedAnswer: { "@type": "Answer", text: item.answer },
@@ -15,11 +15,12 @@ function faqJsonLd() {
 }
 
 export function FAQ({ id }: { id?: string }) {
+  const site = useSite();
   return (
     <section id={id} aria-labelledby="faq-heading" className="bg-bg py-24 md:py-32">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd()) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd(site.faq)) }}
       />
 
       <div className="mx-auto max-w-5xl px-6">

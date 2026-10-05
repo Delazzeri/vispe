@@ -3,7 +3,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { blogPosts, formatPostDate, getPostBySlug, getReadingMinutes } from "@/content/blog";
-import { site } from "@/content/site";
+import { brand, getSite } from "@/content/site";
+import { format } from "@/content/types";
 import { setRequestLocale } from "next-intl/server";
 import { localizeHref } from "@/i18n/href";
 import { resolveLocale } from "@/i18n/routing";
@@ -32,7 +33,7 @@ export async function generateMetadata({ params }: PageProps) {
     article: {
       publishedTime: post.publishedAt,
       modifiedTime: post.updatedAt ?? post.publishedAt,
-      authors: post.author ? [post.author] : [site.name],
+      authors: post.author ? [post.author] : [brand.name],
     },
     image: post.cover
       ? { url: post.cover.src, alt: post.cover.alt }
@@ -46,6 +47,7 @@ export default async function BlogPostPage({ params }: PageProps) {
   setRequestLocale(locale);
   const post = getPostBySlug(slug);
   if (!post) notFound();
+  const { ui } = getSite(locale);
 
   return (
     <article lang="pt-BR" aria-labelledby="post-heading" className="mx-auto max-w-3xl px-6 py-24 md:py-32">
@@ -58,7 +60,7 @@ export default async function BlogPostPage({ params }: PageProps) {
         dangerouslySetInnerHTML={{
           __html: JSON.stringify(
             breadcrumbJsonLd([
-              { name: "Início", path: "/" },
+              { name: ui.home, path: localizeHref("/", locale) },
               { name: post.title, path: `/blog/${post.slug}` },
             ]),
           ),
@@ -67,11 +69,18 @@ export default async function BlogPostPage({ params }: PageProps) {
 
       <Link
         href={localizeHref("/#blog", locale)}
+        lang={locale}
         className="inline-flex items-center gap-2 rounded-sm text-sm font-medium text-fg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand"
       >
         <ArrowLeft className="h-4 w-4" aria-hidden />
-        Voltar ao blog
+        {ui.backToBlog}
       </Link>
+
+      {ui.portugueseOnly && (
+        <p lang={locale} className="mt-6 rounded-xl bg-accent-soft/40 px-4 py-3 text-sm text-fg">
+          {ui.portugueseOnly}
+        </p>
+      )}
 
       <header className="mt-8">
         <p className="text-xs font-semibold uppercase tracking-wide text-brand-dark">
@@ -84,9 +93,9 @@ export default async function BlogPostPage({ params }: PageProps) {
           {post.title}
         </h1>
         <p className="mt-4 text-lg text-fg-muted">{post.description}</p>
-        <p className="mt-4 text-sm text-fg-muted">
-          <time dateTime={post.publishedAt}>{formatPostDate(post.publishedAt)}</time> ·{" "}
-          {getReadingMinutes(post)} min de leitura
+        <p lang={locale} className="mt-4 text-sm text-fg-muted">
+          <time dateTime={post.publishedAt}>{formatPostDate(post.publishedAt, locale)}</time> ·{" "}
+          {format(ui.readingTime, { minutes: getReadingMinutes(post) })}
         </p>
       </header>
 

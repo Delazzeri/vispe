@@ -1,8 +1,9 @@
 import { Reveal } from "@/components/motion/reveal";
 import { VideoPlaceholder } from "@/components/ui/video-placeholder";
-import { site } from "@/content/site";
+import { useSite } from "@/content/site";
 
 export function Showcase({ id }: { id?: string }) {
+  const site = useSite();
   const { title, description, video } = site.showcase;
 
   return (

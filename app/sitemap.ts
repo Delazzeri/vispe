@@ -1,12 +1,12 @@
 import type { MetadataRoute } from "next";
 import { blogPosts } from "@/content/blog";
-import { site } from "@/content/site";
+import { brand } from "@/content/brand";
 import { localizePath } from "@/i18n/href";
 import { defaultLocale, locales } from "@/i18n/routing";
 
 type Frequency = NonNullable<MetadataRoute.Sitemap[number]["changeFrequency"]>;
 
-const url = (path: string) => new URL(path, site.url).toString();
+const url = (path: string) => new URL(path, brand.url).toString();
 
 // Páginas que existem nos dois idiomas (caminho interno → URL de cada idioma).
 // TODO: incluir /produtos/<slug> quando as landing pages existirem.

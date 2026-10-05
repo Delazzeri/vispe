@@ -9,7 +9,7 @@ import { buildMetadata, organizationJsonLd, websiteJsonLd } from "@/lib/seo";
 import { Header } from "@/components/sections/header";
 import { Footer } from "@/components/sections/footer";
 import { LanguageSwitcher } from "@/components/ui/language-switcher";
-import { site } from "@/content/site";
+import { brand, getSite } from "@/content/site";
 import "../globals.css";
 
 const inter = Inter({
@@ -52,10 +52,10 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: LayoutProps<"/[locale]">): Promise<Metadata> {
   const { locale } = await params;
   return {
-    metadataBase: new URL(site.url),
+    metadataBase: new URL(brand.url),
     ...buildMetadata({
-      title: site.name,
-      description: site.hero.description,
+      title: brand.name,
+      description: getSite(resolveLocale(locale)).hero.description,
       locale: resolveLocale(locale),
     }),
   };
@@ -80,7 +80,7 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
         </a>
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd()) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd(locale)) }}
         />
         <script
           type="application/ld+json"

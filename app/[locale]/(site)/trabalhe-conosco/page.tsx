@@ -3,15 +3,17 @@ import { resolveLocale } from "@/i18n/routing";
 import { SocialLinks } from "@/components/ui/social-links";
 import { CareersForm } from "@/components/sections/careers-form";
 import { BrandPattern } from "@/components/ui/brand-pattern";
-import { careers, resumeMaxBytes } from "@/content/careers";
+import { getCareers, hrEmail, resumeMaxBytes } from "@/content/careers";
+import { getSite } from "@/content/site";
+import { localizePath } from "@/i18n/href";
 import { breadcrumbJsonLd, buildMetadata } from "@/lib/seo";
 
 export async function generateMetadata({ params }: PageProps<"/[locale]/trabalhe-conosco">) {
-  const { locale } = await params;
+  const locale = resolveLocale((await params).locale);
   return buildMetadata({
-    title: "Trabalhe conosco",
-    description: careers.hero.description,
-    locale: resolveLocale(locale),
+    title: getSite(locale).pages.careers.title,
+    description: getCareers(locale).hero.description,
+    locale,
     path: "/trabalhe-conosco",
   });
 }
@@ -21,9 +23,10 @@ export async function generateMetadata({ params }: PageProps<"/[locale]/trabalhe
  * (sticky no desktop) ao lado do formulário em etapas.
  */
 export default async function TrabalheConoscoPage({ params }: PageProps<"/[locale]/trabalhe-conosco">) {
-  const { locale } = await params;
+  const locale = resolveLocale((await params).locale);
   setRequestLocale(locale);
-  const { hero, about, form, messages, hrEmail } = careers;
+  const { hero, about, form, messages } = getCareers(locale);
+  const { ui } = getSite(locale);
 
   return (
     <section aria-labelledby="careers-heading" className="mx-auto max-w-7xl px-4 pt-28 pb-24 md:px-6 md:pt-32 md:pb-32">
@@ -32,8 +35,8 @@ export default async function TrabalheConoscoPage({ params }: PageProps<"/[local
         dangerouslySetInnerHTML={{
           __html: JSON.stringify(
             breadcrumbJsonLd([
-              { name: "Início", path: "/" },
-              { name: hero.eyebrow, path: careers.path },
+              { name: ui.home, path: localizePath("/", locale) },
+              { name: hero.eyebrow, path: localizePath("/trabalhe-conosco", locale) },
             ]),
           ),
         }}
@@ -89,7 +92,13 @@ export default async function TrabalheConoscoPage({ params }: PageProps<"/[local
             {form.title}
           </h2>
           <p className="mt-3 max-w-xl text-base leading-7 text-fg-muted">{form.description}</p>
-          <CareersForm copy={form} messages={messages} hrEmail={hrEmail} maxBytes={resumeMaxBytes} />
+          <CareersForm
+            locale={locale}
+            copy={form}
+            messages={messages}
+            hrEmail={hrEmail}
+            maxBytes={resumeMaxBytes}
+          />
         </div>
       </div>
     </section>

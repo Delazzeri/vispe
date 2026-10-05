@@ -1,5 +1,7 @@
 import Image from "next/image";
 import { Star } from "lucide-react";
+import { useSite } from "@/content/site";
+import { format } from "@/content/types";
 import { cn } from "@/lib/cn";
 
 type FeaturedTestimonialProps = {
@@ -22,10 +24,11 @@ export function FeaturedTestimonial({
   logo,
   className,
 }: FeaturedTestimonialProps) {
+  const { ui } = useSite();
   return (
     <figure className={cn("flex flex-col items-center text-center", className)}>
       {rating ? (
-        <div className="flex gap-0.5" aria-label={`Avaliação ${rating} de 5 estrelas`}>
+        <div className="flex gap-0.5" role="img" aria-label={format(ui.rating, { rating })}>
           {Array.from({ length: 5 }).map((_, index) => (
             <Star
               key={index}

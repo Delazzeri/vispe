@@ -3,13 +3,15 @@ import { LocaleLink as Link } from "@/components/ui/locale-link";
 import { cn } from "@/lib/cn";
 import { Reveal } from "@/components/motion/reveal";
 import { HeroRock } from "@/components/ui/hero-rock";
-import { site } from "@/content/site";
+import { useSite } from "@/content/site";
+import { format } from "@/content/types";
 
 export function ServicePillars({ id }: { id?: string }) {
+  const site = useSite();
   const { title, description } = site.servicesCarousel;
 
   return (
-    <section id={id} aria-label="Soluções da Vispe Capital" className="relative overflow-hidden bg-bg py-24 md:py-32">
+    <section id={id} aria-label={site.ui.pillarsLabel} className="relative overflow-hidden bg-bg py-24 md:py-32">
       <div className="relative z-10 mx-auto max-w-3xl px-6 text-center">
         <Reveal>
           <h2
@@ -47,7 +49,7 @@ export function ServicePillars({ id }: { id?: string }) {
                   className="text-[25px] font-bold leading-[30px]"
                   style={{ color: "#000000" }}
                 >
-                  Pilar {index + 1}
+                  {format(site.ui.pillar, { n: index + 1 })}
                 </h3>
 
                 <div className="mt-6 min-w-0" style={{ containerType: "inline-size" }}>

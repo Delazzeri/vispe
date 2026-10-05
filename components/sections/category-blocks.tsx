@@ -8,7 +8,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { Reveal } from "@/components/motion/reveal";
-import { site } from "@/content/site";
+import { useSite } from "@/content/site";
 
 const icons: Record<string, LucideIcon> = {
   ma: Handshake,
@@ -20,6 +20,7 @@ const icons: Record<string, LucideIcon> = {
 };
 
 export function CategoryBlocks({ id }: { id?: string }) {
+  const site = useSite();
   const { title, description } = site.categoryBlocks;
 
   return (
@@ -53,7 +54,7 @@ export function CategoryBlocks({ id }: { id?: string }) {
                     {service.description}
                   </p>
                   <p className="mt-5 text-xs leading-relaxed text-fg-muted">
-                    <span className="font-semibold text-fg">Inclui: </span>
+                    <span className="font-semibold text-fg">{site.ui.includes} </span>
                     {service.includes.join(", ")}
                   </p>
 

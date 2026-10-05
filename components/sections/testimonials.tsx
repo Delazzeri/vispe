@@ -1,8 +1,9 @@
 import { Reveal } from "@/components/motion/reveal";
 import { TestimonialCard } from "@/components/ui/testimonial-card";
-import { site } from "@/content/site";
+import { useSite } from "@/content/site";
 
 export function Testimonials({ id }: { id?: string }) {
+  const site = useSite();
   const { title, description } = site.testimonialsSection;
 
   return (

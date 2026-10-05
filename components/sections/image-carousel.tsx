@@ -1,6 +1,6 @@
 import { Marquee } from "@/components/motion/marquee";
 import { cn } from "@/lib/cn";
-import { site } from "@/content/site";
+import { useSite } from "@/content/site";
 
 // Fundos de placeholder feitos só com tokens do design system.
 const placeholderBackgrounds = [
@@ -12,8 +12,9 @@ const placeholderBackgrounds = [
 ] as const;
 
 export function ImageCarousel({ id }: { id?: string }) {
+  const site = useSite();
   return (
-    <section id={id} aria-label="Galeria da Vispe Capital" className="overflow-hidden bg-bg pb-16 pt-40 md:pb-24 md:pt-56">
+    <section id={id} aria-label={site.ui.galleryLabel} className="overflow-hidden bg-bg pb-16 pt-40 md:pb-24 md:pt-56">
       <Marquee speed={90}>
         {site.showcaseCarousel.map((item, index) => (
           <div

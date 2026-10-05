@@ -1,11 +1,14 @@
 import { ImageResponse } from "next/og";
-import { site } from "@/content/site";
+import { brand, getSite } from "@/content/site";
+import { defaultLocale, type Locale } from "@/i18n/routing";
 
 export const ogSize = { width: 1200, height: 630 } as const;
 
 type OgImageInput = {
   title: string;
   eyebrow?: string;
+  /** Idioma do slogan no rodapé da imagem. */
+  locale?: Locale;
 };
 
 // Cores espelham os tokens de globals.css (ImageResponse não lê CSS/Tailwind).
@@ -17,7 +20,7 @@ const colors = {
   ink: "#000000",
 } as const;
 
-export function renderOgImage({ title, eyebrow }: OgImageInput) {
+export function renderOgImage({ title, eyebrow, locale = defaultLocale }: OgImageInput) {
   return new ImageResponse(
     (
       <div
@@ -52,8 +55,8 @@ export function renderOgImage({ title, eyebrow }: OgImageInput) {
           </div>
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-          <div style={{ fontSize: 34, fontWeight: 700 }}>{site.name}</div>
-          <div style={{ fontSize: 24, color: colors.fg }}>{site.tagline}</div>
+          <div style={{ fontSize: 34, fontWeight: 700 }}>{brand.name}</div>
+          <div style={{ fontSize: 24, color: colors.fg }}>{getSite(locale).tagline}</div>
         </div>
       </div>
     ),

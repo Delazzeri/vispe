@@ -5,6 +5,8 @@ import { useReducedMotion } from "motion/react";
 import { BlogCard } from "@/components/ui/blog-card";
 import { cn } from "@/lib/cn";
 import type { BlogPost } from "@/content/blog";
+import { useSite } from "@/content/site";
+import { format } from "@/content/types";
 
 type BlogCarouselProps = {
   posts: readonly BlogPost[];
@@ -14,6 +16,7 @@ const GAP_PX = 24; // gap-6
 const DESKTOP_QUERY = "(min-width: 768px)";
 
 export function BlogCarousel({ posts }: BlogCarouselProps) {
+  const { ui } = useSite();
   const shouldReduceMotion = useReducedMotion();
   const scrollerRef = useRef<HTMLUListElement>(null);
   // 3 por vez no desktop, 1 no mobile. O servidor renderiza a versão desktop.
@@ -52,7 +55,7 @@ export function BlogCarousel({ posts }: BlogCarouselProps) {
     <div>
       <ul
         ref={scrollerRef}
-        aria-label="Artigos do blog"
+        aria-label={ui.blogPosts}
         onScroll={handleScroll}
         className="-my-4 flex snap-x snap-mandatory gap-6 overflow-x-auto py-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         style={{ ["--per-view" as string]: perView }}
@@ -78,13 +81,13 @@ export function BlogCarousel({ posts }: BlogCarouselProps) {
       </ul>
 
       {pageCount > 1 && (
-        <div className="mt-8 flex justify-center gap-2" role="group" aria-label="Páginas do blog">
+        <div className="mt-8 flex justify-center gap-2" role="group" aria-label={ui.blogPages}>
           {Array.from({ length: pageCount }, (_, page) => (
             <button
               key={page}
               type="button"
               onClick={() => goToPage(page)}
-              aria-label={`Ir para o grupo ${page + 1} de ${pageCount}`}
+              aria-label={format(ui.blogGoToPage, { page: page + 1, total: pageCount })}
               aria-current={page === activePage ? "true" : undefined}
               className={cn(
                 "h-2 rounded-full transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand",

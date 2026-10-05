@@ -1,6 +1,7 @@
 "use server";
 
-import { careers, resumeMaxBytes } from "@/content/careers";
+import { getCareers, resumeMaxBytes } from "@/content/careers";
+import { resolveLocale } from "@/i18n/routing";
 
 export type ApplicationField =
   | "name"
@@ -19,8 +20,6 @@ export type ApplicationState =
   | { status: "unavailable" }
   | { status: "success" };
 
-const { errors: msg } = careers.messages;
-
 function text(formData: FormData, key: string) {
   const value = formData.get(key);
   return typeof value === "string" ? value.trim() : "";
@@ -38,6 +37,10 @@ export async function submitApplication(
 ): Promise<ApplicationState> {
   // Honeypot: campo invisível que só robôs preenchem — finge sucesso.
   if (text(formData, "company")) return { status: "success" };
+
+  // Áreas, cargos e mensagens dependem do idioma em que o form foi enviado.
+  const careers = getCareers(resolveLocale(text(formData, "locale")));
+  const msg = careers.messages.errors;
 
   const name = text(formData, "name");
   const email = text(formData, "email");

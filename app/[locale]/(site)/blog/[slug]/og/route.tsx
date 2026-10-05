@@ -1,5 +1,5 @@
 import { blogPosts, getPostBySlug } from "@/content/blog";
-import { site } from "@/content/site";
+import { getSite } from "@/content/site";
 import { renderOgImage } from "@/lib/og-image";
 
 type RouteContext = {
@@ -15,7 +15,7 @@ export async function GET(_request: Request, { params }: RouteContext) {
   const { slug } = await params;
   const post = getPostBySlug(slug);
   return renderOgImage({
-    title: post?.title ?? site.blog.title,
+    title: post?.title ?? getSite("pt-BR").blog.title,
     eyebrow: post?.category ?? "Blog",
   });
 }

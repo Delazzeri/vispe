@@ -1,9 +1,10 @@
 import { Reveal } from "@/components/motion/reveal";
 import { BlogCarousel } from "@/components/ui/blog-carousel";
 import { blogPosts } from "@/content/blog";
-import { site } from "@/content/site";
+import { useSite } from "@/content/site";
 
 export function Blog({ id }: { id?: string }) {
+  const site = useSite();
   const { title, subtitle } = site.blog;
 
   return (

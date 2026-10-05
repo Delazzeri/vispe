@@ -3,13 +3,14 @@ import { ArrowRight } from "lucide-react";
 import { Reveal } from "@/components/motion/reveal";
 import { ZoomTrack } from "@/components/motion/zoom-track";
 import { FinWall } from "@/components/showcase/fin-wall";
-import { site } from "@/content/site";
+import { useSite } from "@/content/site";
 
 /**
  * Seção 24 Fin: parede de widgets do "CFO virtual" pinned no início da
  * seção, aproximando com o scroll (ZoomTrack), seguida do CTA.
  */
 export function Fin({ id }: { id?: string }) {
+  const site = useSite();
   const { name, title, description, ctaLabel, ctaHref } = site.fin;
 
   return (

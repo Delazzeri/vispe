@@ -1,4 +1,6 @@
 import { ImageIcon, Star, User } from "lucide-react";
+import { useSite } from "@/content/site";
+import { format } from "@/content/types";
 import { cn } from "@/lib/cn";
 
 type TestimonialCardProps = {
@@ -12,7 +14,8 @@ type TestimonialCardProps = {
   avatarPlaceholder?: boolean;
   /** Placeholder de mídia anexa ao depoimento (screenshot/foto pendente). */
   mediaPlaceholder?: boolean;
-  source?: "x";
+  /** "x" marca depoimento vindo do X (recebe o selo). */
+  source?: string;
   className?: string;
 };
 
@@ -26,7 +29,7 @@ function XMark({ className }: { className?: string }) {
 
 function Rating({ rating, className }: { rating: number; className?: string }) {
   return (
-    <div className={cn("flex gap-0.5", className)} aria-label={`Avaliação ${rating} de 5 estrelas`}>
+    <div className={cn("flex gap-0.5", className)} role="img" aria-label={format(useSite().ui.rating, { rating })}>
       {Array.from({ length: 5 }).map((_, index) => (
         <Star
           key={index}

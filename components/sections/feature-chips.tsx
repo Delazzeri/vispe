@@ -5,7 +5,7 @@ import { stagger } from "@/components/motion/presets";
 import { Reveal } from "@/components/motion/reveal";
 import { VideoPlaceholder } from "@/components/ui/video-placeholder";
 import { FeaturedTestimonial } from "@/components/ui/featured-testimonial";
-import { site } from "@/content/site";
+import { useSite } from "@/content/site";
 
 const container: Variants = {
   hidden: {},
@@ -22,6 +22,7 @@ const chip: Variants = {
 };
 
 export function FeatureChips({ id }: { id?: string }) {
+  const site = useSite();
   const shouldReduceMotion = useReducedMotion();
   const { title, description, chips, video } = site.featureChips;
 
@@ -47,7 +48,7 @@ export function FeatureChips({ id }: { id?: string }) {
         </Reveal>
 
         {shouldReduceMotion ? (
-          <ul aria-label="Soluções oferecidas" className="mt-10 flex flex-wrap justify-center gap-2">
+          <ul aria-label={site.ui.solutionsLabel} className="mt-10 flex flex-wrap justify-center gap-2">
             {chips.map((label) => (
               <li
                 key={label}
@@ -59,7 +60,7 @@ export function FeatureChips({ id }: { id?: string }) {
           </ul>
         ) : (
           <motion.ul
-            aria-label="Soluções oferecidas"
+            aria-label={site.ui.solutionsLabel}
             className="mt-10 flex flex-wrap justify-center gap-2"
             initial="hidden"
             whileInView="visible"

@@ -1,8 +1,9 @@
 import { Reveal } from "@/components/motion/reveal";
 import { Marquee } from "@/components/motion/marquee";
-import { site } from "@/content/site";
+import { useSite } from "@/content/site";
 
 export function LogoWall({ id }: { id?: string }) {
+  const site = useSite();
   const { title, subtitle, logos } = site.clients;
 
   return (

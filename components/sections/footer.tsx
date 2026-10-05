@@ -3,13 +3,14 @@ import Image from "next/image";
 import { HeroScene } from "@/components/sections/hero-scene";
 import { SocialLinks } from "@/components/ui/social-links";
 import { blogPosts } from "@/content/blog";
-import { site } from "@/content/site";
+import { brand, useSite } from "@/content/site";
 
 const linkClass =
   "text-sm text-ink transition-colors hover:text-brand-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-dark rounded-sm";
 const headingClass = "text-base font-bold text-ink";
 
-type FooterLink = { label: string; href: string };
+/** `lang` marca links cujo texto está em outro idioma (títulos do blog, só pt-BR). */
+type FooterLink = { label: string; href: string; lang?: string };
 
 function FooterColumn({ title, links }: { title: string; links: readonly FooterLink[] }) {
   return (
@@ -19,7 +20,7 @@ function FooterColumn({ title, links }: { title: string; links: readonly FooterL
         {links.map((link) => (
           <li key={link.label}>
             {link.href.startsWith("/") ? (
-              <Link href={link.href} className={linkClass}>
+              <Link href={link.href} lang={link.lang} className={linkClass}>
                 {link.label}
               </Link>
             ) : (
@@ -35,6 +36,7 @@ function FooterColumn({ title, links }: { title: string; links: readonly FooterL
 }
 
 function FooterSocial() {
+  const site = useSite();
   return (
     <div className="mt-6">
       <p className="text-xs font-semibold text-fg-muted">{site.footer.socialLabel}</p>
@@ -44,6 +46,7 @@ function FooterSocial() {
 }
 
 export function Footer() {
+  const site = useSite();
   const { footer } = site;
   const { company, services, content, contact } = footer.columns;
   const year = new Date().getFullYear();
@@ -61,7 +64,7 @@ export function Footer() {
                 height={326}
                 className="h-8 w-8"
               />
-              <span className="text-base font-semibold text-ink">{site.name}</span>
+              <span className="text-base font-semibold text-ink">{brand.name}</span>
             </div>
             <p
               className="mt-4 max-w-xs text-balance text-xl font-bold text-ink first-letter:uppercase"
@@ -94,7 +97,7 @@ export function Footer() {
               ...[...blogPosts]
                 .sort((a, b) => b.publishedAt.localeCompare(a.publishedAt))
                 .slice(0, content.postsLimit)
-                .map((post) => ({ label: post.title, href: `/blog/${post.slug}` })),
+                .map((post) => ({ label: post.title, href: `/blog/${post.slug}`, lang: "pt-BR" })),
               { label: content.moreLabel, href: content.moreHref },
             ]}
           />
@@ -103,7 +106,7 @@ export function Footer() {
 
         <div className="mt-12 flex flex-col gap-2 border-t border-border pt-6 text-xs text-fg-muted sm:flex-row sm:items-center sm:justify-between">
           <p>
-            © {year} {site.name}. {footer.rights}
+            © {year} {brand.name}. {footer.rights}
           </p>
           <a href="#main-content" className="rounded-sm transition-colors hover:text-brand-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-dark">
             {footer.backToTop}
