@@ -79,7 +79,7 @@ export const careers = {
   },
 
   messages: {
-    success: "Candidatura enviada! Obrigado pelo interesse — entraremos em contato se houver uma vaga alinhada ao seu perfil.",
+    success: "Candidatura enviada! Obrigado pelo interesse. Entraremos em contato se houver uma vaga alinhada ao seu perfil.",
     invalid: "Revise os campos destacados e tente novamente.",
     unavailable:
       "O envio pelo site está temporariamente indisponível. Envie seu currículo diretamente para o e-mail abaixo:",

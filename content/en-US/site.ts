@@ -12,7 +12,7 @@ export const site: SiteContent = {
     subheadline:
       "Stop losing money to a lack of financial control. We organize your finances and increase your profit.",
     description:
-      "We grow your cash position and maximize your profit margin — without hiring a full-time executive director.",
+      "We grow your cash position and maximize your profit margin, without hiring a full-time executive director.",
     ctaPrimary: { label: "Boost your profit now", href: "/contato" },
     ctaSecondary: { label: "How CFO as a Service works", href: "#servicos" },
     bullets: [
@@ -63,7 +63,7 @@ export const site: SiteContent = {
   // confirm with NavegMAIS Telecom that the English version can be published.
   featuredTestimonial: {
     quote:
-      "We've been clients for a few years and went through every stage of restructuring and organizing the company. The results have been excellent — quality service you can trust. We're proud to be clients and we're sure you'll do great together.",
+      "We've been clients for a few years and went through every stage of restructuring and organizing the company. The results have been excellent, with quality service you can trust. We're proud to be clients and we're sure you'll do great together.",
     name: "NavegMAIS Telecom",
     role: "Internet Service Provider",
     rating: 5,
@@ -250,7 +250,7 @@ export const site: SiteContent = {
   testimonials: [
     {
       quote:
-        "[Sample testimonial — replace] Vispe organized our finances in a few months and we could finally see where we were losing margin.",
+        "[Sample testimonial: replace] Vispe organized our finances in a few months and we could finally see where we were losing margin.",
       name: "Sample Client",
       handle: "@sampleclient",
       role: "Founder, Sample Company",
@@ -259,7 +259,7 @@ export const site: SiteContent = {
     },
     {
       quote:
-        "[Sample testimonial — replace] The valuation process was decisive in our negotiation with investors. Today we can justify every number in our financials at the negotiating table, without relying on loose spreadsheets.",
+        "[Sample testimonial: replace] The valuation process was decisive in our negotiation with investors. Today we can justify every number in our financials at the negotiating table, without relying on loose spreadsheets.",
       name: "Sample Client",
       handle: "@sampleclient",
       role: "CEO, Sample Company",
@@ -268,7 +268,7 @@ export const site: SiteContent = {
     },
     {
       quote:
-        "[Sample testimonial — replace] We gained real controllership without hiring a full-time CFO.",
+        "[Sample testimonial: replace] We gained real controllership without hiring a full-time CFO.",
       name: "Sample Client",
       handle: "@sampleclient",
       role: "Partner, Sample Company",
@@ -277,7 +277,7 @@ export const site: SiteContent = {
     },
     {
       quote:
-        "[Sample testimonial — replace] The fundraising we structured with Vispe took the company to another level. The team followed every stage of the negotiation and brought clarity to decisions that used to stall for lack of reliable data — that made all the difference at closing.",
+        "[Sample testimonial: replace] The fundraising we structured with Vispe took the company to another level. The team followed every stage of the negotiation and brought clarity to decisions that used to stall for lack of reliable data, and that made all the difference at closing.",
       name: "Sample Client",
       handle: "@sampleclient",
       role: "Founder, Sample Company",
@@ -287,7 +287,7 @@ export const site: SiteContent = {
     },
     {
       quote:
-        "[Sample testimonial — replace] A close, technical team that truly understands the reality of running a business.",
+        "[Sample testimonial: replace] A close, technical team that truly understands the reality of running a business.",
       name: "Sample Client",
       handle: "@sampleclient",
       role: "Finance Director, Sample Company",
@@ -298,7 +298,7 @@ export const site: SiteContent = {
     },
     {
       quote:
-        "[Sample testimonial — replace] Within a few months we were able to reduce our tax burden legally and safely.",
+        "[Sample testimonial: replace] Within a few months we were able to reduce our tax burden legally and safely.",
       name: "Sample Client",
       handle: "@sampleclient",
       role: "Partner, Sample Company",
@@ -311,7 +311,7 @@ export const site: SiteContent = {
     name: "24 Fin",
     title: "Your virtual CFO, available 24/7",
     description:
-      "[Sample content — replace] Cash flow, KPIs and financial alerts organized by Vispe, keeping track of your company every day of the month.",
+      "[Sample content: replace] Cash flow, KPIs and financial alerts organized by Vispe, keeping track of your company every day of the month.",
     ctaLabel: "Get 24 Fin",
     ctaHref: "/contato",
   },
@@ -319,7 +319,7 @@ export const site: SiteContent = {
   showcase: {
     title: "Organize your finances, multiply your profit",
     description:
-      "Controllership, cash flow and management KPIs in one place — so you decide with clarity, not guesswork.",
+      "Controllership, cash flow and management KPIs in one place, so you decide with clarity, not guesswork.",
     video: {
       title: "How Vispe organizes your finances",
       embedUrl: undefined,
@@ -341,7 +341,7 @@ export const site: SiteContent = {
     {
       question: "What is CFO as a Service?",
       answer:
-        "It's the structuring of your business's financial intelligence — controllership, cash flow and management KPIs — without the need to hire a full-time finance director.",
+        "It's the structuring of your business's financial intelligence (controllership, cash flow and management KPIs), without the need to hire a full-time finance director.",
     },
     {
       question: "Do I need an established finance department?",
@@ -356,17 +356,17 @@ export const site: SiteContent = {
     {
       question: "Do you work with companies of any size?",
       answer:
-        "We serve small and medium-sized businesses that already generate revenue and want to professionalize financial management — whether to grow, prepare for succession or access capital markets.",
+        "We serve small and medium-sized businesses that already generate revenue and want to professionalize financial management, whether to grow, prepare for succession or access capital markets.",
     },
     {
       question: "What other services do you offer?",
       answer:
-        "M&A, fundraising, tax planning, sales acceleration and valuation — each structured according to the company's specific moment and needs.",
+        "M&A, fundraising, tax planning, sales acceleration and valuation, each structured according to the company's specific moment and needs.",
     },
     {
       question: "How does Finance BPO work?",
       answer:
-        "We take over your company's financial routine — accounts payable and receivable, reconciliation and cash flow — so you have reliable information and free time to run the business.",
+        "We take over your company's financial routine (accounts payable and receivable, reconciliation and cash flow) so you have reliable information and free time to run the business.",
     },
     {
       question: "What is Valuation?",
@@ -431,7 +431,7 @@ export const site: SiteContent = {
 
   footer: {
     description:
-      "We grow your cash position and maximize your profit margin — without hiring a full-time executive director.",
+      "We grow your cash position and maximize your profit margin, without hiring a full-time executive director.",
     cta: { label: "Book a diagnosis", href: "/contato" },
     socialLabel: "Follow Vispe",
     columns: {
@@ -477,7 +477,7 @@ export const site: SiteContent = {
     includes: "Includes:",
     pillar: "Pillar {n}",
     rating: "Rated {rating} out of 5 stars",
-    videoPlaceholder: "Video in production — placeholder",
+    videoPlaceholder: "Video in production (placeholder)",
     dashboardAlt:
       "Vispe Capital's CFO as a Service dashboard, showing recurring revenue, CAC, LTV/CAC, churn, sales funnel and revenue by product",
     home: "Home",

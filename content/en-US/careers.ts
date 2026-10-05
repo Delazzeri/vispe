@@ -75,7 +75,7 @@ export const careers: CareersContent = {
   },
 
   messages: {
-    success: "Application submitted! Thank you for your interest — we'll get in touch if there's an opening that matches your profile.",
+    success: "Application submitted! Thank you for your interest. We'll get in touch if there's an opening that matches your profile.",
     invalid: "Please review the highlighted fields and try again.",
     unavailable:
       "Submitting through the website is temporarily unavailable. Please send your resume directly to the email below:",

@@ -267,7 +267,7 @@ export const site = {
   testimonials: [
     {
       quote:
-        "[Depoimento de exemplo — substituir] A Vispe organizou nosso financeiro em poucos meses e conseguimos enxergar onde estávamos perdendo margem.",
+        "[Depoimento de exemplo: substituir] A Vispe organizou nosso financeiro em poucos meses e conseguimos enxergar onde estávamos perdendo margem.",
       name: "Cliente Exemplo",
       handle: "@clienteexemplo",
       role: "Fundador(a), Empresa Exemplo",
@@ -276,7 +276,7 @@ export const site = {
     },
     {
       quote:
-        "[Depoimento de exemplo — substituir] O processo de valuation foi decisivo para a negociação com os investidores. Hoje conseguimos justificar cada número do nosso financeiro na mesa de negociação, sem depender de planilha avulsa.",
+        "[Depoimento de exemplo: substituir] O processo de valuation foi decisivo para a negociação com os investidores. Hoje conseguimos justificar cada número do nosso financeiro na mesa de negociação, sem depender de planilha avulsa.",
       name: "Cliente Exemplo",
       handle: "@clienteexemplo",
       role: "CEO, Empresa Exemplo",
@@ -285,7 +285,7 @@ export const site = {
     },
     {
       quote:
-        "[Depoimento de exemplo — substituir] Ganhamos controladoria de verdade sem contratar um CFO em tempo integral.",
+        "[Depoimento de exemplo: substituir] Ganhamos controladoria de verdade sem contratar um CFO em tempo integral.",
       name: "Cliente Exemplo",
       handle: "@clienteexemplo",
       role: "Sócio(a), Empresa Exemplo",
@@ -294,7 +294,7 @@ export const site = {
     },
     {
       quote:
-        "[Depoimento de exemplo — substituir] A captação de recursos que estruturamos com a Vispe mudou o patamar da empresa. O time acompanhou cada etapa da negociação, trouxe clareza para decisões que antes travavam por falta de dado confiável, e isso fez toda diferença no fechamento.",
+        "[Depoimento de exemplo: substituir] A captação de recursos que estruturamos com a Vispe mudou o patamar da empresa. O time acompanhou cada etapa da negociação, trouxe clareza para decisões que antes travavam por falta de dado confiável, e isso fez toda diferença no fechamento.",
       name: "Cliente Exemplo",
       handle: "@clienteexemplo",
       role: "Fundador(a), Empresa Exemplo",
@@ -304,7 +304,7 @@ export const site = {
     },
     {
       quote:
-        "[Depoimento de exemplo — substituir] Equipe próxima, técnica e que realmente entende a realidade de quem toca o negócio.",
+        "[Depoimento de exemplo: substituir] Equipe próxima, técnica e que realmente entende a realidade de quem toca o negócio.",
       name: "Cliente Exemplo",
       handle: "@clienteexemplo",
       role: "Diretor(a) financeiro(a), Empresa Exemplo",
@@ -315,7 +315,7 @@ export const site = {
     },
     {
       quote:
-        "[Depoimento de exemplo — substituir] Em poucos meses já conseguimos reduzir a carga tributária de forma legal e segura.",
+        "[Depoimento de exemplo: substituir] Em poucos meses já conseguimos reduzir a carga tributária de forma legal e segura.",
       name: "Cliente Exemplo",
       handle: "@clienteexemplo",
       role: "Sócio(a), Empresa Exemplo",
@@ -331,7 +331,7 @@ export const site = {
     name: "24 Fin",
     title: "Seu CFO virtual, disponível 24 horas",
     description:
-      "[Conteúdo de exemplo — substituir] Fluxo de caixa, indicadores e alertas financeiros organizados pela Vispe, acompanhando sua empresa todos os dias do mês.",
+      "[Conteúdo de exemplo: substituir] Fluxo de caixa, indicadores e alertas financeiros organizados pela Vispe, acompanhando sua empresa todos os dias do mês.",
     ctaLabel: "Baixar a 24 Fin",
     // TODO(content): confirmar se 24 Fin terá app para download ou será
     // somente web — ajustar label/destino do CTA conforme a plataforma real.
@@ -341,7 +341,7 @@ export const site = {
   showcase: {
     title: "Organize seu financeiro, multiplique seu lucro",
     description:
-      "Controladoria, fluxo de caixa e indicadores de gestão em um só lugar — para você decidir com clareza, não com achismo.",
+      "Controladoria, fluxo de caixa e indicadores de gestão em um só lugar, para você decidir com clareza, não com achismo.",
     // TODO(content): vídeo overview real (YouTube/Vimeo), poster e id/URL do embed.
     video: {
       title: "Como a Vispe organiza o seu financeiro",
@@ -365,7 +365,7 @@ export const site = {
     {
       question: "O que é o CFO as Service?",
       answer:
-        "É a estruturação da inteligência financeira do seu negócio — controladoria, fluxo de caixa e indicadores de gestão — sem a necessidade de contratar um diretor financeiro em tempo integral.",
+        "É a estruturação da inteligência financeira do seu negócio (controladoria, fluxo de caixa e indicadores de gestão), sem a necessidade de contratar um diretor financeiro em tempo integral.",
     },
     {
       question: "Preciso de um financeiro estruturado?",
@@ -385,12 +385,12 @@ export const site = {
     {
       question: "Quais outros serviços vocês oferecem?",
       answer:
-        "M&A, captação de recursos, planejamento tributário, aceleração comercial e valuation — cada um estruturado conforme o momento e a necessidade específica da empresa.",
+        "M&A, captação de recursos, planejamento tributário, aceleração comercial e valuation, cada um estruturado conforme o momento e a necessidade específica da empresa.",
     },
     {
       question: "Como funciona o BPO Financeiro?",
       answer:
-        "Assumimos a rotina financeira da sua empresa — contas a pagar e a receber, conciliação e fluxo de caixa — para que você tenha informação confiável e tempo livre para tocar o negócio.",
+        "Assumimos a rotina financeira da sua empresa (contas a pagar e a receber, conciliação e fluxo de caixa) para que você tenha informação confiável e tempo livre para tocar o negócio.",
     },
     {
       question: "O que é Valuation?",
@@ -507,7 +507,7 @@ export const site = {
     includes: "Inclui:",
     pillar: "Pilar {n}",
     rating: "Avaliação {rating} de 5 estrelas",
-    videoPlaceholder: "Vídeo em produção — placeholder",
+    videoPlaceholder: "Vídeo em produção (placeholder)",
     dashboardAlt:
       "Painel CFO as Service da Vispe Capital, exibindo receita recorrente, CAC, LTV/CAC, churn, funil comercial e receita por produto",
     home: "Início",
