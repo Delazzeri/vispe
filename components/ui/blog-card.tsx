@@ -1,5 +1,5 @@
 import Image from "next/image";
-import Link from "next/link";
+import { LocaleLink as Link } from "@/components/ui/locale-link";
 import { ArrowRight } from "lucide-react";
 import { formatPostDate, getReadingMinutes, type BlogPost } from "@/content/blog";
 

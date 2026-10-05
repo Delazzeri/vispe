@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { LocaleLink as Link } from "@/components/ui/locale-link";
 import Image from "next/image";
 import { HeroScene } from "@/components/sections/hero-scene";
 import { SocialLinks } from "@/components/ui/social-links";

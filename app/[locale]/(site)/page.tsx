@@ -1,3 +1,4 @@
+import { setRequestLocale } from "next-intl/server";
 import { Hero } from "@/components/sections/hero";
 import { TrustBar } from "@/components/sections/trust-bar";
 import { FeatureChips } from "@/components/sections/feature-chips";
@@ -10,7 +11,9 @@ import { ServicePillars } from "@/components/sections/service-pillars";
 import { Blog } from "@/components/sections/blog";
 import { FAQ } from "@/components/sections/faq";
 
-export default function HomePage() {
+export default async function HomePage({ params }: PageProps<"/[locale]">) {
+  const { locale } = await params;
+  setRequestLocale(locale);
   return (
     <>
       <Hero id="hero" />

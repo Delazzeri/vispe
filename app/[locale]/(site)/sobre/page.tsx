@@ -1,13 +1,21 @@
+import { setRequestLocale } from "next-intl/server";
+import { resolveLocale } from "@/i18n/routing";
 import { buildMetadata } from "@/lib/seo";
 import { site } from "@/content/site";
 
-export const metadata = buildMetadata({
-  title: "Sobre",
-  description: site.about.purpose,
-  path: "/sobre",
-});
+export async function generateMetadata({ params }: PageProps<"/[locale]/sobre">) {
+  const { locale } = await params;
+  return buildMetadata({
+    title: "Sobre",
+    description: site.about.purpose,
+    locale: resolveLocale(locale),
+    path: "/sobre",
+  });
+}
 
-export default function SobrePage() {
+export default async function SobrePage({ params }: PageProps<"/[locale]/sobre">) {
+  const { locale } = await params;
+  setRequestLocale(locale);
   return (
     <section aria-labelledby="sobre-heading" className="mx-auto max-w-6xl px-6 py-24 md:py-32">
       <h1 id="sobre-heading" className="text-fg text-4xl font-bold tracking-tight md:text-5xl">

@@ -1,11 +1,22 @@
 import type { Metadata } from "next";
 import type { BlogPost } from "@/content/blog";
 import { site } from "@/content/site";
+import { localizePath } from "@/i18n/href";
+import { defaultLocale, locales, type Locale } from "@/i18n/routing";
+
+const ogLocale: Record<Locale, string> = { "pt-BR": "pt_BR", "en-US": "en_US" };
 
 type SeoInput = {
   title: string;
   description: string;
+  locale: Locale;
+  /** Caminho interno (pastas em português), ex.: "/sobre". */
   path?: string;
+  /**
+   * Idioma real do conteúdo, quando difere do da rota (blog: só em português).
+   * O canonical aponta para essa versão e não há alternates de idioma.
+   */
+  contentLocale?: Locale;
   /** Sem imagem, usa a imagem padrão gerada em app/og/route.tsx. */
   image?: { url: string; alt: string };
   type?: "website" | "article";
@@ -15,12 +26,21 @@ type SeoInput = {
 export function buildMetadata({
   title,
   description,
+  locale,
   path = "/",
+  contentLocale,
   image,
   type = "website",
   article,
 }: SeoInput): Metadata {
-  const canonical = new URL(path, site.url).toString();
+  const urlFor = (l: Locale) => new URL(localizePath(path, l), site.url).toString();
+  const canonical = urlFor(contentLocale ?? locale);
+  const languages = contentLocale
+    ? undefined
+    : {
+        ...Object.fromEntries(locales.map((l) => [l, urlFor(l)])),
+        "x-default": urlFor(defaultLocale),
+      };
   const ogImage = image ?? {
     url: "/og",
     alt: `${site.name} — ${site.tagline}`,
@@ -31,14 +51,15 @@ export function buildMetadata({
     description,
     url: canonical,
     siteName: site.name,
-    locale: "pt_BR",
+    locale: ogLocale[locale],
+    alternateLocale: locales.filter((l) => l !== locale).map((l) => ogLocale[l]),
     images: [{ url: ogImage.url, width: 1200, height: 630, alt: ogImage.alt }],
   };
 
   return {
     title: fullTitle,
     description,
-    alternates: { canonical },
+    alternates: { canonical, languages },
     openGraph:
       type === "article" && article
         ? { ...openGraphBase, type: "article", ...article }
@@ -67,13 +88,13 @@ export function organizationJsonLd() {
   };
 }
 
-export function websiteJsonLd() {
+export function websiteJsonLd(locale: Locale) {
   return {
     "@context": "https://schema.org",
     "@type": "WebSite",
     name: site.name,
-    url: site.url,
-    inLanguage: site.locale,
+    url: new URL(localizePath("/", locale), site.url).toString(),
+    inLanguage: locale,
   };
 }
 

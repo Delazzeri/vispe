@@ -4,10 +4,13 @@ import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import { blogPosts, formatPostDate, getPostBySlug, getReadingMinutes } from "@/content/blog";
 import { site } from "@/content/site";
+import { setRequestLocale } from "next-intl/server";
+import { localizeHref } from "@/i18n/href";
+import { resolveLocale } from "@/i18n/routing";
 import { articleJsonLd, breadcrumbJsonLd, buildMetadata } from "@/lib/seo";
 
 type PageProps = {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ locale: string; slug: string }>;
 };
 
 export function generateStaticParams() {
@@ -15,12 +18,15 @@ export function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: PageProps) {
-  const { slug } = await params;
+  const { locale, slug } = await params;
   const post = getPostBySlug(slug);
   if (!post) return {};
   return buildMetadata({
     title: post.title,
     description: post.description,
+    locale: resolveLocale(locale),
+    // Artigos existem só em português: o canonical aponta para a versão pt-BR.
+    contentLocale: "pt-BR",
     path: `/blog/${post.slug}`,
     type: "article",
     article: {
@@ -35,12 +41,14 @@ export async function generateMetadata({ params }: PageProps) {
 }
 
 export default async function BlogPostPage({ params }: PageProps) {
-  const { slug } = await params;
+  const { locale: requested, slug } = await params;
+  const locale = resolveLocale(requested);
+  setRequestLocale(locale);
   const post = getPostBySlug(slug);
   if (!post) notFound();
 
   return (
-    <article aria-labelledby="post-heading" className="mx-auto max-w-3xl px-6 py-24 md:py-32">
+    <article lang="pt-BR" aria-labelledby="post-heading" className="mx-auto max-w-3xl px-6 py-24 md:py-32">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd(post)) }}
@@ -58,7 +66,7 @@ export default async function BlogPostPage({ params }: PageProps) {
       />
 
       <Link
-        href="/#blog"
+        href={localizeHref("/#blog", locale)}
         className="inline-flex items-center gap-2 rounded-sm text-sm font-medium text-fg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand"
       >
         <ArrowLeft className="h-4 w-4" aria-hidden />

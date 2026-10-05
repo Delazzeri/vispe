@@ -6,7 +6,7 @@ import {
   submitApplication,
   type ApplicationField,
   type ApplicationState,
-} from "@/app/(site)/trabalhe-conosco/actions";
+} from "@/app/[locale]/(site)/trabalhe-conosco/actions";
 import type { careers } from "@/content/careers";
 import { cn } from "@/lib/cn";
 

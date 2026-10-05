@@ -1,0 +1,11 @@
+{
+  "Layout": {
+    "skipLink": "Pular para o conteúdo"
+  },
+  "LanguageSwitcher": {
+    "label": "Idioma do site",
+    "pt-BR": "Português",
+    "en-US": "Inglês",
+    "switchTo": "Mudar o idioma para {language}"
+  }
+}

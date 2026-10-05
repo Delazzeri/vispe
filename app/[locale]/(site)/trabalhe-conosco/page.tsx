@@ -1,20 +1,28 @@
+import { setRequestLocale } from "next-intl/server";
+import { resolveLocale } from "@/i18n/routing";
 import { SocialLinks } from "@/components/ui/social-links";
 import { CareersForm } from "@/components/sections/careers-form";
 import { BrandPattern } from "@/components/ui/brand-pattern";
 import { careers, resumeMaxBytes } from "@/content/careers";
 import { breadcrumbJsonLd, buildMetadata } from "@/lib/seo";
 
-export const metadata = buildMetadata({
-  title: "Trabalhe conosco",
-  description: careers.hero.description,
-  path: careers.path,
-});
+export async function generateMetadata({ params }: PageProps<"/[locale]/trabalhe-conosco">) {
+  const { locale } = await params;
+  return buildMetadata({
+    title: "Trabalhe conosco",
+    description: careers.hero.description,
+    locale: resolveLocale(locale),
+    path: "/trabalhe-conosco",
+  });
+}
 
 /**
  * Página de candidatura em composição única: painel institucional escuro
  * (sticky no desktop) ao lado do formulário em etapas.
  */
-export default function TrabalheConoscoPage() {
+export default async function TrabalheConoscoPage({ params }: PageProps<"/[locale]/trabalhe-conosco">) {
+  const { locale } = await params;
+  setRequestLocale(locale);
   const { hero, about, form, messages, hrEmail } = careers;
 
   return (

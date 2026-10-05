@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { LocaleLink as Link } from "@/components/ui/locale-link";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import { site } from "@/content/site";

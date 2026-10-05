@@ -1,27 +1,40 @@
 import type { MetadataRoute } from "next";
 import { blogPosts } from "@/content/blog";
 import { site } from "@/content/site";
+import { localizePath } from "@/i18n/href";
+import { defaultLocale, locales } from "@/i18n/routing";
+
+type Frequency = NonNullable<MetadataRoute.Sitemap[number]["changeFrequency"]>;
+
+const url = (path: string) => new URL(path, site.url).toString();
+
+// Páginas que existem nos dois idiomas (caminho interno → URL de cada idioma).
+// TODO: incluir /produtos/<slug> quando as landing pages existirem.
+const pages: { path: string; changeFrequency: Frequency; priority: number }[] = [
+  { path: "/", changeFrequency: "weekly", priority: 1 },
+  { path: "/sobre", changeFrequency: "monthly", priority: 0.6 },
+  { path: "/contato", changeFrequency: "monthly", priority: 0.6 },
+  { path: "/trabalhe-conosco", changeFrequency: "monthly", priority: 0.5 },
+];
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const staticRoutes: MetadataRoute.Sitemap = [
-    { url: site.url, changeFrequency: "weekly", priority: 1 },
-    { url: new URL("/sobre", site.url).toString(), changeFrequency: "monthly", priority: 0.6 },
-    { url: new URL("/contato", site.url).toString(), changeFrequency: "monthly", priority: 0.6 },
-    { url: new URL("/trabalhe-conosco", site.url).toString(), changeFrequency: "monthly", priority: 0.5 },
-  ];
+  const localized: MetadataRoute.Sitemap = pages.flatMap(({ path, changeFrequency, priority }) => {
+    const languages = Object.fromEntries(locales.map((l) => [l, url(localizePath(path, l))]));
+    return locales.map((locale) => ({
+      url: url(localizePath(path, locale)),
+      changeFrequency,
+      priority,
+      alternates: { languages: { ...languages, "x-default": url(localizePath(path, defaultLocale)) } },
+    }));
+  });
 
+  // Artigos existem só em português: entra apenas a URL canônica pt-BR.
   const blogRoutes: MetadataRoute.Sitemap = blogPosts.map((post) => ({
-    url: new URL(`/blog/${post.slug}`, site.url).toString(),
+    url: url(`/blog/${post.slug}`),
     lastModified: post.publishedAt,
     changeFrequency: "monthly",
     priority: 0.5,
   }));
 
-  const productRoutes: MetadataRoute.Sitemap = site.services.map((service) => ({
-    url: new URL(`/produtos/${service.slug}`, site.url).toString(),
-    changeFrequency: "monthly",
-    priority: 0.7,
-  }));
-
-  return [...staticRoutes, ...blogRoutes, ...productRoutes];
+  return [...localized, ...blogRoutes];
 }

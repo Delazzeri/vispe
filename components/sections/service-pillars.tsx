@@ -1,5 +1,5 @@
 import { CheckCircle2, ArrowRight } from "lucide-react";
-import Link from "next/link";
+import { LocaleLink as Link } from "@/components/ui/locale-link";
 import { cn } from "@/lib/cn";
 import { Reveal } from "@/components/motion/reveal";
 import { HeroRock } from "@/components/ui/hero-rock";
