@@ -56,11 +56,23 @@ const sizeWidth: Record<WidgetSize, string> = {
   l: "w-110",
 };
 
-function Shell({ size, className, children }: { size: WidgetSize; className?: string; children: ReactNode }) {
+function Shell({
+  size,
+  solid,
+  className,
+  children,
+}: {
+  size: WidgetSize;
+  solid?: boolean;
+  className?: string;
+  children: ReactNode;
+}) {
   return (
     <div
       className={cn(
-        "flex h-18 shrink-0 overflow-hidden rounded-2xl border border-paper/10 bg-paper/5 p-2.5 text-paper",
+        "flex h-18 max-w-full shrink-0 overflow-hidden rounded-2xl border border-paper/10 p-2.5 text-paper",
+        // Vidro sobre a parede escura da 24 Fin; preto sólido sobre fundos claros.
+        solid ? "bg-ink" : "bg-paper/5",
         sizeWidth[size],
         className,
       )}
@@ -154,7 +166,8 @@ function Marker({ marker, tone }: { marker: "open" | "done" | "dot"; tone: Widge
   );
 }
 
-export function Widget({ widget }: { widget: FinWidget }) {
+/** `solid`: fundo preto sólido, para uso fora da parede escura (ex.: cards claros). */
+export function Widget({ widget, solid }: { widget: FinWidget; solid?: boolean }) {
   const { size } = widget;
 
   switch (widget.kind) {
@@ -162,7 +175,7 @@ export function Widget({ widget }: { widget: FinWidget }) {
       if (size === "s") {
         const Icon = widget.icon ? icons[widget.icon] : null;
         return (
-          <Shell size={size} className="flex-col justify-between">
+          <Shell size={size} solid={solid} className="flex-col justify-between">
             {Icon && <Icon className="h-4 w-4 text-brand" aria-hidden />}
             <div>
               <p className="text-sm font-bold leading-4 tabular-nums">{widget.value}</p>
@@ -172,7 +185,7 @@ export function Widget({ widget }: { widget: FinWidget }) {
         );
       }
       return (
-        <Shell size={size} className="items-center gap-3">
+        <Shell size={size} solid={solid} className="items-center gap-3">
           {widget.icon && <IconTile icon={widget.icon} />}
           <div className="min-w-0">
             <p className="truncate text-2xs text-paper/60">{widget.label}</p>
@@ -199,7 +212,7 @@ export function Widget({ widget }: { widget: FinWidget }) {
 
     case "gauge":
       return (
-        <Shell size={size} className="items-center justify-center p-2">
+        <Shell size={size} solid={solid} className="items-center justify-center p-2">
           <div className="relative flex h-full w-full items-center justify-center">
             <Ring value={widget.value} tone={widget.tone} />
             <span className="text-xs font-bold tabular-nums">{widget.display}</span>
@@ -209,7 +222,7 @@ export function Widget({ widget }: { widget: FinWidget }) {
 
     case "sparkline":
       return (
-        <Shell size={size} className={cn("gap-3", size === "l" ? "items-stretch" : "items-center")}>
+        <Shell size={size} solid={solid} className={cn("gap-3", size === "l" ? "items-stretch" : "items-center")}>
           <div className="flex shrink-0 flex-col justify-center">
             <p className="text-2xs text-paper/60">{widget.label}</p>
             <p className="text-lg font-bold leading-6 tracking-tight tabular-nums">{widget.value}</p>
@@ -231,7 +244,7 @@ export function Widget({ widget }: { widget: FinWidget }) {
 
     case "list":
       return (
-        <Shell size={size} className="flex-col justify-center">
+        <Shell size={size} solid={solid} className="flex-col justify-center">
           {widget.title && <p className="text-2xs font-semibold text-paper/60">{widget.title}</p>}
           <ul className={cn("space-y-0.5", !widget.title && "space-y-1")}>
             {widget.rows.map((row) => (
@@ -258,7 +271,7 @@ export function Widget({ widget }: { widget: FinWidget }) {
 
     case "bars":
       return (
-        <Shell size={size} className="flex-col justify-center gap-1">
+        <Shell size={size} solid={solid} className="flex-col justify-center gap-1">
           <p className="text-2xs font-semibold text-paper/60">{widget.title}</p>
           {widget.bars.map((bar) => (
             <div key={bar.label} className="flex items-center gap-2">
@@ -273,7 +286,7 @@ export function Widget({ widget }: { widget: FinWidget }) {
 
     case "calendar":
       return (
-        <Shell size={size} className="flex-col justify-between">
+        <Shell size={size} solid={solid} className="flex-col justify-between">
           <p className="text-2xs font-semibold">{widget.month}</p>
           <div className="flex justify-between">
             {widget.days.map((d, i) => (
@@ -294,7 +307,7 @@ export function Widget({ widget }: { widget: FinWidget }) {
 
     case "event":
       return (
-        <Shell size={size} className="items-center gap-3">
+        <Shell size={size} solid={solid} className="items-center gap-3">
           <div className="flex w-10 shrink-0 flex-col items-center">
             <span className="text-2xl font-bold leading-7 tabular-nums">{widget.day}</span>
             <span className="text-2xs text-paper/50">{widget.month}</span>
@@ -309,7 +322,7 @@ export function Widget({ widget }: { widget: FinWidget }) {
 
     case "notification":
       return (
-        <Shell size={size} className="items-center gap-3">
+        <Shell size={size} solid={solid} className="items-center gap-3">
           <IconTile icon={widget.icon} tone={widget.icon === "alert" ? "accent" : "brand"} />
           <div className="min-w-0">
             {widget.eyebrow && <p className="truncate text-2xs text-paper/50">{widget.eyebrow}</p>}
@@ -321,7 +334,7 @@ export function Widget({ widget }: { widget: FinWidget }) {
 
     case "progress":
       return (
-        <Shell size={size} className="flex-col justify-center gap-1">
+        <Shell size={size} solid={solid} className="flex-col justify-center gap-1">
           <div className="flex items-baseline justify-between gap-2">
             <p className="truncate text-2xs text-paper/60">{widget.label}</p>
             <p className="text-sm font-bold tabular-nums">{widget.display}</p>
@@ -336,7 +349,7 @@ export function Widget({ widget }: { widget: FinWidget }) {
     case "badge": {
       const Icon = icons[widget.icon];
       return (
-        <Shell size={size} className="flex-col items-center justify-center gap-1 p-1.5">
+        <Shell size={size} solid={solid} className="flex-col items-center justify-center gap-1 p-1.5">
           <Icon className="h-5 w-5 text-brand" aria-hidden />
           <span className="max-w-full truncate text-2xs font-semibold">{widget.label}</span>
         </Shell>
@@ -345,7 +358,7 @@ export function Widget({ widget }: { widget: FinWidget }) {
 
     case "search":
       return (
-        <Shell size={size} className="items-center gap-2 px-4">
+        <Shell size={size} solid={solid} className="items-center gap-2 px-4">
           <Search className="h-4 w-4 shrink-0 text-paper/50" aria-hidden />
           <span className="flex-1 truncate text-sm text-paper/40">{widget.placeholder}</span>
           <span className="flex h-6 w-6 items-center justify-center rounded-full bg-paper/10">
@@ -356,7 +369,7 @@ export function Widget({ widget }: { widget: FinWidget }) {
 
     case "clock":
       return (
-        <Shell size={size} className="items-center justify-center p-1">
+        <Shell size={size} solid={solid} className="items-center justify-center p-1">
           <span className="text-base font-bold tracking-tight tabular-nums">
             <LiveClock />
           </span>

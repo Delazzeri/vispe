@@ -126,7 +126,7 @@ export const site = {
     },
   ],
 
-  // Cada solução mostra 2–3 widgets ilustrativos da parede da 24 Fin.
+  // Cada solução mostra widgets ilustrativos da parede da 24 Fin (até 2 linhas).
   services: [
     {
       slug: "controladoria-financeira",
@@ -170,7 +170,7 @@ export const site = {
         "Compramos, vendemos e fundimos empresas com estratégia para maximizar o retorno.",
       includes: ["Mapeamento de compradores", "Negociação", "Due diligence", "Fechamento do deal"],
       // Widgets da parede da 24 Fin (ids em content/<locale>/fin-wall.ts).
-      finWidgets: ["monthly-report", "gross-margin"],
+      finWidgets: ["cash-flow-30d", "monthly-report", "gross-margin"],
     },
     {
       slug: "planejamento-tributario",
@@ -181,7 +181,7 @@ export const site = {
         "Pare de pagar mais imposto do que deve. Redução legal da carga tributária com estratégia.",
       includes: ["Diagnóstico tributário", "Reorganização societária", "Enquadramento fiscal", "Compliance"],
       // Widgets da parede da 24 Fin (ids em content/<locale>/fin-wall.ts).
-      finWidgets: ["tax-savings", "tax-regime"],
+      finWidgets: ["tax-savings", "tax-regime", "fixed-cost"],
     },
     {
       slug: "valuation",
@@ -191,7 +191,7 @@ export const site = {
       description: "O valor real da sua empresa calculado com precisão. Você negocia com poder.",
       includes: ["Laudo técnico", "Múltiplos de mercado", "Fluxo de caixa descontado", "Relatório para negociação"],
       // Widgets da parede da 24 Fin (ids em content/<locale>/fin-wall.ts).
-      finWidgets: ["ebitda", "net-margin"],
+      finWidgets: ["ytd-profit", "ebitda", "net-margin"],
     },
   ],
 

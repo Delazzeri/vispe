@@ -162,7 +162,7 @@ export const site: SiteContent = {
       description: "We buy, sell and merge companies strategically to maximize returns.",
       includes: ["Buyer mapping", "Negotiation", "Due diligence", "Deal closing"],
       // Widgets da parede da 24 Fin (ids em content/<locale>/fin-wall.ts).
-      finWidgets: ["monthly-report", "gross-margin"],
+      finWidgets: ["cash-flow-30d", "monthly-report", "gross-margin"],
     },
     {
       slug: "planejamento-tributario",
@@ -172,7 +172,7 @@ export const site: SiteContent = {
       description: "Stop paying more taxes than you owe. Legal, strategic reduction of your tax burden.",
       includes: ["Tax diagnosis", "Corporate restructuring", "Tax regime selection", "Compliance"],
       // Widgets da parede da 24 Fin (ids em content/<locale>/fin-wall.ts).
-      finWidgets: ["tax-savings", "tax-regime"],
+      finWidgets: ["tax-savings", "tax-regime", "fixed-cost"],
     },
     {
       slug: "valuation",
@@ -182,7 +182,7 @@ export const site: SiteContent = {
       description: "Your company's true value, calculated with precision. You negotiate from a position of strength.",
       includes: ["Technical report", "Market multiples", "Discounted cash flow", "Negotiation report"],
       // Widgets da parede da 24 Fin (ids em content/<locale>/fin-wall.ts).
-      finWidgets: ["ebitda", "net-margin"],
+      finWidgets: ["ytd-profit", "ebitda", "net-margin"],
     },
   ],
 

@@ -45,7 +45,7 @@ export function CategoryBlocks({ id }: { id?: string }) {
           </Reveal>
         </div>
 
-        <div className="mt-14 grid gap-6 md:grid-cols-2">
+        <div className="mt-14 grid grid-cols-1 gap-6 md:grid-cols-2">
           {site.services.map((service, index) => {
             const Icon = icons[service.slug];
             return (
@@ -61,11 +61,11 @@ export function CategoryBlocks({ id }: { id?: string }) {
                     {service.includes.join(", ")}
                   </p>
 
-                  {/* Widgets ilustrativos da 24 Fin (decorativos, mesmo visual da parede). */}
-                  <div aria-hidden className="mt-6 flex flex-wrap gap-3 rounded-2xl bg-ink p-3">
+                  {/* Widgets ilustrativos da 24 Fin (decorativos), em preto sólido. */}
+                  <div aria-hidden className="mt-6 flex flex-wrap gap-3">
                     {service.finWidgets.map((widgetId) => {
                       const widget = finWall.find((w) => w.id === widgetId);
-                      return widget ? <Widget key={widgetId} widget={widget} /> : null;
+                      return widget ? <Widget key={widgetId} widget={widget} solid /> : null;
                     })}
                   </div>
                 </article>
