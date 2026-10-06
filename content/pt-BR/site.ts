@@ -131,45 +131,6 @@ export const site = {
   // indicadores reais de cada frente quando disponíveis.
   services: [
     {
-      slug: "ma",
-      shortLabel: "M&A",
-      tagline: "Compre, venda ou funda com estratégia",
-      name: "M&A — Fusões e Aquisições",
-      description:
-        "Compramos, vendemos e fundimos empresas com estratégia para maximizar o retorno.",
-      includes: ["Mapeamento de compradores", "Negociação", "Due diligence", "Fechamento do deal"],
-      widgets: [
-        { label: "Deals em andamento", value: "3" },
-        { label: "Etapa atual", value: "Due diligence" },
-      ],
-    },
-    {
-      slug: "captacao-de-recursos",
-      shortLabel: "CAPTAÇÃO",
-      tagline: "Conecte-se a quem investe no seu crescimento",
-      name: "Captação de Recursos",
-      description:
-        "Estruturação e conexão com investidores, bancos e fundos para impulsionar o crescimento.",
-      includes: ["Estruturação da rodada", "Rede de investidores", "Pitch deck", "Negociação de termos"],
-      widgets: [
-        { label: "Investidores na rede", value: "120+" },
-        { label: "Rodada", value: "Série A" },
-      ],
-    },
-    {
-      slug: "planejamento-tributario",
-      shortLabel: "TRIBUTÁRIO",
-      tagline: "Pague só o imposto que você deve",
-      name: "Planejamento Tributário",
-      description:
-        "Pare de pagar mais imposto do que deve. Redução legal da carga tributária com estratégia.",
-      includes: ["Diagnóstico tributário", "Reorganização societária", "Enquadramento fiscal", "Compliance"],
-      widgets: [
-        { label: "Economia estimada", value: "-18%" },
-        { label: "Regime", value: "Lucro real" },
-      ],
-    },
-    {
       slug: "controladoria-financeira",
       shortLabel: "CONTROL",
       tagline: "Organize o seu financeiro",
@@ -193,6 +154,45 @@ export const site = {
       widgets: [
         { label: "Conversão do funil", value: "+24%" },
         { label: "Ticket médio", value: "+12%" },
+      ],
+    },
+    {
+      slug: "captacao-de-recursos",
+      shortLabel: "CAPTAÇÃO",
+      tagline: "Conecte-se a quem investe no seu crescimento",
+      name: "Captação de Recursos",
+      description:
+        "Estruturação e conexão com investidores, bancos e fundos para impulsionar o crescimento.",
+      includes: ["Estruturação da rodada", "Rede de investidores", "Pitch deck", "Negociação de termos"],
+      widgets: [
+        { label: "Investidores na rede", value: "120+" },
+        { label: "Rodada", value: "Série A" },
+      ],
+    },
+    {
+      slug: "ma",
+      shortLabel: "M&A",
+      tagline: "Compre, venda ou funda com estratégia",
+      name: "Fusões e Aquisições (M&A)",
+      description:
+        "Compramos, vendemos e fundimos empresas com estratégia para maximizar o retorno.",
+      includes: ["Mapeamento de compradores", "Negociação", "Due diligence", "Fechamento do deal"],
+      widgets: [
+        { label: "Deals em andamento", value: "3" },
+        { label: "Etapa atual", value: "Due diligence" },
+      ],
+    },
+    {
+      slug: "planejamento-tributario",
+      shortLabel: "TRIBUTÁRIO",
+      tagline: "Pague só o imposto que você deve",
+      name: "Planejamento Tributário",
+      description:
+        "Pare de pagar mais imposto do que deve. Redução legal da carga tributária com estratégia.",
+      includes: ["Diagnóstico tributário", "Reorganização societária", "Enquadramento fiscal", "Compliance"],
+      widgets: [
+        { label: "Economia estimada", value: "-18%" },
+        { label: "Regime", value: "Lucro real" },
       ],
     },
     {

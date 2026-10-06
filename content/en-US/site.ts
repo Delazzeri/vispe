@@ -123,42 +123,6 @@ export const site: SiteContent = {
 
   services: [
     {
-      slug: "ma",
-      shortLabel: "M&A",
-      tagline: "Buy, sell or merge with strategy",
-      name: "M&A — Mergers & Acquisitions",
-      description: "We buy, sell and merge companies strategically to maximize returns.",
-      includes: ["Buyer mapping", "Negotiation", "Due diligence", "Deal closing"],
-      widgets: [
-        { label: "Deals in progress", value: "3" },
-        { label: "Current stage", value: "Due diligence" },
-      ],
-    },
-    {
-      slug: "captacao-de-recursos",
-      shortLabel: "FUNDRAISING",
-      tagline: "Connect with those who invest in your growth",
-      name: "Fundraising",
-      description: "Structuring and connecting you with investors, banks and funds to fuel growth.",
-      includes: ["Round structuring", "Investor network", "Pitch deck", "Term negotiation"],
-      widgets: [
-        { label: "Investors in network", value: "120+" },
-        { label: "Round", value: "Series A" },
-      ],
-    },
-    {
-      slug: "planejamento-tributario",
-      shortLabel: "TAX",
-      tagline: "Pay only the taxes you owe",
-      name: "Tax Planning",
-      description: "Stop paying more taxes than you owe. Legal, strategic reduction of your tax burden.",
-      includes: ["Tax diagnosis", "Corporate restructuring", "Tax regime selection", "Compliance"],
-      widgets: [
-        { label: "Estimated savings", value: "-18%" },
-        { label: "Regime", value: "Actual profit" },
-      ],
-    },
-    {
       slug: "controladoria-financeira",
       shortLabel: "CONTROL",
       tagline: "Get your finances in order",
@@ -182,6 +146,42 @@ export const site: SiteContent = {
       widgets: [
         { label: "Funnel conversion", value: "+24%" },
         { label: "Average ticket", value: "+12%" },
+      ],
+    },
+    {
+      slug: "captacao-de-recursos",
+      shortLabel: "FUNDRAISING",
+      tagline: "Connect with those who invest in your growth",
+      name: "Fundraising",
+      description: "Structuring and connecting you with investors, banks and funds to fuel growth.",
+      includes: ["Round structuring", "Investor network", "Pitch deck", "Term negotiation"],
+      widgets: [
+        { label: "Investors in network", value: "120+" },
+        { label: "Round", value: "Series A" },
+      ],
+    },
+    {
+      slug: "ma",
+      shortLabel: "M&A",
+      tagline: "Buy, sell or merge with strategy",
+      name: "Mergers & Acquisitions (M&A)",
+      description: "We buy, sell and merge companies strategically to maximize returns.",
+      includes: ["Buyer mapping", "Negotiation", "Due diligence", "Deal closing"],
+      widgets: [
+        { label: "Deals in progress", value: "3" },
+        { label: "Current stage", value: "Due diligence" },
+      ],
+    },
+    {
+      slug: "planejamento-tributario",
+      shortLabel: "TAX",
+      tagline: "Pay only the taxes you owe",
+      name: "Tax Planning",
+      description: "Stop paying more taxes than you owe. Legal, strategic reduction of your tax burden.",
+      includes: ["Tax diagnosis", "Corporate restructuring", "Tax regime selection", "Compliance"],
+      widgets: [
+        { label: "Estimated savings", value: "-18%" },
+        { label: "Regime", value: "Actual profit" },
       ],
     },
     {
