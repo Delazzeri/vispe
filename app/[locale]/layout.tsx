@@ -8,6 +8,7 @@ import localFont from "next/font/local";
 import { buildMetadata, organizationJsonLd, websiteJsonLd } from "@/lib/seo";
 import { Header } from "@/components/sections/header";
 import { Footer } from "@/components/sections/footer";
+import { CookieConsent } from "@/components/ui/cookie-consent";
 import { LanguageSwitcher } from "@/components/ui/language-switcher";
 import { brand, getSite } from "@/content/site";
 import "../globals.css";
@@ -88,13 +89,15 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd(locale)) }}
         />
         <NextIntlClientProvider>
-          {/* Só no topo: absoluto (rola com a página), ao contrário do header sticky. */}
-          <LanguageSwitcher className="absolute top-4 right-4 z-40 md:top-6 md:right-6" />
+          {/* Só no topo: absoluto (rola com a página), ao contrário do header sticky.
+              No celular o header ocupa a largura toda, então o seletor vai para o menu. */}
+          <LanguageSwitcher className="absolute top-6 right-6 z-40 hidden md:flex" />
           <Header />
           <main id="main-content" className="flex-1">
             {children}
           </main>
           <Footer />
+          <CookieConsent labels={getSite(locale).ui.cookies} />
         </NextIntlClientProvider>
       </body>
     </html>

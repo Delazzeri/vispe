@@ -4,6 +4,7 @@ import { HeroScene } from "@/components/sections/hero-scene";
 import { SocialLinks } from "@/components/ui/social-links";
 import { blogPosts } from "@/content/blog";
 import { brand, useSite } from "@/content/site";
+import { CookiePreferencesButton } from "@/components/ui/cookie-consent";
 
 const linkClass =
   "text-sm text-ink transition-colors hover:text-brand-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-dark rounded-sm";
@@ -108,9 +109,12 @@ export function Footer() {
           <p>
             © {year} {brand.name}. {footer.rights}
           </p>
-          <a href="#main-content" className="rounded-sm transition-colors hover:text-brand-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-dark">
-            {footer.backToTop}
-          </a>
+          <div className="flex flex-wrap gap-x-5 gap-y-2">
+            <CookiePreferencesButton label={footer.cookiePreferences} className="rounded-sm transition-colors hover:text-brand-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-dark text-left" />
+            <a href="#main-content" className="rounded-sm transition-colors hover:text-brand-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-dark">
+              {footer.backToTop}
+            </a>
+          </div>
         </div>
       </div>
 

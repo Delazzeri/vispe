@@ -473,6 +473,7 @@ export const site = {
     },
     rights: "Todos os direitos reservados.",
     backToTop: "Voltar ao topo ↑",
+    cookiePreferences: "Preferências de cookies",
   },
 
 
@@ -492,6 +493,31 @@ export const site = {
     testimonialInstagram: "Instagram da {name}",
     testimonialWebsite: "Site da {name}",
     testimonialRating: "Avaliação: {rating} de {max} estrelas",
+    cookies: {
+      title: "Valorizamos a sua privacidade",
+      description:
+        "Usamos cookies essenciais para o site funcionar e, com a sua permissão, cookies de análise e marketing para entender como o site é usado e quais campanhas trazem visitantes. Você pode aceitar tudo, rejeitar tudo ou escolher.",
+      acceptAll: "Aceitar todos",
+      rejectAll: "Rejeitar todos",
+      manage: "Gerenciar preferências",
+      preferencesTitle: "Preferências de cookies",
+      save: "Salvar preferências",
+      alwaysOn: "Sempre ativos",
+      categories: {
+        necessary: {
+          label: "Essenciais",
+          description: "Necessários para o site funcionar, como lembrar a sua escolha sobre cookies. Não podem ser desativados.",
+        },
+        analytics: {
+          label: "Análise",
+          description: "Ajudam a entender como o site é usado, de forma agregada, para melhorar páginas e conteúdos.",
+        },
+        marketing: {
+          label: "Marketing",
+          description: "Medem quais campanhas e anúncios trazem visitantes e permitem mostrar conteúdos mais relevantes.",
+        },
+      },
+    },
     includes: "Inclui:",
     pillar: "Pilar {n}",
     rating: "Avaliação {rating} de 5 estrelas",
