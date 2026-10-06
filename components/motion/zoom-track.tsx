@@ -11,12 +11,16 @@ type ZoomTrackProps = {
  * Faixa de 1300px em que o conteúdo fica pinned (sticky) e "aproxima" com o
  * scroll. Escala/opacidade seguem offsets exatos em pixels: 0-50px = 300%/5%,
  * 500-1000px = 100%/100%, 1000-1300px = 50%/0%.
+ * A faixa inteira começa `lead` px antes de a seção chegar ao topo, para o
+ * zoom já estar em andamento enquanto ela entra na tela.
  * Com reduced motion, o conteúdo aparece estático e visível.
  */
+const lead = 200;
+
 export function ZoomTrack({ children }: ZoomTrackProps) {
   const ref = useRef<HTMLDivElement>(null);
   const shouldReduceMotion = useReducedMotion();
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
+  const { scrollYProgress } = useScroll({ target: ref, offset: [`start ${lead}px`, `end ${lead}px`] });
 
   // scrollYProgress vai de 0 a 1 ao longo dos 1300px do ref — os pontos de
   // corte abaixo já são esses px convertidos em fração (px / 1300).
