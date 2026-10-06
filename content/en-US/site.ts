@@ -241,6 +241,8 @@ export const site: SiteContent = {
       name: "JR Net",
       segment: "Internet Service Provider",
       avatar: "/media/clients/jr-net-160.webp",
+      instagram: "https://www.instagram.com/jrnet_provedor/",
+      website: "https://jrnetprovedor.com.br/",
     },
     {
       quote:
@@ -248,6 +250,8 @@ export const site: SiteContent = {
       name: "FlyFibra",
       segment: "Internet Service Provider",
       avatar: "/media/clients/flyfibra-160.webp",
+      instagram: "https://www.instagram.com/flyfibra/",
+      website: "https://flyfibra.com.br/",
     },
     {
       quote:
@@ -255,13 +259,17 @@ export const site: SiteContent = {
       name: "Virtex",
       segment: "Internet Service Provider",
       avatar: "/media/clients/virtex-160.webp",
+      instagram: "https://www.instagram.com/virtextelecom/",
+      website: "https://virtex.com.br",
     },
     {
       quote:
         "…I hired their Equity Mentoring service, and since then my strategic planning has been developed and organized by Vispe. I always recommend them, because I saw the difference up close, and it was much needed!",
-      name: "GLPNET",
+      name: "GLPNet",
       segment: "Internet Service Provider",
       avatar: "/media/clients/glpnet-160.webp",
+      instagram: "https://www.instagram.com/glpnet/",
+      website: "https://glpnet.com.br/",
     },
     {
       quote:
@@ -269,6 +277,8 @@ export const site: SiteContent = {
       name: "Cyber Internet",
       segment: "Internet Service Provider",
       avatar: "/media/clients/cyber-160.webp",
+      instagram: "https://www.instagram.com/cyber.internet/",
+      website: "https://www.cyberinternet.com.br/",
     },
     {
       quote:
@@ -276,6 +286,8 @@ export const site: SiteContent = {
       name: "AONET",
       segment: "Internet Service Provider",
       avatar: "/media/clients/aonet-160.webp",
+      instagram: "https://www.instagram.com/aonet.internet/",
+      website: "https://aonet.com.br/",
     },
     {
       quote:
@@ -283,6 +295,7 @@ export const site: SiteContent = {
       name: "TR Dream Telecom",
       segment: "Internet Service Provider",
       avatar: "/media/clients/tr-dream-160.webp",
+      instagram: "https://www.instagram.com/trdreamtelecom/",
     },
   ] as readonly Testimonial[],
 

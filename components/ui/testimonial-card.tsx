@@ -8,18 +8,20 @@ import { cn } from "@/lib/cn";
 
 type TestimonialCardProps = Testimonial & { className?: string };
 
-/** Link externo do cliente; sem URL, o ícone aparece sem link (TODO(content)). */
+/** Link externo do cliente; sem URL (ex.: empresa sem site), o ícone não aparece. */
 function ClientLink({ href, label, children }: { href?: string; label: string; children: ReactNode }) {
-  const classes =
-    "group block rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-dark focus-visible:ring-offset-2";
-  return href ? (
-    <a href={href} target="_blank" rel="noopener" aria-label={label} title={label} className={classes}>
+  if (!href) return null;
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener"
+      aria-label={label}
+      title={label}
+      className="group block rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-dark focus-visible:ring-offset-2"
+    >
       {children}
     </a>
-  ) : (
-    <span role="img" aria-label={label} title={label} className="group block">
-      {children}
-    </span>
   );
 }
 

@@ -247,6 +247,8 @@ export const site = {
       name: "JR Net",
       segment: "Provedor de Internet",
       avatar: "/media/clients/jr-net-160.webp",
+      instagram: "https://www.instagram.com/jrnet_provedor/",
+      website: "https://jrnetprovedor.com.br/",
     },
     {
       quote:
@@ -254,6 +256,8 @@ export const site = {
       name: "FlyFibra",
       segment: "Provedor de Internet",
       avatar: "/media/clients/flyfibra-160.webp",
+      instagram: "https://www.instagram.com/flyfibra/",
+      website: "https://flyfibra.com.br/",
     },
     {
       quote:
@@ -261,13 +265,17 @@ export const site = {
       name: "Virtex",
       segment: "Provedor de Internet",
       avatar: "/media/clients/virtex-160.webp",
+      instagram: "https://www.instagram.com/virtextelecom/",
+      website: "https://virtex.com.br",
     },
     {
       quote:
         "…contratei o serviço de Equity Mentory, e desde então, o planejamento de minhas estratégias tem sido elaboradas e organizadas pela Vispe. Sempre indico, pois vi a diferença de perto, e foi necessária!",
-      name: "GLPNET",
+      name: "GLPNet",
       segment: "Provedor de Internet",
       avatar: "/media/clients/glpnet-160.webp",
+      instagram: "https://www.instagram.com/glpnet/",
+      website: "https://glpnet.com.br/",
     },
     {
       quote:
@@ -275,6 +283,8 @@ export const site = {
       name: "Cyber Internet",
       segment: "Provedor de Internet",
       avatar: "/media/clients/cyber-160.webp",
+      instagram: "https://www.instagram.com/cyber.internet/",
+      website: "https://www.cyberinternet.com.br/",
     },
     {
       quote:
@@ -282,6 +292,8 @@ export const site = {
       name: "AONET",
       segment: "Provedor de Internet",
       avatar: "/media/clients/aonet-160.webp",
+      instagram: "https://www.instagram.com/aonet.internet/",
+      website: "https://aonet.com.br/",
     },
     {
       quote:
@@ -289,6 +301,7 @@ export const site = {
       name: "TR Dream Telecom",
       segment: "Provedor de Internet",
       avatar: "/media/clients/tr-dream-160.webp",
+      instagram: "https://www.instagram.com/trdreamtelecom/",
     },
   ] as readonly Testimonial[],
 

@@ -31,7 +31,7 @@ export type Testimonial = {
   segment?: string;
   /** Foto de perfil em /public (ex.: "/media/clients/aonet.png"). Sem ela, mostra a inicial. */
   avatar?: string;
-  /** URLs do cliente; cada ícone só vira link quando a URL existe. */
+  /** URLs do cliente; cada ícone só aparece quando a URL existe. */
   instagram?: string;
   website?: string;
   /** Foto anexada ao depoimento, exibida no corpo do card. */
