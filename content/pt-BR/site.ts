@@ -247,67 +247,42 @@ export const site = {
     description: "Feedback real de empresários que confiam na Vispe Capital.",
   },
 
-  // TODO(content): depoimentos reais de clientes, com autorização — inclusive
-  // foto (avatarUrl) quando o cliente autorizar uso de imagem. Placeholders
-  // fictícios abaixo — nunca publicar como se fossem reais. `source: "x"`
-  // marca depoimentos vindos de rede social (recebem o selo no card).
+  // Depoimentos reais enviados pela Vispe (texto literal dos clientes).
   testimonials: [
     {
       quote:
-        "[Depoimento de exemplo: substituir] A Vispe organizou nosso financeiro em poucos meses e conseguimos enxergar onde estávamos perdendo margem.",
-      name: "Cliente Exemplo",
-      handle: "@clienteexemplo",
-      role: "Fundador(a), Empresa Exemplo",
-      rating: 5,
-      source: undefined as "x" | undefined,
+        "Com orgulho dizemos que há anos somos clientes da Vispe Capital, e fazemos questão de contatá-la em todos os nossos planos e processos, dos mais simples aos mais estratégicos, pois nos auxiliam com empenho e cuidado, sempre fazendo um ótimo trabalho. Em todas as oportunidades que temos, indicamos os serviços da Vispe para parceiros que buscam especialistas em Consultoria, Valuation, CFO, Equity Mentory ou M&A, pois confiamos em seus serviços oferecidos.",
+      name: "AONET",
     },
     {
       quote:
-        "[Depoimento de exemplo: substituir] O processo de valuation foi decisivo para a negociação com os investidores. Hoje conseguimos justificar cada número do nosso financeiro na mesa de negociação, sem depender de planilha avulsa.",
-      name: "Cliente Exemplo",
-      handle: "@clienteexemplo",
-      role: "CEO, Empresa Exemplo",
-      rating: 5,
-      source: "x" as "x" | undefined,
+        "Nós da Virtex, realizamos o serviço de Valuation com a Vispe e não temos nenhum acontecimento que nos impeça de recomendar com total segurança e confiança os serviços oferecidos por ela. Somos clientes de longa data e seguimos constantemente mantendo contato e parceria, visto que após os serviços prestados, tivemos o resultado alcançado. Temos muita admiração pela transparência e dedicação da Vispe em todas as demandas já solicitadas e, com certeza, faremos mais trabalhos em conjunto.",
+      name: "Virtex",
     },
     {
       quote:
-        "[Depoimento de exemplo: substituir] Ganhamos controladoria de verdade sem contratar um CFO em tempo integral.",
-      name: "Cliente Exemplo",
-      handle: "@clienteexemplo",
-      role: "Sócio(a), Empresa Exemplo",
-      rating: 5,
-      source: undefined as "x" | undefined,
+        "Nós recomendamos com toda segurança e tranquilidade a contratação dos serviços de Consultoria, Valuation, CFO, Equity Mentor e M&A que a Vispe oferece. Somos clientes há muitos anos e passamos por todas as etapas de reestruturação da empresa seguindo as indicações dos consultores, e os resultados foram maravilhosos. Temos orgulho de ser clientes e temos certeza de que estarão fazendo um ótimo trabalho juntos.",
+      name: "FlyFibra",
     },
     {
       quote:
-        "[Depoimento de exemplo: substituir] A captação de recursos que estruturamos com a Vispe mudou o patamar da empresa. O time acompanhou cada etapa da negociação, trouxe clareza para decisões que antes travavam por falta de dado confiável, e isso fez toda diferença no fechamento.",
-      name: "Cliente Exemplo",
-      handle: "@clienteexemplo",
-      role: "Fundador(a), Empresa Exemplo",
-      rating: 5,
-      source: undefined as "x" | undefined,
-      avatarPlaceholder: true,
+        "Quando estava precisando organizar a minha empresa e tinha planos para expansão sem saber por onde começar, me indicaram a Vispe Capital. Após algumas reuniões, contratei o serviço de Equity Mentory, e desde então, o planejamento de minhas estratégias tem sido elaboradas e organizadas pela Vispe. Sempre indico, pois vi a diferença de perto, e foi necessária!",
+      name: "GLPNET",
     },
     {
       quote:
-        "[Depoimento de exemplo: substituir] Equipe próxima, técnica e que realmente entende a realidade de quem toca o negócio.",
-      name: "Cliente Exemplo",
-      handle: "@clienteexemplo",
-      role: "Diretor(a) financeiro(a), Empresa Exemplo",
-      rating: 5,
-      source: "x" as "x" | undefined,
-      avatarPlaceholder: true,
-      mediaPlaceholder: true,
+        "Nós recomendamos com toda segurança e tranquilidade a contratação dos serviços de Consultoria, Valuation, CFO, Equity Mentory e M&A que a Vispe oferece, somos clientes a muitos anos e passamos por todas as etapas de reestruturação da empresa seguindo as indicações dos consultores e os resultados foram maravilhosos. Temos orgulho de ser clientes e temos certeza de que estarão fazendo um ótimo trabalho juntos.",
+      name: "PDN Telecom",
     },
     {
       quote:
-        "[Depoimento de exemplo: substituir] Em poucos meses já conseguimos reduzir a carga tributária de forma legal e segura.",
-      name: "Cliente Exemplo",
-      handle: "@clienteexemplo",
-      role: "Sócio(a), Empresa Exemplo",
-      rating: 5,
-      source: undefined as "x" | undefined,
+        "Nós da TR Dream Telecom, devido à ótima experiência que tivemos, recomendamos os serviços da Vispe Capital. Empresa essa que sempre nos atendeu com muito profissionalismo, segurança e dedicação.",
+      name: "TR Dream Telecom",
+    },
+    {
+      quote:
+        "Nós da Red Fibra Telecomunicações, recomendamos com muita segurança e confiança, os serviços oferecidos pela Vispe Capital. Com uma parceria de longa data, sempre se mostrou uma empresa idônea, com foco e atendimento excelente, presa pela qualidade nos serviços e o sucesso nas metas estabelecidas, atingindo os resultados esperados.",
+      name: "Red Fibra Telecomunicações",
     },
   ],
 

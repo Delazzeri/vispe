@@ -88,7 +88,7 @@ export function TestimonialCard({
         )}
         <div className="min-w-0 flex-1">
           <p className="text-sm font-semibold text-fg">{name}</p>
-          <p className="truncate text-xs text-fg-muted">{handle ?? role}</p>
+          {(handle ?? role) && <p className="truncate text-xs text-fg-muted">{handle ?? role}</p>}
         </div>
         {source === "x" ? <XMark className="h-4 w-4 shrink-0 text-ink" /> : null}
       </figcaption>

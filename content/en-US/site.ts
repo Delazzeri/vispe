@@ -239,63 +239,43 @@ export const site: SiteContent = {
     description: "Real feedback from business owners who trust Vispe Capital.",
   },
 
+  // Real client testimonials — English translation of the Portuguese originals.
+  // TODO(content): confirm with each client that the translation can be published.
   testimonials: [
     {
       quote:
-        "[Sample testimonial: replace] Vispe organized our finances in a few months and we could finally see where we were losing margin.",
-      name: "Sample Client",
-      handle: "@sampleclient",
-      role: "Founder, Sample Company",
-      rating: 5,
-      source: undefined,
+        "We are proud to say we have been Vispe Capital clients for years, and we make a point of bringing them into all our plans and processes, from the simplest to the most strategic, because they support us with commitment and care, always doing great work. Whenever we have the chance, we recommend Vispe's services to partners looking for specialists in Consulting, Valuation, CFO, Equity Mentoring or M&A, because we trust the services they offer.",
+      name: "AONET",
     },
     {
       quote:
-        "[Sample testimonial: replace] The valuation process was decisive in our negotiation with investors. Today we can justify every number in our financials at the negotiating table, without relying on loose spreadsheets.",
-      name: "Sample Client",
-      handle: "@sampleclient",
-      role: "CEO, Sample Company",
-      rating: 5,
-      source: "x",
+        "At Virtex, we did our Valuation with Vispe and there is nothing that would stop us from recommending their services with complete security and confidence. We are long-standing clients and keep in constant contact and partnership, since the services they provided delivered the results we were after. We greatly admire Vispe's transparency and dedication in every request we have made, and we will certainly do more work together.",
+      name: "Virtex",
     },
     {
       quote:
-        "[Sample testimonial: replace] We gained real controllership without hiring a full-time CFO.",
-      name: "Sample Client",
-      handle: "@sampleclient",
-      role: "Partner, Sample Company",
-      rating: 5,
-      source: undefined,
+        "We recommend hiring Vispe's Consulting, Valuation, CFO, Equity Mentoring and M&A services with complete confidence and peace of mind. We have been clients for many years and went through every stage of restructuring the company following the consultants' guidance, and the results were wonderful. We are proud to be clients and we are sure you will do great work together.",
+      name: "FlyFibra",
     },
     {
       quote:
-        "[Sample testimonial: replace] The fundraising we structured with Vispe took the company to another level. The team followed every stage of the negotiation and brought clarity to decisions that used to stall for lack of reliable data, and that made all the difference at closing.",
-      name: "Sample Client",
-      handle: "@sampleclient",
-      role: "Founder, Sample Company",
-      rating: 5,
-      source: undefined,
-      avatarPlaceholder: true,
+        "When I needed to organize my company and had expansion plans but didn't know where to start, Vispe Capital was recommended to me. After a few meetings, I hired their Equity Mentoring service, and since then my strategic planning has been developed and organized by Vispe. I always recommend them, because I saw the difference up close, and it was much needed!",
+      name: "GLPNET",
     },
     {
       quote:
-        "[Sample testimonial: replace] A close, technical team that truly understands the reality of running a business.",
-      name: "Sample Client",
-      handle: "@sampleclient",
-      role: "Finance Director, Sample Company",
-      rating: 5,
-      source: "x",
-      avatarPlaceholder: true,
-      mediaPlaceholder: true,
+        "We recommend hiring Vispe's Consulting, Valuation, CFO, Equity Mentoring and M&A services with complete confidence and peace of mind. We have been clients for many years and went through every stage of restructuring the company following the consultants' guidance, and the results were wonderful. We are proud to be clients and we are sure you will do great work together.",
+      name: "PDN Telecom",
     },
     {
       quote:
-        "[Sample testimonial: replace] Within a few months we were able to reduce our tax burden legally and safely.",
-      name: "Sample Client",
-      handle: "@sampleclient",
-      role: "Partner, Sample Company",
-      rating: 5,
-      source: undefined,
+        "At TR Dream Telecom, thanks to the great experience we had, we recommend Vispe Capital's services. A company that has always served us with great professionalism, reliability and dedication.",
+      name: "TR Dream Telecom",
+    },
+    {
+      quote:
+        "At Red Fibra Telecomunicações, we recommend Vispe Capital's services with great confidence and trust. Throughout a long-standing partnership, they have always proven to be a trustworthy company, focused, with excellent service, committed to quality and to reaching the agreed goals, achieving the expected results.",
+      name: "Red Fibra Telecomunicações",
     },
   ],
 
