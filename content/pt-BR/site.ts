@@ -137,7 +137,7 @@ export const site = {
         "Gestão financeira estratégica que transforma números em decisões e faturamento em lucro real.",
       includes: ["Fluxo de caixa", "DRE gerencial", "Indicadores financeiros", "Rotina de fechamento"],
       // Widgets da parede da 24 Fin (ids em content/<locale>/fin-wall.ts).
-      finWidgets: ["income-statement", "reconciliation", "default-rate"],
+      finWidgets: ["income-statement", "reconciliation", "default-rate", "payables", "receivables"],
     },
     {
       slug: "aceleracao-comercial",
@@ -148,7 +148,7 @@ export const site = {
         "Estruturamos a sua operação comercial do zero: processos claros, inteligência de dados e um time focado em trazer contratos de alta margem.",
       includes: ["Funil comercial", "Playbook de vendas", "Inteligência de dados", "Gestão de time"],
       // Widgets da parede da 24 Fin (ids em content/<locale>/fin-wall.ts).
-      finWidgets: ["revenue", "revenue-goal", "avg-ticket"],
+      finWidgets: ["revenue", "revenue-goal", "avg-ticket", "payment-confirmed", "break-even"],
     },
     {
       slug: "captacao-de-recursos",
@@ -159,7 +159,7 @@ export const site = {
         "Estruturação e conexão com investidores, bancos e fundos para impulsionar o crescimento.",
       includes: ["Estruturação da rodada", "Rede de investidores", "Pitch deck", "Negociação de termos"],
       // Widgets da parede da 24 Fin (ids em content/<locale>/fin-wall.ts).
-      finWidgets: ["cash-runway", "in-today", "out-today"],
+      finWidgets: ["cash-runway", "in-today", "out-today", "balance", "bank-balances"],
     },
     {
       slug: "ma",
@@ -181,7 +181,7 @@ export const site = {
         "Pare de pagar mais imposto do que deve. Redução legal da carga tributária com estratégia.",
       includes: ["Diagnóstico tributário", "Reorganização societária", "Enquadramento fiscal", "Compliance"],
       // Widgets da parede da 24 Fin (ids em content/<locale>/fin-wall.ts).
-      finWidgets: ["tax-savings", "tax-regime", "fixed-cost"],
+      finWidgets: ["tax-savings", "tax-regime", "fixed-cost", "taxes", "expenses-by-category"],
     },
     {
       slug: "valuation",
