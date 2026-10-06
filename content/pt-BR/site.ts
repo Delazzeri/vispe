@@ -79,16 +79,6 @@ export const site = {
     description: "De operações societárias a controladoria do dia a dia, no mesmo time.",
   },
 
-  // TODO(content): trocar os placeholders por imagens/telas reais da Vispe
-  // (ex.: dashboards e relatórios) em /public/media/.
-  showcaseCarousel: [
-    { id: "placeholder-1", label: "Imagem ilustrativa 1" },
-    { id: "placeholder-2", label: "Imagem ilustrativa 2" },
-    { id: "placeholder-3", label: "Imagem ilustrativa 3" },
-    { id: "placeholder-4", label: "Imagem ilustrativa 4" },
-    { id: "placeholder-5", label: "Imagem ilustrativa 5" },
-  ],
-
   servicesCarousel: {
     title: "Pilares do Equity",
     description:
@@ -256,24 +246,28 @@ export const site = {
         "…com o serviço de CFO, o negócio pegou uma velocidade muito maior. E hoje nós estamos extremamente satisfeitos. Eu super indico a Vispe…",
       name: "JR Net",
       segment: "Provedor de Internet",
+      avatar: "/media/clients/jr-net-160.webp",
     },
     {
       quote:
         "…passamos por todas as etapas de reestruturação da empresa seguindo as indicações dos consultores, e os resultados foram maravilhosos.",
       name: "FlyFibra",
       segment: "Provedor de Internet",
+      avatar: "/media/clients/flyfibra-160.webp",
     },
     {
       quote:
         "…realizamos o serviço de Valuation com a Vispe e não temos nenhum acontecimento que nos impeça de recomendar com total segurança e confiança os serviços oferecidos por ela.",
       name: "Virtex",
       segment: "Provedor de Internet",
+      avatar: "/media/clients/virtex-160.webp",
     },
     {
       quote:
         "…contratei o serviço de Equity Mentory, e desde então, o planejamento de minhas estratégias tem sido elaboradas e organizadas pela Vispe. Sempre indico, pois vi a diferença de perto, e foi necessária!",
       name: "GLPNET",
       segment: "Provedor de Internet",
+      avatar: "/media/clients/glpnet-160.webp",
     },
     {
       quote:
@@ -287,12 +281,14 @@ export const site = {
         "Com orgulho dizemos que há anos somos clientes da Vispe Capital, e fazemos questão de contatá-la em todos os nossos planos e processos, dos mais simples aos mais estratégicos…",
       name: "AONET",
       segment: "Provedor de Internet",
+      avatar: "/media/clients/aonet-160.webp",
     },
     {
       quote:
         "…devido à ótima experiência que tivemos, recomendamos os serviços da Vispe Capital. Empresa essa que sempre nos atendeu com muito profissionalismo, segurança e dedicação.",
       name: "TR Dream Telecom",
       segment: "Provedor de Internet",
+      avatar: "/media/clients/tr-dream-160.webp",
     },
   ] as readonly Testimonial[],
 
@@ -471,7 +467,9 @@ export const site = {
     resultsLabel: "Resultados da Vispe Capital",
     solutionsLabel: "Soluções oferecidas",
     pillarsLabel: "Soluções da Vispe Capital",
-    galleryLabel: "Galeria da Vispe Capital",
+    galleryLabel: "Episódios do podcast Equity Talks",
+    episodeLabel: "Equity Talks, episódio {number}: {title}",
+    episodeWatch: "Assistir no YouTube",
     socialProfile: "{network} da Vispe Capital",
     testimonialInstagram: "Instagram da {name}",
     testimonialWebsite: "Site da {name}",

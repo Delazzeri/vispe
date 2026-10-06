@@ -76,14 +76,6 @@ export const site: SiteContent = {
     description: "From corporate transactions to day-to-day controllership, all with the same team.",
   },
 
-  showcaseCarousel: [
-    { id: "placeholder-1", label: "Illustrative image 1" },
-    { id: "placeholder-2", label: "Illustrative image 2" },
-    { id: "placeholder-3", label: "Illustrative image 3" },
-    { id: "placeholder-4", label: "Illustrative image 4" },
-    { id: "placeholder-5", label: "Illustrative image 5" },
-  ],
-
   servicesCarousel: {
     title: "Equity Pillars",
     description: "The three pillars that sustain your company's value, from cash flow to the next leap.",
@@ -248,24 +240,28 @@ export const site: SiteContent = {
         "…with the CFO service, the business picked up much more speed. Today we are extremely satisfied. I highly recommend Vispe…",
       name: "JR Net",
       segment: "Internet Service Provider",
+      avatar: "/media/clients/jr-net-160.webp",
     },
     {
       quote:
         "…we went through every stage of restructuring the company following the consultants' guidance, and the results were wonderful.",
       name: "FlyFibra",
       segment: "Internet Service Provider",
+      avatar: "/media/clients/flyfibra-160.webp",
     },
     {
       quote:
         "…we did our Valuation with Vispe and there is nothing that would stop us from recommending their services with complete security and confidence.",
       name: "Virtex",
       segment: "Internet Service Provider",
+      avatar: "/media/clients/virtex-160.webp",
     },
     {
       quote:
         "…I hired their Equity Mentoring service, and since then my strategic planning has been developed and organized by Vispe. I always recommend them, because I saw the difference up close, and it was much needed!",
       name: "GLPNET",
       segment: "Internet Service Provider",
+      avatar: "/media/clients/glpnet-160.webp",
     },
     {
       quote:
@@ -278,12 +274,14 @@ export const site: SiteContent = {
         "We are proud to say we have been Vispe Capital clients for years, and we make a point of bringing them into all our plans and processes, from the simplest to the most strategic…",
       name: "AONET",
       segment: "Internet Service Provider",
+      avatar: "/media/clients/aonet-160.webp",
     },
     {
       quote:
         "…thanks to the great experience we had, we recommend Vispe Capital's services. A company that has always served us with great professionalism, reliability and dedication.",
       name: "TR Dream Telecom",
       segment: "Internet Service Provider",
+      avatar: "/media/clients/tr-dream-160.webp",
     },
   ] as readonly Testimonial[],
 
@@ -452,7 +450,9 @@ export const site: SiteContent = {
     resultsLabel: "Vispe Capital results",
     solutionsLabel: "Solutions offered",
     pillarsLabel: "Vispe Capital solutions",
-    galleryLabel: "Vispe Capital gallery",
+    galleryLabel: "Equity Talks podcast episodes",
+    episodeLabel: "Equity Talks, episode {number}: {title}",
+    episodeWatch: "Watch on YouTube",
     socialProfile: "Vispe Capital on {network}",
     testimonialInstagram: "{name} on Instagram",
     testimonialWebsite: "{name} website",
