@@ -298,13 +298,12 @@ export const site = {
   // Fin 24/7: CFO virtual da Vispe (portal web do cliente).
   fin: {
     name: "Fin 24/7",
-    byline: "by Vispe",
     title: "Seu CFO virtual, disponível 24 horas",
     description:
       "Acompanhe o caixa de hoje, a projeção para os próximos 90 dias e os alertas de contas a pagar e a receber em um só painel. O Fin 24/7 também monta o plano da semana, simula cenários e tira suas dúvidas com um assistente de IA, conectado aos seus bancos via Open Finance.",
     ctaLabel: "Conhecer o Fin 24/7",
-    // TODO(content): trocar pelo link do portal quando houver página pública de acesso.
-    ctaHref: "/contato",
+    // Login do portal do Fin 24/7 (link externo, abre em nova aba).
+    ctaHref: "https://vispeos.vercel.app/cfo/portal/login",
   },
 
   showcase: {

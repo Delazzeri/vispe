@@ -11,7 +11,10 @@ import { useSite } from "@/content/site";
  */
 export function Fin({ id }: { id?: string }) {
   const site = useSite();
-  const { name, byline, title, description, ctaLabel, ctaHref } = site.fin;
+  const { name, title, description, ctaLabel, ctaHref } = site.fin;
+  const isExternal = ctaHref.startsWith("http://") || ctaHref.startsWith("https://");
+  const ctaClass =
+    "mt-8 inline-flex items-center gap-2 rounded-xl bg-fin px-7 py-4 text-sm font-semibold text-fin-fg transition-transform hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-paper";
 
   return (
     <section id={id} aria-labelledby="fin-heading" className="relative overflow-clip bg-ink">
@@ -21,7 +24,7 @@ export function Fin({ id }: { id?: string }) {
 
       <div className="mx-auto max-w-2xl px-6 pt-24 pb-24 text-center md:pb-32">
         <Reveal>
-          {/* Logo do Fin 24/7: selo verde em gradiente com "24", nome e assinatura. */}
+          {/* Logo do Fin 24/7: selo verde em gradiente com "24" e o nome. */}
           <div className="inline-flex items-center gap-3 text-left">
             <span
               aria-hidden
@@ -29,10 +32,7 @@ export function Fin({ id }: { id?: string }) {
             >
               24
             </span>
-            <span>
-              <span className="block text-xl leading-6 font-bold text-paper">{name}</span>
-              <span className="block text-sm text-paper/60">{byline}</span>
-            </span>
+            <span className="text-xl leading-6 font-bold text-paper">{name}</span>
           </div>
           <h2
             id="fin-heading"
@@ -42,13 +42,18 @@ export function Fin({ id }: { id?: string }) {
             {title}
           </h2>
           <p className="mt-5 text-balance text-lg text-paper/70">{description}</p>
-          <Link
-            href={ctaHref}
-            className="mt-8 inline-flex items-center gap-2 rounded-xl bg-fin px-7 py-4 text-sm font-semibold text-fin-fg transition-transform hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-paper"
-          >
-            {ctaLabel}
-            <ArrowRight className="h-4 w-4" aria-hidden />
-          </Link>
+          {isExternal ? (
+            // Portal do Fin 24/7 é outro sistema: abre em nova aba.
+            <a href={ctaHref} target="_blank" rel="noopener" className={ctaClass}>
+              {ctaLabel}
+              <ArrowRight className="h-4 w-4" aria-hidden />
+            </a>
+          ) : (
+            <Link href={ctaHref} className={ctaClass}>
+              {ctaLabel}
+              <ArrowRight className="h-4 w-4" aria-hidden />
+            </Link>
+          )}
         </Reveal>
       </div>
     </section>

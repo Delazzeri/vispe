@@ -289,12 +289,11 @@ export const site: SiteContent = {
 
   fin: {
     name: "Fin 24/7",
-    byline: "by Vispe",
     title: "Your virtual CFO, available 24/7",
     description:
       "Track today's cash, the 90-day projection and alerts for accounts payable and receivable in a single dashboard. Fin 24/7 also builds your weekly plan, simulates scenarios and answers your questions with an AI assistant, connected to your banks through Open Finance.",
     ctaLabel: "Discover Fin 24/7",
-    ctaHref: "/contato",
+    ctaHref: "https://vispeos.vercel.app/cfo/portal/login",
   },
 
   showcase: {
