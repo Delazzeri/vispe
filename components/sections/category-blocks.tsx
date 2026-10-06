@@ -39,8 +39,8 @@ export function CategoryBlocks({ id }: { id?: string }) {
                   <p className="mt-3 text-base text-ink" style={{ lineHeight: 1.4 }}>
                     {service.description}
                   </p>
-                  <p className="mt-5 text-xs leading-relaxed text-fg-muted">
-                    <span className="font-semibold text-fg">{site.ui.includes} </span>
+                  <p className="mt-3 text-base text-ink" style={{ lineHeight: 1.4 }}>
+                    <span className="font-semibold">{site.ui.includes} </span>
                     {service.includes.join(", ")}
                   </p>
 
