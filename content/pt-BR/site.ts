@@ -126,9 +126,7 @@ export const site = {
     },
   ],
 
-  // TODO(content): os campos `widgets` abaixo são ilustrativos (mini-cards de
-  // UI inspirados no dashboard real), não dados de cliente — substituir pelos
-  // indicadores reais de cada frente quando disponíveis.
+  // Cada solução mostra 2–3 widgets ilustrativos da parede da 24 Fin.
   services: [
     {
       slug: "controladoria-financeira",
@@ -138,10 +136,8 @@ export const site = {
       description:
         "Gestão financeira estratégica que transforma números em decisões e faturamento em lucro real.",
       includes: ["Fluxo de caixa", "DRE gerencial", "Indicadores financeiros", "Rotina de fechamento"],
-      widgets: [
-        { label: "Margem líquida", value: "18,4%" },
-        { label: "Fechamento", value: "Mensal" },
-      ],
+      // Widgets da parede da 24 Fin (ids em content/<locale>/fin-wall.ts).
+      finWidgets: ["income-statement", "reconciliation", "default-rate"],
     },
     {
       slug: "aceleracao-comercial",
@@ -151,10 +147,8 @@ export const site = {
       description:
         "Estruturamos a sua operação comercial do zero: processos claros, inteligência de dados e um time focado em trazer contratos de alta margem.",
       includes: ["Funil comercial", "Playbook de vendas", "Inteligência de dados", "Gestão de time"],
-      widgets: [
-        { label: "Conversão do funil", value: "+24%" },
-        { label: "Ticket médio", value: "+12%" },
-      ],
+      // Widgets da parede da 24 Fin (ids em content/<locale>/fin-wall.ts).
+      finWidgets: ["revenue", "revenue-goal", "avg-ticket"],
     },
     {
       slug: "captacao-de-recursos",
@@ -164,10 +158,8 @@ export const site = {
       description:
         "Estruturação e conexão com investidores, bancos e fundos para impulsionar o crescimento.",
       includes: ["Estruturação da rodada", "Rede de investidores", "Pitch deck", "Negociação de termos"],
-      widgets: [
-        { label: "Investidores na rede", value: "120+" },
-        { label: "Rodada", value: "Série A" },
-      ],
+      // Widgets da parede da 24 Fin (ids em content/<locale>/fin-wall.ts).
+      finWidgets: ["cash-runway", "in-today", "out-today"],
     },
     {
       slug: "ma",
@@ -177,10 +169,8 @@ export const site = {
       description:
         "Compramos, vendemos e fundimos empresas com estratégia para maximizar o retorno.",
       includes: ["Mapeamento de compradores", "Negociação", "Due diligence", "Fechamento do deal"],
-      widgets: [
-        { label: "Deals em andamento", value: "3" },
-        { label: "Etapa atual", value: "Due diligence" },
-      ],
+      // Widgets da parede da 24 Fin (ids em content/<locale>/fin-wall.ts).
+      finWidgets: ["monthly-report", "gross-margin"],
     },
     {
       slug: "planejamento-tributario",
@@ -190,10 +180,8 @@ export const site = {
       description:
         "Pare de pagar mais imposto do que deve. Redução legal da carga tributária com estratégia.",
       includes: ["Diagnóstico tributário", "Reorganização societária", "Enquadramento fiscal", "Compliance"],
-      widgets: [
-        { label: "Economia estimada", value: "-18%" },
-        { label: "Regime", value: "Lucro real" },
-      ],
+      // Widgets da parede da 24 Fin (ids em content/<locale>/fin-wall.ts).
+      finWidgets: ["tax-savings", "tax-regime"],
     },
     {
       slug: "valuation",
@@ -202,10 +190,8 @@ export const site = {
       name: "Valuation",
       description: "O valor real da sua empresa calculado com precisão. Você negocia com poder.",
       includes: ["Laudo técnico", "Múltiplos de mercado", "Fluxo de caixa descontado", "Relatório para negociação"],
-      widgets: [
-        { label: "Múltiplo aplicado", value: "4,8x" },
-        { label: "Método", value: "Fluxo de caixa" },
-      ],
+      // Widgets da parede da 24 Fin (ids em content/<locale>/fin-wall.ts).
+      finWidgets: ["ebitda", "net-margin"],
     },
   ],
 

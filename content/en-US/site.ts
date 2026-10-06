@@ -130,10 +130,8 @@ export const site: SiteContent = {
       description:
         "Strategic financial management that turns numbers into decisions and revenue into real profit.",
       includes: ["Cash flow", "Management P&L", "Financial KPIs", "Month-end closing routine"],
-      widgets: [
-        { label: "Net margin", value: "18.4%" },
-        { label: "Closing", value: "Monthly" },
-      ],
+      // Widgets da parede da 24 Fin (ids em content/<locale>/fin-wall.ts).
+      finWidgets: ["income-statement", "reconciliation", "default-rate"],
     },
     {
       slug: "aceleracao-comercial",
@@ -143,10 +141,8 @@ export const site: SiteContent = {
       description:
         "We build your sales operation from the ground up: clear processes, data intelligence and a team focused on bringing in high-margin contracts.",
       includes: ["Sales funnel", "Sales playbook", "Data intelligence", "Team management"],
-      widgets: [
-        { label: "Funnel conversion", value: "+24%" },
-        { label: "Average ticket", value: "+12%" },
-      ],
+      // Widgets da parede da 24 Fin (ids em content/<locale>/fin-wall.ts).
+      finWidgets: ["revenue", "revenue-goal", "avg-ticket"],
     },
     {
       slug: "captacao-de-recursos",
@@ -155,10 +151,8 @@ export const site: SiteContent = {
       name: "Fundraising",
       description: "Structuring and connecting you with investors, banks and funds to fuel growth.",
       includes: ["Round structuring", "Investor network", "Pitch deck", "Term negotiation"],
-      widgets: [
-        { label: "Investors in network", value: "120+" },
-        { label: "Round", value: "Series A" },
-      ],
+      // Widgets da parede da 24 Fin (ids em content/<locale>/fin-wall.ts).
+      finWidgets: ["cash-runway", "in-today", "out-today"],
     },
     {
       slug: "ma",
@@ -167,10 +161,8 @@ export const site: SiteContent = {
       name: "Mergers & Acquisitions (M&A)",
       description: "We buy, sell and merge companies strategically to maximize returns.",
       includes: ["Buyer mapping", "Negotiation", "Due diligence", "Deal closing"],
-      widgets: [
-        { label: "Deals in progress", value: "3" },
-        { label: "Current stage", value: "Due diligence" },
-      ],
+      // Widgets da parede da 24 Fin (ids em content/<locale>/fin-wall.ts).
+      finWidgets: ["monthly-report", "gross-margin"],
     },
     {
       slug: "planejamento-tributario",
@@ -179,10 +171,8 @@ export const site: SiteContent = {
       name: "Tax Planning",
       description: "Stop paying more taxes than you owe. Legal, strategic reduction of your tax burden.",
       includes: ["Tax diagnosis", "Corporate restructuring", "Tax regime selection", "Compliance"],
-      widgets: [
-        { label: "Estimated savings", value: "-18%" },
-        { label: "Regime", value: "Actual profit" },
-      ],
+      // Widgets da parede da 24 Fin (ids em content/<locale>/fin-wall.ts).
+      finWidgets: ["tax-savings", "tax-regime"],
     },
     {
       slug: "valuation",
@@ -191,10 +181,8 @@ export const site: SiteContent = {
       name: "Valuation",
       description: "Your company's true value, calculated with precision. You negotiate from a position of strength.",
       includes: ["Technical report", "Market multiples", "Discounted cash flow", "Negotiation report"],
-      widgets: [
-        { label: "Applied multiple", value: "4.8x" },
-        { label: "Method", value: "Cash flow" },
-      ],
+      // Widgets da parede da 24 Fin (ids em content/<locale>/fin-wall.ts).
+      finWidgets: ["ebitda", "net-margin"],
     },
   ],
 

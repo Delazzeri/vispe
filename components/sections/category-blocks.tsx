@@ -8,6 +8,8 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { Reveal } from "@/components/motion/reveal";
+import { Widget } from "@/components/showcase/widgets/widgets";
+import { useFinWall } from "@/content/fin-wall";
 import { useSite } from "@/content/site";
 
 const icons: Record<string, LucideIcon> = {
@@ -21,6 +23,7 @@ const icons: Record<string, LucideIcon> = {
 
 export function CategoryBlocks({ id }: { id?: string }) {
   const site = useSite();
+  const finWall = useFinWall();
   const { title, description } = site.categoryBlocks;
 
   return (
@@ -58,18 +61,12 @@ export function CategoryBlocks({ id }: { id?: string }) {
                     {service.includes.join(", ")}
                   </p>
 
-                  <div className="mt-6 flex flex-wrap gap-3">
-                    {service.widgets.map((widget) => (
-                      <div
-                        key={widget.label}
-                        className="rounded-2xl bg-bg px-4 py-3 shadow-[0_1px_2px_rgba(38,38,38,0.04)]"
-                      >
-                        <p className="text-base font-bold tracking-tight text-fg">
-                          {widget.value}
-                        </p>
-                        <p className="mt-0.5 text-xs text-fg-muted">{widget.label}</p>
-                      </div>
-                    ))}
+                  {/* Widgets ilustrativos da 24 Fin (decorativos, mesmo visual da parede). */}
+                  <div aria-hidden className="mt-6 flex flex-wrap gap-3 rounded-2xl bg-ink p-3">
+                    {service.finWidgets.map((widgetId) => {
+                      const widget = finWall.find((w) => w.id === widgetId);
+                      return widget ? <Widget key={widgetId} widget={widget} /> : null;
+                    })}
                   </div>
                 </article>
               </Reveal>
