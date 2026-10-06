@@ -293,6 +293,20 @@ export const site = {
       name: "Red Fibra Telecomunicações",
       segment: "Provedor de Internet",
     },
+    // Trechos de depoimentos em vídeo (muletas de fala removidas).
+    {
+      quote:
+        "…com o serviço de CFO, o negócio pegou uma velocidade muito maior. E hoje nós estamos extremamente satisfeitos. Eu super indico a Vispe…",
+      name: "JR Net",
+      segment: "Provedor de Internet",
+    },
+    {
+      quote:
+        "…eu digo que eles estão me ensinando, tô aprendendo com eles. Tô aprendendo a gerir… 20 anos de empresa, tô aprendendo a gerir com eles agora.",
+      // TODO(content): nome da empresa do Olívio (não citado no vídeo).
+      name: "Olívio",
+      segment: "Provedor de Internet",
+    },
   ] as readonly Testimonial[],
 
   // Fin 24/7: CFO virtual da Vispe (portal web do cliente).

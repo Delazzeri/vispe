@@ -285,6 +285,18 @@ export const site: SiteContent = {
       name: "Red Fibra Telecomunicações",
       segment: "Internet Service Provider",
     },
+    {
+      quote:
+        "…with the CFO service, the business picked up much more speed. Today we are extremely satisfied. I highly recommend Vispe…",
+      name: "JR Net",
+      segment: "Internet Service Provider",
+    },
+    {
+      quote:
+        "…I say they are teaching me, I'm learning from them. I'm learning to manage… 20 years in business, and I'm learning to manage with them now.",
+      name: "Olívio",
+      segment: "Internet Service Provider",
+    },
   ] as readonly Testimonial[],
 
   fin: {
