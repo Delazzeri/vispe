@@ -1,5 +1,5 @@
 import type { SiteContent } from "../site";
-import type { Testimonial } from "../types";
+import type { FaqItem, Testimonial } from "../types";
 
 // Site content in English — same fields as content/pt-BR/site.ts.
 // TODO(content): review by a native English speaker before publishing.
@@ -333,64 +333,69 @@ export const site: SiteContent = {
     {
       question: "What is CFO as a Service?",
       answer:
-        "It's the structuring of your business's financial intelligence (controllership, cash flow and management KPIs), without the need to hire a full-time finance director.",
+        "It means hiring the strategic know-how of a senior Chief Financial Officer (CFO) on a fractional, outsourced basis. Instead of carrying the high payroll costs of a full-time executive, your company relies on a specialized Vispe team to build a management income statement, analyze profit margins, forecast cash flow and guide your growth decisions.",
     },
     {
       question: "Do I need an established finance department?",
       answer:
-        "No. We work from the initial diagnosis, organizing your finances from scratch when needed, all the way to more advanced processes such as M&A and fundraising.",
+        "If your company sells well but cash doesn't grow, if you make decisions on gut feeling, or spend too much time putting out operational fires, yes. A structured finance function brings cash predictability, clarity about which products generate real profit and protection against waste.",
     },
     {
-      question: "How does the initial diagnosis work?",
+      question: "How does the initial assessment work?",
       answer:
-        "We analyze the company's current financial situation and point out where the main margin losses and structuring opportunities are, before any commitment.",
+        "Our assessment is a complete X-ray of your company's finances. We analyze your processes, cash indicators, margins and hidden costs to pinpoint exactly where your business is losing money and where the biggest opportunities lie to unlock profit and increase your business's market value (Equity).",
     },
     {
       question: "Do you work with companies of any size?",
       answer:
-        "We serve small and medium-sized businesses that already generate revenue and want to professionalize financial management, whether to grow, prepare for succession or access capital markets.",
+        "We mainly serve small and medium-sized businesses (SMBs) that want to leave financial improvisation behind and scale their market value. We have solutions tailored to each stage of maturity: from companies that need to organize their operations to SMBs raising investment or going through M&A.",
     },
     {
       question: "What other services do you offer?",
       answer:
-        "M&A, fundraising, tax planning, sales acceleration and valuation, each structured according to the company's specific moment and needs.",
+        "We offer a complete ecosystem for your business's financial maturity:",
+      items: [
+        { label: "Strategic", text: "CFO as a Service, Controllership, Valuation and Tax Planning." },
+        { label: "Operational", text: "Financial BPO and Efficiency Assessment." },
+        { label: "Transactional", text: "M&A (Buying and Selling Companies), Fundraising and Due Diligence." },
+      ],
     },
     {
-      question: "How does Finance BPO work?",
+      question: "How does Financial BPO work?",
       answer:
-        "We take over your company's financial routine (accounts payable and receivable, reconciliation and cash flow) so you have reliable information and free time to run the business.",
+        "It is outsourcing the operational arm of your finance function. The Vispe team takes over the heavy routine of accounts payable and receivable, daily bank reconciliation and issuing invoices and payment slips. You gain time and the assurance of fully organized, reliable data to support strategic management.",
     },
     {
       question: "What is Valuation?",
       answer:
-        "It's the assessment of your company's real value, based on results, prospects and risks. It's the benchmark for selling, bringing in partners, raising capital or planning succession.",
+        "It is the rigorous technical calculation of your company's real market value. Vispe's Valuation considers your projected cash flows, margins and assets to give you negotiating power with investors, partners or buyers in mergers and acquisitions.",
     },
     {
       question: "What is Due Diligence?",
       answer:
-        "It's a detailed analysis of a company's finances, contracts and risks before an acquisition, merger or investment, so the decision is made with data and without surprises.",
+        "It is an in-depth audit of the company's financial, accounting, tax and legal areas. It validates information before an M&A deal or fundraising, identifying hidden risks and ensuring full security for both buyers or investors and sellers.",
     },
     {
-      question: "When does it make sense to consider M&A?",
+      question: "When does M&A make sense?",
       answer:
-        "When the company wants to grow by acquiring operations, join forces with a strategic partner or sell the business. We structure the process to maximize returns at every stage.",
+        "M&A (Mergers and Acquisitions) makes sense at strategic moments: when you want to cash in by selling the company (a liquidity event), attract an investor partner to accelerate expansion, or acquire competitors to lead the market. The ideal time to prepare is before you need to sell.",
     },
     {
       question: "What is a Financial Turnaround?",
       answer:
-        "It's a recovery plan for companies with tight cash or falling margins: we reorganize costs, debt and processes to restore the business's financial health.",
+        "It is an intensive restructuring process for companies facing severe cash crises, high debt or eroded margins. We step in to stop financial bleeding, renegotiate liabilities, adjust operations and restore the business's health and profitability.",
     },
     {
       question: "How does fundraising work?",
       answer:
-        "We prepare the company and its numbers to present to investors and institutions, and help choose the best source of capital for your moment.",
+        "We structure your company's financial thesis, prepare the executive documentation and connect your business to the best sources of capital on the market (banks, investment funds, structured credit and private investors), securing the best rates and terms.",
     },
     {
       question: "How does tax planning help?",
       answer:
-        "We review the company's tax structure to identify the most efficient regime and reduce the tax burden within the law, freeing up margin for your profit.",
+        "Tax planning identifies legal, strategic ways to reduce the tax burden on your revenue and profit. By paying only what the law strictly requires, the money saved goes straight to the company's cash, increasing your net profit margin.",
     },
-  ],
+  ] as readonly FaqItem[],
 
   partners: {
     title: "Our partners",

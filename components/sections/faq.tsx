@@ -2,6 +2,12 @@ import { Plus } from "lucide-react";
 import { Reveal } from "@/components/motion/reveal";
 import { useSite, type SiteContent } from "@/content/site";
 
+/** Resposta em texto corrido (JSON-LD), com a lista emendada quando houver. */
+function answerText(item: SiteContent["faq"][number]) {
+  if (!item.items) return item.answer;
+  return [item.answer, ...item.items.map((entry) => `${entry.label}: ${entry.text}`)].join(" ");
+}
+
 function faqJsonLd(faq: SiteContent["faq"]) {
   return {
     "@context": "https://schema.org",
@@ -9,7 +15,7 @@ function faqJsonLd(faq: SiteContent["faq"]) {
     mainEntity: faq.map((item) => ({
       "@type": "Question",
       name: item.question,
-      acceptedAnswer: { "@type": "Answer", text: item.answer },
+      acceptedAnswer: { "@type": "Answer", text: answerText(item) },
     })),
   };
 }
@@ -49,6 +55,15 @@ export function FAQ({ id }: { id?: string }) {
                   {item.question}
                 </summary>
                 <p className="mt-3 pl-9 text-sm leading-relaxed text-fg-muted">{item.answer}</p>
+                {item.items && (
+                  <ul className="mt-2 list-disc space-y-1 pl-13 text-sm leading-relaxed text-fg-muted marker:text-brand-dark">
+                    {item.items.map((entry) => (
+                      <li key={entry.label}>
+                        <strong className="font-semibold text-fg">{entry.label}:</strong> {entry.text}
+                      </li>
+                    ))}
+                  </ul>
+                )}
               </details>
             </Reveal>
           ))}

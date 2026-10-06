@@ -1,4 +1,4 @@
-import type { Testimonial } from "../types";
+import type { FaqItem, Testimonial } from "../types";
 
 // Conteúdo do site em português (fonte). A versão em inglês fica em
 // content/en-US/site.ts com exatamente os mesmos campos.
@@ -343,64 +343,69 @@ export const site = {
     {
       question: "O que é o CFO as Service?",
       answer:
-        "É a estruturação da inteligência financeira do seu negócio (controladoria, fluxo de caixa e indicadores de gestão), sem a necessidade de contratar um diretor financeiro em tempo integral.",
+        "É a contratação do know-how estratégico de um Diretor Financeiro (CFO) sênior de forma fracionada/terceirizada. Em vez de arcar com os altos custos trabalhistas de um executivo CLT, sua empresa conta com uma equipe especializada da Vispe para estruturar DRE gerencial, analisar margens de lucro, projetar fluxo de caixa e orientar suas decisões de crescimento.",
     },
     {
       question: "Preciso de um financeiro estruturado?",
       answer:
-        "Não. Trabalhamos desde o diagnóstico inicial, organizando o financeiro do zero quando necessário, até a estruturação de processos mais avançados como M&A e captação.",
+        "Se a sua empresa vende bem mas o caixa não cresce, se você toma decisões no “achismo” ou gasta tempo demais apagando incêndios operacionais, sim. Um financeiro estruturado traz previsibilidade de caixa, clareza sobre quais produtos geram lucro real e proteção contra desperdícios.",
     },
     {
       question: "Como funciona o diagnóstico inicial?",
       answer:
-        "Analisamos a situação financeira atual da empresa e apontamos onde estão as principais perdas de margem e oportunidades de estruturação, antes de qualquer compromisso.",
+        "Nosso diagnóstico é um raio-X completo das finanças da sua empresa. Analisamos seus processos, indicadores de caixa, margens e custos ocultos para identificar exatamente onde seu negócio está perdendo dinheiro e quais são as maiores oportunidades para destravar lucro e aumentar o valor de mercado (Equity) do seu negócio.",
     },
     {
       question: "Vocês atendem empresas de qualquer porte?",
       answer:
-        "Atendemos pequenas e médias empresas que já faturam e buscam profissionalizar a gestão financeira, seja para crescer, se preparar para sucessão ou acessar o mercado de capitais.",
+        "Atendemos principalmente pequenas e médias empresas (PMEs) que buscam sair do amadorismo financeiro e escalar seu valor de mercado. Temos soluções adaptadas para cada estágio de maturidade: desde quem precisa organizar o operacional até PMEs em fase de captação de investimentos ou M&A.",
     },
     {
       question: "Quais outros serviços vocês oferecem?",
       answer:
-        "M&A, captação de recursos, planejamento tributário, aceleração comercial e valuation, cada um estruturado conforme o momento e a necessidade específica da empresa.",
+        "Oferecemos um ecossistema completo para a maturidade financeira do seu negócio:",
+      items: [
+        { label: "Estratégicos", text: "CFO as a Service, Controladoria, Valuation e Planejamento Tributário." },
+        { label: "Operacionais", text: "BPO Financeiro e Diagnóstico de Eficiência." },
+        { label: "Transacionais", text: "M&A (Compra e Venda de Empresas), Captação de Recursos e Due Diligence." },
+      ],
     },
     {
       question: "Como funciona o BPO Financeiro?",
       answer:
-        "Assumimos a rotina financeira da sua empresa (contas a pagar e a receber, conciliação e fluxo de caixa) para que você tenha informação confiável e tempo livre para tocar o negócio.",
+        "É a terceirização do “braço operacional” do seu financeiro. A equipe da Vispe assume a rotina pesada de contas a pagar e receber, conciliação bancária diária e emissão de notas/boletos. Você ganha tempo e a garantia de dados 100% organizados e confiáveis para alimentar a gestão estratégica.",
     },
     {
       question: "O que é Valuation?",
       answer:
-        "É a avaliação do valor real da sua empresa, com base em resultados, perspectivas e riscos. Serve de referência para vender, buscar sócios, captar recursos ou planejar a sucessão.",
+        "É o cálculo técnico e rigoroso do valor real de mercado da sua empresa. O Valuation da Vispe considera seus fluxos de caixa projetados, margens e ativos para te dar poder de negociação perante investidores, sócios ou compradores em processos de fusão e aquisição.",
     },
     {
       question: "O que é Due Diligence?",
       answer:
-        "É uma análise detalhada das finanças, contratos e riscos de uma empresa antes de uma compra, fusão ou investimento, para que a decisão seja tomada com dados e sem surpresas.",
+        "É uma auditoria aprofundada nas áreas financeira, contábil, fiscal e jurídica da empresa. Ela serve para validar as informações antes de uma operação de M&A ou captação, identificando riscos ocultos e garantindo total segurança tanto para quem compra/investe quanto para quem vende.",
     },
     {
       question: "Quando faz sentido pensar em M&A?",
       answer:
-        "Quando a empresa quer crescer comprando operações, se unir a um parceiro estratégico ou vender o negócio. Estruturamos o processo para maximizar o retorno em cada etapa.",
+        "O M&A (Fusões e Aquisições) faz sentido em momentos estratégicos: quando você deseja realizar o ganho financeiro vendendo a empresa (evento de liquidez), quer atrair um sócio investidor para acelerar a expansão, ou pretende adquirir concorrentes para dominar o mercado. O momento ideal de preparação é antes de precisar vender.",
     },
     {
       question: "O que é Turnaround Financeiro?",
       answer:
-        "É o plano de recuperação para empresas com caixa pressionado ou margens em queda: reorganizamos custos, dívidas e processos para devolver a saúde financeira ao negócio.",
+        "É o processo de reestruturação intensiva para empresas que enfrentam crises severas de caixa, endividamento alto ou margens corroídas. Nós intervimos para estancar sangrias financeiras, renegociar passivos, ajustar a operação e reestabelecer a saúde e lucratividade do negócio.",
     },
     {
       question: "Como funciona a captação de recursos?",
       answer:
-        "Preparamos a empresa e os números para apresentar a investidores e instituições, e apoiamos a escolha da melhor fonte de recurso para o seu momento.",
+        "Nós estruturamos a tese financeira da sua empresa, preparamos a documentação executiva e conectamos seu negócio às melhores fontes de capital do mercado (bancos, fundos de investimento, crédito estruturado e investidores privados), garantindo as melhores taxas e condições.",
     },
     {
       question: "Como o planejamento tributário ajuda?",
       answer:
-        "Revisamos a estrutura fiscal da empresa para identificar o enquadramento mais eficiente e reduzir a carga tributária dentro da lei, liberando margem para o seu lucro.",
+        "O planejamento tributário identifica formas legais e estratégicas de reduzir a carga de impostos cobrada sobre o seu faturamento e lucro. Ao pagar apenas o estritamente necessário por lei, o dinheiro economizado vai direto para o caixa da empresa, aumentando a margem de lucro líquida.",
     },
-  ],
+  ] as readonly FaqItem[],
 
   partners: {
     title: "Nossos parceiros",

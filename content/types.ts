@@ -22,6 +22,13 @@ export function format(text: string, values: Record<string, string | number>): s
   );
 }
 
+/** Pergunta do FAQ. `items` vira uma lista logo abaixo da resposta. */
+export type FaqItem = {
+  question: string;
+  answer: string;
+  items?: { label: string; text: string }[];
+};
+
 /** Depoimento de cliente (seção Feedbacks). Todos os extras são opcionais. */
 export type Testimonial = {
   quote: string;
