@@ -41,7 +41,8 @@ export function Hero({ id }: { id?: string }) {
           </h1>
         </HeroIntroItem>
 
-        <HeroIntroItem>
+        {/* max-w-full: sem ele o item cresce até os 680px do parágrafo e gera scroll horizontal no celular. */}
+        <HeroIntroItem className="max-w-full">
           <p
             className="mt-5 w-[680px] max-w-full text-balance text-[18px] leading-[25.2px] tracking-[-0.18px] md:text-[20px] md:leading-[28px] md:tracking-[-0.2px]"
             style={{ color: "#5f6062" }}
