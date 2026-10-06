@@ -78,7 +78,10 @@ export function TestimonialCard({
         </div>
       </figcaption>
 
-      <blockquote className="mt-5 text-balance text-sm leading-relaxed text-fg">{quote}</blockquote>
+      {/* Estilo medido no depoimento da referência: 16/22.4, itálico, preto a ~60% (contraste ~5,7). */}
+      <blockquote className="mt-5 text-base text-ink/60 italic" style={{ lineHeight: 1.4 }}>
+        “{quote}”
+      </blockquote>
 
       {media && (
         <Image
