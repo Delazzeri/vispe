@@ -56,9 +56,8 @@ export function TestimonialCard({
 
         <div className="min-w-0 flex-1">
           <div className="flex items-center justify-between gap-3">
-            <p className="truncate text-lg font-bold text-ink" style={{ letterSpacing: "-0.02em" }}>
-              {name}
-            </p>
+            {/* Nome e setor medidos na referência: 16/16 negrito preto; 12/16.8 preto a ~60%. */}
+            <p className="truncate text-base leading-4 font-bold text-ink">{name}</p>
             {/* Instagram e site do cliente, na mesma linha do nome. */}
             <div className="flex shrink-0 items-center gap-2">
               <ClientLink href={instagram} label={format(ui.testimonialInstagram, { name })}>
@@ -74,7 +73,11 @@ export function TestimonialCard({
               </ClientLink>
             </div>
           </div>
-          {segment && <p className="truncate text-base text-fg-muted">{segment}</p>}
+          {segment && (
+            <p className="mt-1 truncate text-xs text-ink/60" style={{ lineHeight: 1.4 }}>
+              {segment}
+            </p>
+          )}
         </div>
       </figcaption>
 
