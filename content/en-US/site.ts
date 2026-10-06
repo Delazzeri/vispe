@@ -422,8 +422,8 @@ export const site: SiteContent = {
     { label: "Solutions", href: "/#servicos" },
     { label: "Testimonials", href: "/#depoimentos" },
     { label: "Equity", href: "/#equity" },
-    { label: "FAQ", href: "/#faq" },
     { label: "Blog", href: "/#blog" },
+    { label: "FAQ", href: "/#faq" },
   ],
 
   footer: {

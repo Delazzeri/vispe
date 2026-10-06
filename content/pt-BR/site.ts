@@ -433,8 +433,8 @@ export const site = {
     { label: "Soluções", href: "/#servicos" },
     { label: "Feedbacks", href: "/#depoimentos" },
     { label: "Equity", href: "/#equity" },
-    { label: "FAQ", href: "/#faq" },
     { label: "Blog", href: "/#blog" },
+    { label: "FAQ", href: "/#faq" },
   ],
 
   // Footer: só links para páginas/âncoras que existem hoje. Política de
