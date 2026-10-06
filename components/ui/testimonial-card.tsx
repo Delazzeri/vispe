@@ -96,8 +96,8 @@ export function TestimonialCard({
 
   const person = (
     <div className="flex min-w-0 flex-1 items-center gap-4">
-      {/* Foto com borda branca e sombra suave; sem foto, a inicial no mesmo formato. */}
-      <span className="relative block h-14 w-14 shrink-0 overflow-hidden rounded-full border-4 border-surface bg-bg shadow-md">
+      {/* Logo ocupando o círculo inteiro, com sombra suave; sem logo, a inicial no mesmo formato. */}
+      <span className="relative block h-14 w-14 shrink-0 overflow-hidden rounded-full bg-bg shadow-md">
         {avatar ? (
           <Image src={avatar} alt="" fill sizes="56px" className="object-cover" />
         ) : (
