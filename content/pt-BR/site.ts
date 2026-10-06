@@ -272,9 +272,9 @@ export const site = {
     {
       quote:
         "…eu digo que eles estão me ensinando, tô aprendendo com eles. Tô aprendendo a gerir… 20 anos de empresa, tô aprendendo a gerir com eles agora.",
-      // TODO(content): nome da empresa do Olívio (não citado no vídeo).
-      name: "Olívio",
+      name: "Cyber Internet",
       segment: "Provedor de Internet",
+      avatar: "/media/clients/cyber-160.webp",
     },
     {
       quote:

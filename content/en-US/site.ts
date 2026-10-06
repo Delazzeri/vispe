@@ -266,8 +266,9 @@ export const site: SiteContent = {
     {
       quote:
         "…I say they are teaching me, I'm learning from them. I'm learning to manage… 20 years in business, and I'm learning to manage with them now.",
-      name: "Olívio",
+      name: "Cyber Internet",
       segment: "Internet Service Provider",
+      avatar: "/media/clients/cyber-160.webp",
     },
     {
       quote:
