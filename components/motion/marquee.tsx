@@ -10,9 +10,9 @@ type MarqueeProps = {
 
 /**
  * Loop CSS puro (sem JS/motion) com conteúdo duplicado para o efeito de
- * fileira contínua — a cópia é aria-hidden para não duplicar conteúdo
- * para leitores de tela. Pausa no hover; motion-safe: desliga sob
- * prefers-reduced-motion.
+ * fileira contínua — a cópia é aria-hidden e inert para não duplicar
+ * conteúdo para leitores de tela nem links no Tab. Pausa no hover;
+ * motion-safe: desliga sob prefers-reduced-motion.
  */
 export function Marquee({ children, direction = "left", speed = 30, className }: MarqueeProps) {
   const trackStyle: CSSProperties = {
@@ -30,6 +30,7 @@ export function Marquee({ children, direction = "left", speed = 30, className }:
       </div>
       <div
         aria-hidden
+        inert
         className="flex shrink-0 items-center gap-8 pr-8 motion-safe:animate-[marquee_linear_infinite] group-hover:[animation-play-state:paused]"
         style={trackStyle}
       >
