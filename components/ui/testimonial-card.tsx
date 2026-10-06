@@ -1,61 +1,40 @@
-import { ImageIcon, Star, User } from "lucide-react";
+import Image from "next/image";
+import { Globe } from "lucide-react";
+import type { ReactNode } from "react";
+import { SocialLogo } from "@/components/ui/social-links";
 import { useSite } from "@/content/site";
-import { format } from "@/content/types";
+import { format, type Testimonial } from "@/content/types";
 import { cn } from "@/lib/cn";
 
-type TestimonialCardProps = {
-  quote: string;
-  name: string;
-  handle?: string;
-  role?: string;
-  rating?: number;
-  avatarUrl?: string;
-  /** Placeholder visual de foto de perfil pendente (sem foto real autorizada ainda). */
-  avatarPlaceholder?: boolean;
-  /** Placeholder de mídia anexa ao depoimento (screenshot/foto pendente). */
-  mediaPlaceholder?: boolean;
-  /** "x" marca depoimento vindo do X (recebe o selo). */
-  source?: string;
-  className?: string;
-};
+type TestimonialCardProps = Testimonial & { className?: string };
 
-function XMark({ className }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden>
-      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-    </svg>
-  );
-}
-
-function Rating({ rating, className }: { rating: number; className?: string }) {
-  return (
-    <div className={cn("flex gap-0.5", className)} role="img" aria-label={format(useSite().ui.rating, { rating })}>
-      {Array.from({ length: 5 }).map((_, index) => (
-        <Star
-          key={index}
-          className={cn(
-            "h-4 w-4",
-            index < rating ? "fill-brand text-brand" : "fill-border text-border",
-          )}
-          aria-hidden
-        />
-      ))}
-    </div>
+/** Link externo do cliente; sem URL, o ícone aparece sem link (TODO(content)). */
+function ClientLink({ href, label, children }: { href?: string; label: string; children: ReactNode }) {
+  const classes =
+    "group block rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-dark focus-visible:ring-offset-2";
+  return href ? (
+    <a href={href} target="_blank" rel="noopener" aria-label={label} title={label} className={classes}>
+      {children}
+    </a>
+  ) : (
+    <span role="img" aria-label={label} title={label} className="group block">
+      {children}
+    </span>
   );
 }
 
 export function TestimonialCard({
   quote,
   name,
-  handle,
-  role,
-  rating,
-  avatarUrl,
-  avatarPlaceholder,
-  mediaPlaceholder,
-  source,
+  segment,
+  avatar,
+  instagram,
+  website,
+  media,
   className,
 }: TestimonialCardProps) {
+  const { ui } = useSite();
+
   return (
     <figure
       className={cn(
@@ -63,50 +42,54 @@ export function TestimonialCard({
         className,
       )}
     >
-      <figcaption className="flex items-center gap-3">
-        {avatarUrl ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={avatarUrl}
-            alt=""
-            className="h-10 w-10 shrink-0 rounded-full object-cover"
-          />
-        ) : avatarPlaceholder ? (
-          <span
-            aria-hidden
-            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-border"
-          >
-            <User className="h-5 w-5 text-fg-muted" aria-hidden />
-          </span>
-        ) : (
-          <span
-            aria-hidden
-            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-border text-sm font-semibold text-fg-muted"
-          >
-            {name.charAt(0)}
-          </span>
-        )}
+      <figcaption className="flex items-center gap-4">
+        {/* Foto com borda branca e sombra suave; sem foto, a inicial no mesmo formato. */}
+        <span className="relative block h-14 w-14 shrink-0 overflow-hidden rounded-full border-4 border-surface bg-bg shadow-md">
+          {avatar ? (
+            <Image src={avatar} alt="" fill sizes="56px" className="object-cover" />
+          ) : (
+            <span aria-hidden className="flex h-full w-full items-center justify-center text-lg font-bold text-fg-muted">
+              {name.charAt(0)}
+            </span>
+          )}
+        </span>
+
         <div className="min-w-0 flex-1">
-          <p className="text-sm font-semibold text-fg">{name}</p>
-          {(handle ?? role) && <p className="truncate text-xs text-fg-muted">{handle ?? role}</p>}
+          <div className="flex items-center justify-between gap-3">
+            <p className="truncate text-lg font-bold text-ink" style={{ letterSpacing: "-0.02em" }}>
+              {name}
+            </p>
+            {/* Instagram e site do cliente, na mesma linha do nome. */}
+            <div className="flex shrink-0 items-center gap-2">
+              <ClientLink href={instagram} label={format(ui.testimonialInstagram, { name })}>
+                <SocialLogo network="instagram" tone="light" />
+              </ClientLink>
+              <ClientLink href={website} label={format(ui.testimonialWebsite, { name })}>
+                <span
+                  aria-hidden
+                  className="flex h-6 w-6 items-center justify-center rounded-full bg-ink/60 transition-colors group-hover:bg-brand group-focus-visible:bg-brand"
+                >
+                  <Globe className="h-3.5 w-3.5 text-paper group-hover:text-brand-fg" aria-hidden />
+                </span>
+              </ClientLink>
+            </div>
+          </div>
+          {segment && <p className="truncate text-base text-fg-muted">{segment}</p>}
         </div>
-        {source === "x" ? <XMark className="h-4 w-4 shrink-0 text-ink" /> : null}
       </figcaption>
 
-      <blockquote className="mt-4 text-balance text-sm leading-relaxed text-fg">
-        {quote}
-      </blockquote>
+      <blockquote className="mt-5 text-balance text-sm leading-relaxed text-fg">{quote}</blockquote>
 
-      {rating ? <Rating rating={rating} className="mt-4" /> : null}
-
-      {mediaPlaceholder ? (
-        <div
-          className="mt-4 flex aspect-video items-center justify-center rounded-2xl bg-border/50"
-          aria-hidden
-        >
-          <ImageIcon className="h-8 w-8 text-fg-muted" aria-hidden />
-        </div>
-      ) : null}
+      {media && (
+        <Image
+          src={media.src}
+          alt={media.alt}
+          width={media.width}
+          height={media.height}
+          sizes="(min-width: 768px) 520px, 100vw"
+          className="mt-5 h-auto w-full rounded-2xl"
+        />
+      )}
     </figure>
   );
 }

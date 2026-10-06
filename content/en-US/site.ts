@@ -1,4 +1,5 @@
 import type { SiteContent } from "../site";
+import type { Testimonial } from "../types";
 
 // Site content in English — same fields as content/pt-BR/site.ts.
 // TODO(content): review by a native English speaker before publishing.
@@ -277,7 +278,7 @@ export const site: SiteContent = {
         "At Red Fibra Telecomunicações, we recommend Vispe Capital's services with great confidence and trust. Throughout a long-standing partnership, they have always proven to be a trustworthy company, focused, with excellent service, committed to quality and to reaching the agreed goals, achieving the expected results.",
       name: "Red Fibra Telecomunicações",
     },
-  ],
+  ] as readonly Testimonial[],
 
   fin: {
     name: "24 Fin",
@@ -446,6 +447,8 @@ export const site: SiteContent = {
     pillarsLabel: "Vispe Capital solutions",
     galleryLabel: "Vispe Capital gallery",
     socialProfile: "Vispe Capital on {network}",
+    testimonialInstagram: "{name} on Instagram",
+    testimonialWebsite: "{name} website",
     includes: "Includes:",
     pillar: "Pillar {n}",
     rating: "Rated {rating} out of 5 stars",

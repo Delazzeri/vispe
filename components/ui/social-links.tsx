@@ -3,7 +3,7 @@ import { brand, useSite } from "@/content/site";
 import { format } from "@/content/types";
 import { cn } from "@/lib/cn";
 
-type SocialNetwork = "instagram" | "facebook" | "linkedin" | "spotify" | "youtube";
+export type SocialNetwork = "instagram" | "facebook" | "linkedin" | "spotify" | "youtube";
 
 const socialNetworks: { network: SocialNetwork; label: string }[] = [
   { network: "instagram", label: "Instagram" },
@@ -13,14 +13,14 @@ const socialNetworks: { network: SocialNetwork; label: string }[] = [
   { network: "youtube", label: "YouTube" },
 ];
 
-type Tone = "light" | "dark";
+export type Tone = "light" | "dark";
 
 /**
  * Versão monocromática do logo (gerada a partir do PNG colorido) sempre
  * visível; a versão colorida oficial entra por opacidade no hover/foco.
  * Em fundo escuro, a versão preta é invertida (círculo branco).
  */
-function SocialLogo({ network, tone }: { network: SocialNetwork; tone: Tone }) {
+export function SocialLogo({ network, tone }: { network: SocialNetwork; tone: Tone }) {
   return (
     <span aria-hidden className="relative block h-6 w-6">
       <Image

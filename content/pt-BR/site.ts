@@ -1,3 +1,5 @@
+import type { Testimonial } from "../types";
+
 // Conteúdo do site em português (fonte). A versão em inglês fica em
 // content/en-US/site.ts com exatamente os mesmos campos.
 export const site = {
@@ -284,7 +286,7 @@ export const site = {
         "Nós da Red Fibra Telecomunicações, recomendamos com muita segurança e confiança, os serviços oferecidos pela Vispe Capital. Com uma parceria de longa data, sempre se mostrou uma empresa idônea, com foco e atendimento excelente, presa pela qualidade nos serviços e o sucesso nas metas estabelecidas, atingindo os resultados esperados.",
       name: "Red Fibra Telecomunicações",
     },
-  ],
+  ] as readonly Testimonial[],
 
   // TODO(content): "24 Fin" é um produto ainda em definição — nome, logo e
   // copy abaixo são placeholders fictícios para fechar o layout, substituir
@@ -466,6 +468,8 @@ export const site = {
     pillarsLabel: "Soluções da Vispe Capital",
     galleryLabel: "Galeria da Vispe Capital",
     socialProfile: "{network} da Vispe Capital",
+    testimonialInstagram: "Instagram da {name}",
+    testimonialWebsite: "Site da {name}",
     includes: "Inclui:",
     pillar: "Pilar {n}",
     rating: "Avaliação {rating} de 5 estrelas",
