@@ -44,7 +44,7 @@ export function CategoryBlocks({ id }: { id?: string }) {
                     {service.includes.join(", ")}
                   </p>
 
-                  {/* Widgets ilustrativos da 24 Fin (decorativos), em preto sólido. */}
+                  {/* Widgets ilustrativos do Fin 24/7 (decorativos), em preto sólido. */}
                   <div aria-hidden className="mt-6 flex flex-wrap gap-3">
                     {service.finWidgets.map((widgetId) => {
                       const widget = finWall.find((w) => w.id === widgetId);

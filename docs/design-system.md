@@ -30,6 +30,16 @@ Componentes usam apenas tokens semânticos (`bg-surface`, `text-fg-muted`), nunc
 
 **Regra de contraste dourado:** `--color-brand` (#D6B256) sobre `--color-bg` (#FFFFFF) não atinge AA para texto pequeno — usar `--color-brand-dark` (#9E6B15) para texto/ícones dourados sobre fundo claro, e reservar `--color-brand` para preenchimentos sólidos (botões) com `--color-brand-fg` por cima.
 
+### Cores do Fin 24/7 (produto)
+
+O Fin 24/7 (CFO virtual da Vispe) tem identidade própria em verde, medida no portal do produto. Usar **somente** na seção do Fin 24/7, nunca como cor da marca Vispe.
+
+```css
+--color-fin:       #22c58e;  /* verde principal: botões e destaques */
+--color-fin-light: #33d39b;  /* início do gradiente do logo (bg-linear-to-br from-fin-light to-fin) */
+--color-fin-fg:    #0c1310;  /* texto sobre o verde (contraste ~9:1) */
+```
+
 ## Tipografia
 
 - Fonte: stack `"Inter Display", Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif` — mesmo stack usado pela referência cooldock.app.

@@ -3,7 +3,7 @@ import { cn } from "@/lib/cn";
 import { Widget } from "./widgets/widgets";
 
 /**
- * Parede de widgets HTML da 24 Fin — decorativa (aria-hidden), o conteúdo
+ * Parede de widgets HTML do Fin 24/7 — decorativa (aria-hidden), o conteúdo
  * semântico da seção é o H2/texto/CTA. Layout fixo por breakpoint + scale,
  * para a composição das linhas não "quebrar" em larguras intermediárias.
  */

@@ -131,7 +131,7 @@ export const site: SiteContent = {
       description:
         "Strategic financial management that turns numbers into decisions and revenue into real profit. We organize cash flow, P&L and KPIs into a clear monthly routine, so you know exactly where the company earns and where it loses margin.",
       includes: ["Cash flow", "Management P&L", "Financial KPIs", "Month-end closing routine"],
-      // Widgets da parede da 24 Fin (ids em content/<locale>/fin-wall.ts).
+      // Widgets da parede do Fin 24/7 (ids em content/<locale>/fin-wall.ts).
       finWidgets: ["income-statement", "reconciliation", "default-rate", "payables", "receivables"],
     },
     {
@@ -142,7 +142,7 @@ export const site: SiteContent = {
       description:
         "We build your sales operation from the ground up: clear processes, data intelligence and a team focused on bringing in high-margin contracts. Every stage of the funnel gets measured, so the company grows by selling better, not just more.",
       includes: ["Sales funnel", "Sales playbook", "Data intelligence", "Team management"],
-      // Widgets da parede da 24 Fin (ids em content/<locale>/fin-wall.ts).
+      // Widgets da parede do Fin 24/7 (ids em content/<locale>/fin-wall.ts).
       finWidgets: ["revenue", "revenue-goal", "avg-ticket", "payment-confirmed", "break-even"],
     },
     {
@@ -153,7 +153,7 @@ export const site: SiteContent = {
       description:
         "Structuring and connecting you with investors, banks and funds to fuel growth. We prepare the numbers, the thesis and the company presentation, and lead the negotiation so capital arrives on the best terms for your moment.",
       includes: ["Round structuring", "Investor network", "Pitch deck", "Term negotiation"],
-      // Widgets da parede da 24 Fin (ids em content/<locale>/fin-wall.ts).
+      // Widgets da parede do Fin 24/7 (ids em content/<locale>/fin-wall.ts).
       finWidgets: ["cash-runway", "in-today", "out-today", "balance", "bank-balances"],
     },
     {
@@ -164,7 +164,7 @@ export const site: SiteContent = {
       description:
         "We buy, sell and merge companies strategically to maximize returns. We run the entire process, from mapping opportunities to negotiation and closing, with rigorous due diligence so every decision is made without surprises.",
       includes: ["Buyer mapping", "Negotiation", "Due diligence", "Deal closing"],
-      // Widgets da parede da 24 Fin (ids em content/<locale>/fin-wall.ts).
+      // Widgets da parede do Fin 24/7 (ids em content/<locale>/fin-wall.ts).
       finWidgets: ["cash-flow-30d", "monthly-report", "gross-margin"],
     },
     {
@@ -175,7 +175,7 @@ export const site: SiteContent = {
       description:
         "Stop paying more taxes than you owe. Legal, strategic reduction of your tax burden. We review the company's tax regime and corporate structure to free up margin within the law, with security and compliance at every step.",
       includes: ["Tax diagnosis", "Corporate restructuring", "Tax regime selection", "Compliance"],
-      // Widgets da parede da 24 Fin (ids em content/<locale>/fin-wall.ts).
+      // Widgets da parede do Fin 24/7 (ids em content/<locale>/fin-wall.ts).
       finWidgets: ["tax-savings", "tax-regime", "fixed-cost", "taxes", "expenses-by-category"],
     },
     {
@@ -186,7 +186,7 @@ export const site: SiteContent = {
       description:
         "Your company's true value, calculated with precision. You negotiate from a position of strength. We combine discounted cash flow and market multiples in a technical report that backs every number at the table, whether you are selling, raising capital or planning succession.",
       includes: ["Technical report", "Market multiples", "Discounted cash flow", "Negotiation report"],
-      // Widgets da parede da 24 Fin (ids em content/<locale>/fin-wall.ts).
+      // Widgets da parede do Fin 24/7 (ids em content/<locale>/fin-wall.ts).
       finWidgets: ["ytd-profit", "ebitda", "net-margin"],
     },
   ],
@@ -288,11 +288,12 @@ export const site: SiteContent = {
   ] as readonly Testimonial[],
 
   fin: {
-    name: "24 Fin",
+    name: "Fin 24/7",
+    byline: "by Vispe",
     title: "Your virtual CFO, available 24/7",
     description:
-      "[Sample content: replace] Cash flow, KPIs and financial alerts organized by Vispe, keeping track of your company every day of the month.",
-    ctaLabel: "Get 24 Fin",
+      "Track today's cash, the 90-day projection and alerts for accounts payable and receivable in a single dashboard. Fin 24/7 also builds your weekly plan, simulates scenarios and answers your questions with an AI assistant, connected to your banks through Open Finance.",
+    ctaLabel: "Discover Fin 24/7",
     ctaHref: "/contato",
   },
 
@@ -436,7 +437,7 @@ export const site: SiteContent = {
         links: [
           { label: "Talk to Vispe", href: "/contato" },
           { label: "Book a diagnosis", href: "/contato" },
-          { label: "24 Fin virtual CFO", href: "/#fin" },
+          { label: "Fin 24/7 virtual CFO", href: "/#fin" },
         ],
       },
     },

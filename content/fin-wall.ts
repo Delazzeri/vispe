@@ -3,7 +3,7 @@ import { resolveLocale, type Locale } from "@/i18n/routing";
 import { finWall as enUS } from "./en-US/fin-wall";
 import { finWall as ptBR } from "./pt-BR/fin-wall";
 
-// Tipos e acesso por idioma da parede de widgets da 24 Fin.
+// Tipos e acesso por idioma da parede de widgets do Fin 24/7.
 
 export type WidgetSize = "s" | "m" | "l";
 export type WidgetTone = "default" | "brand" | "accent" | "muted";

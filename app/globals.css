@@ -15,7 +15,12 @@
   --color-ink: #000000;
   --color-paper: #ffffff;
 
-  /* Microtexto dos widgets do mockup (parede da 24 Fin). */
+  /* Fin 24/7 (produto da Vispe): cores medidas no portal do produto. */
+  --color-fin: #22c58e; /* verde principal: botões e destaques */
+  --color-fin-light: #33d39b; /* início do gradiente do logo */
+  --color-fin-fg: #0c1310; /* texto sobre o verde (contraste ~9:1) */
+
+  /* Microtexto dos widgets do mockup (parede do Fin 24/7). */
   --text-2xs: 0.625rem;
   --text-2xs--line-height: 0.75rem;
 

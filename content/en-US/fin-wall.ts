@@ -1,4 +1,4 @@
-// 24 Fin widget wall — English version of content/pt-BR/fin-wall.ts.
+// Fin 24/7 widget wall — English version of content/pt-BR/fin-wall.ts.
 // TODO(content): all values are ILLUSTRATIVE (product mockup), not real
 // client or Vispe data.
 import type { FinWidget } from "../fin-wall";

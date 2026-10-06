@@ -1,4 +1,4 @@
-// Parede de widgets da seção 24 Fin (padrão "widget wall" do CTA da referência).
+// Parede de widgets da seção Fin 24/7 (padrão "widget wall" do CTA da referência).
 // TODO(content): todos os valores abaixo são ILUSTRATIVOS — compõem o mockup
 // do produto, não representam dados reais de clientes nem da Vispe.
 import type { FinWidget } from "../fin-wall";

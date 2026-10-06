@@ -128,7 +128,7 @@ export const site = {
     },
   ],
 
-  // Cada solução mostra widgets ilustrativos da parede da 24 Fin (até 2 linhas).
+  // Cada solução mostra widgets ilustrativos da parede do Fin 24/7 (até 2 linhas).
   services: [
     {
       slug: "controladoria-financeira",
@@ -138,7 +138,7 @@ export const site = {
       description:
         "Gestão financeira estratégica que transforma números em decisões e faturamento em lucro real. Organizamos fluxo de caixa, DRE e indicadores em uma rotina mensal clara, para você saber exatamente onde a empresa ganha e onde perde margem.",
       includes: ["Fluxo de caixa", "DRE gerencial", "Indicadores financeiros", "Rotina de fechamento"],
-      // Widgets da parede da 24 Fin (ids em content/<locale>/fin-wall.ts).
+      // Widgets da parede do Fin 24/7 (ids em content/<locale>/fin-wall.ts).
       finWidgets: ["income-statement", "reconciliation", "default-rate", "payables", "receivables"],
     },
     {
@@ -149,7 +149,7 @@ export const site = {
       description:
         "Estruturamos a sua operação comercial do zero: processos claros, inteligência de dados e um time focado em trazer contratos de alta margem. Cada etapa do funil passa a ser medida, para que a empresa cresça vendendo melhor, e não apenas mais.",
       includes: ["Funil comercial", "Playbook de vendas", "Inteligência de dados", "Gestão de time"],
-      // Widgets da parede da 24 Fin (ids em content/<locale>/fin-wall.ts).
+      // Widgets da parede do Fin 24/7 (ids em content/<locale>/fin-wall.ts).
       finWidgets: ["revenue", "revenue-goal", "avg-ticket", "payment-confirmed", "break-even"],
     },
     {
@@ -160,7 +160,7 @@ export const site = {
       description:
         "Estruturação e conexão com investidores, bancos e fundos para impulsionar o crescimento. Preparamos os números, a tese e a apresentação da empresa, e conduzimos a negociação para que o capital chegue nas melhores condições para o seu momento.",
       includes: ["Estruturação da rodada", "Rede de investidores", "Pitch deck", "Negociação de termos"],
-      // Widgets da parede da 24 Fin (ids em content/<locale>/fin-wall.ts).
+      // Widgets da parede do Fin 24/7 (ids em content/<locale>/fin-wall.ts).
       finWidgets: ["cash-runway", "in-today", "out-today", "balance", "bank-balances"],
     },
     {
@@ -171,7 +171,7 @@ export const site = {
       description:
         "Compramos, vendemos e fundimos empresas com estratégia para maximizar o retorno. Conduzimos todo o processo, do mapeamento de oportunidades à negociação e ao fechamento, com due diligence rigorosa para que cada decisão seja tomada sem surpresas.",
       includes: ["Mapeamento de compradores", "Negociação", "Due diligence", "Fechamento do deal"],
-      // Widgets da parede da 24 Fin (ids em content/<locale>/fin-wall.ts).
+      // Widgets da parede do Fin 24/7 (ids em content/<locale>/fin-wall.ts).
       finWidgets: ["cash-flow-30d", "monthly-report", "gross-margin"],
     },
     {
@@ -182,7 +182,7 @@ export const site = {
       description:
         "Pare de pagar mais imposto do que deve. Redução legal da carga tributária com estratégia. Revisamos o enquadramento fiscal e a estrutura societária da empresa para liberar margem dentro da lei, com segurança e conformidade em cada etapa.",
       includes: ["Diagnóstico tributário", "Reorganização societária", "Enquadramento fiscal", "Compliance"],
-      // Widgets da parede da 24 Fin (ids em content/<locale>/fin-wall.ts).
+      // Widgets da parede do Fin 24/7 (ids em content/<locale>/fin-wall.ts).
       finWidgets: ["tax-savings", "tax-regime", "fixed-cost", "taxes", "expenses-by-category"],
     },
     {
@@ -193,7 +193,7 @@ export const site = {
       description:
         "O valor real da sua empresa calculado com precisão. Você negocia com poder. Combinamos fluxo de caixa descontado e múltiplos de mercado em um laudo técnico que sustenta cada número na mesa, seja para vender, captar ou planejar a sucessão.",
       includes: ["Laudo técnico", "Múltiplos de mercado", "Fluxo de caixa descontado", "Relatório para negociação"],
-      // Widgets da parede da 24 Fin (ids em content/<locale>/fin-wall.ts).
+      // Widgets da parede do Fin 24/7 (ids em content/<locale>/fin-wall.ts).
       finWidgets: ["ytd-profit", "ebitda", "net-margin"],
     },
   ],
@@ -295,17 +295,15 @@ export const site = {
     },
   ] as readonly Testimonial[],
 
-  // TODO(content): "24 Fin" é um produto ainda em definição — nome, logo e
-  // copy abaixo são placeholders fictícios para fechar o layout, substituir
-  // quando a marca e o posicionamento reais estiverem prontos.
+  // Fin 24/7: CFO virtual da Vispe (portal web do cliente).
   fin: {
-    name: "24 Fin",
+    name: "Fin 24/7",
+    byline: "by Vispe",
     title: "Seu CFO virtual, disponível 24 horas",
     description:
-      "[Conteúdo de exemplo: substituir] Fluxo de caixa, indicadores e alertas financeiros organizados pela Vispe, acompanhando sua empresa todos os dias do mês.",
-    ctaLabel: "Baixar a 24 Fin",
-    // TODO(content): confirmar se 24 Fin terá app para download ou será
-    // somente web — ajustar label/destino do CTA conforme a plataforma real.
+      "Acompanhe o caixa de hoje, a projeção para os próximos 90 dias e os alertas de contas a pagar e a receber em um só painel. O Fin 24/7 também monta o plano da semana, simula cenários e tira suas dúvidas com um assistente de IA, conectado aos seus bancos via Open Finance.",
+    ctaLabel: "Conhecer o Fin 24/7",
+    // TODO(content): trocar pelo link do portal quando houver página pública de acesso.
     ctaHref: "/contato",
   },
 
@@ -455,7 +453,7 @@ export const site = {
         links: [
           { label: "Fale com a Vispe", href: "/contato" },
           { label: "Agende um diagnóstico", href: "/contato" },
-          { label: "CFO virtual 24 Fin", href: "/#fin" },
+          { label: "Fin 24/7, CFO virtual", href: "/#fin" },
         ],
       },
     },
