@@ -245,14 +245,8 @@ export const site: SiteContent = {
   testimonials: [
     {
       quote:
-        "We are proud to say we have been Vispe Capital clients for years, and we make a point of bringing them into all our plans and processes, from the simplest to the most strategic…",
-      name: "AONET",
-      segment: "Internet Service Provider",
-    },
-    {
-      quote:
-        "…we did our Valuation with Vispe and there is nothing that would stop us from recommending their services with complete security and confidence.",
-      name: "Virtex",
+        "…with the CFO service, the business picked up much more speed. Today we are extremely satisfied. I highly recommend Vispe…",
+      name: "JR Net",
       segment: "Internet Service Provider",
     },
     {
@@ -263,38 +257,32 @@ export const site: SiteContent = {
     },
     {
       quote:
+        "…we did our Valuation with Vispe and there is nothing that would stop us from recommending their services with complete security and confidence.",
+      name: "Virtex",
+      segment: "Internet Service Provider",
+    },
+    {
+      quote:
         "…I hired their Equity Mentoring service, and since then my strategic planning has been developed and organized by Vispe. I always recommend them, because I saw the difference up close, and it was much needed!",
       name: "GLPNET",
       segment: "Internet Service Provider",
     },
     {
       quote:
-        "We recommend hiring Vispe's Consulting, Valuation, CFO, Equity Mentoring and M&A services with complete confidence and peace of mind…",
-      name: "PDN Telecom",
-      segment: "Internet Service Provider",
-    },
-    {
-      quote:
-        "…thanks to the great experience we had, we recommend Vispe Capital's services. A company that has always served us with great professionalism, reliability and dedication.",
-      name: "TR Dream Telecom",
-      segment: "Internet Service Provider",
-    },
-    {
-      quote:
-        "…Throughout a long-standing partnership, they have always proven to be a trustworthy company, focused, with excellent service…",
-      name: "Red Fibra Telecomunicações",
-      segment: "Internet Service Provider",
-    },
-    {
-      quote:
-        "…with the CFO service, the business picked up much more speed. Today we are extremely satisfied. I highly recommend Vispe…",
-      name: "JR Net",
-      segment: "Internet Service Provider",
-    },
-    {
-      quote:
         "…I say they are teaching me, I'm learning from them. I'm learning to manage… 20 years in business, and I'm learning to manage with them now.",
       name: "Olívio",
+      segment: "Internet Service Provider",
+    },
+    {
+      quote:
+        "We are proud to say we have been Vispe Capital clients for years, and we make a point of bringing them into all our plans and processes, from the simplest to the most strategic…",
+      name: "AONET",
+      segment: "Internet Service Provider",
+    },
+    {
+      quote:
+        "We recommend hiring Vispe's Consulting, Valuation, CFO, Equity Mentoring and M&A services with complete confidence and peace of mind…",
+      name: "PDN Telecom",
       segment: "Internet Service Provider",
     },
   ] as readonly Testimonial[],
