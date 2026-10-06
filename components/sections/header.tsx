@@ -8,7 +8,7 @@ export function Header() {
   const site = useSite();
   return (
     <HeaderChrome>
-      <div className="relative flex items-center justify-between gap-3 px-4 py-2 md:justify-center md:gap-6 md:px-5 md:py-2.5">
+      <div className="relative flex items-center justify-between gap-3 py-2.5 pr-2.5 pl-5 md:justify-center md:gap-6 md:px-5">
         <Link href="/" className="shrink-0">
           <Image
             src="/media/brand/logo-vispe-preto-2204.png"
@@ -16,7 +16,7 @@ export function Header() {
             width={2204}
             height={434}
             priority
-            className="h-5 w-auto md:h-6"
+            className="h-6 w-auto"
           />
         </Link>
 

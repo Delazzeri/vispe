@@ -5,6 +5,7 @@ import { LocaleLink as Link } from "@/components/ui/locale-link";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { Menu, X } from "lucide-react";
 import { spring } from "@/components/motion/presets";
+import { LanguageSwitcher } from "@/components/ui/language-switcher";
 import { useSite } from "@/content/site";
 
 export function MobileMenu() {
@@ -53,6 +54,8 @@ export function MobileMenu() {
               >
                 {site.ui.headerCta.label}
               </Link>
+              {/* No celular o seletor de idioma mora aqui (no desktop, no canto da página). */}
+              <LanguageSwitcher className="mt-4 self-center" />
             </nav>
           </motion.div>
         )}
