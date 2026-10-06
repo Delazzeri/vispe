@@ -1,7 +1,24 @@
 import { Reveal } from "@/components/motion/reveal";
 import { hasInteractiveVersion, Widget } from "@/components/showcase/widgets/widgets";
-import { useFinWall } from "@/content/fin-wall";
+import { useFinWall, type FinWidget } from "@/content/fin-wall";
 import { useSite } from "@/content/site";
+import { cn } from "@/lib/cn";
+
+/** Widgets largos que cabem no celular sem passar de 2 linhas (com o zoom de 70%). */
+const maxWideOnMobile = 2;
+
+/**
+ * Ids dos widgets escondidos no celular: além dos pequenos, ficam no máximo
+ * `maxWideOnMobile` largos, priorizando os interativos e depois a ordem do card.
+ */
+function hiddenOnMobile(widgets: readonly FinWidget[]) {
+  const wide = widgets.filter((widget) => widget.size !== "s");
+  const kept = [...wide.filter(hasInteractiveVersion), ...wide.filter((widget) => !hasInteractiveVersion(widget))].slice(
+    0,
+    maxWideOnMobile,
+  );
+  return new Set(wide.filter((widget) => !kept.includes(widget)).map((widget) => widget.id));
+}
 
 export function CategoryBlocks({ id }: { id?: string }) {
   const site = useSite();
@@ -29,6 +46,8 @@ export function CategoryBlocks({ id }: { id?: string }) {
 
         <div className="mt-14 grid grid-cols-1 gap-6 md:grid-cols-2">
           {site.services.map((service, index) => {
+            const widgets = service.finWidgets.flatMap((widgetId) => finWall.filter((w) => w.id === widgetId));
+            const hidden = hiddenOnMobile(widgets);
             return (
               <Reveal key={service.slug} delay={index * 0.06}>
                 <article className="h-full rounded-3xl bg-surface p-8 shadow-[0_1px_2px_rgba(38,38,38,0.04),0_4px_12px_-4px_rgba(38,38,38,0.1)]">
@@ -46,15 +65,18 @@ export function CategoryBlocks({ id }: { id?: string }) {
 
                   {/* Widgets ilustrativos do Fin 24/7, em preto sólido. Os decorativos
                       ficam fora da árvore de acessibilidade; os interativos não. */}
-                  <div className="mt-6 flex flex-wrap gap-3">
-                    {service.finWidgets.map((widgetId) => {
-                      const widget = finWall.find((w) => w.id === widgetId);
-                      if (!widget) return null;
-                      return hasInteractiveVersion(widget) ? (
-                        <Widget key={widgetId} widget={widget} solid interactive />
-                      ) : (
-                        <div key={widgetId} aria-hidden className="contents">
-                          <Widget widget={widget} solid />
+                  {/* No celular, zoom (que também encolhe o espaço ocupado, ao contrário
+                      de scale) deixa os widgets menores e cabendo em até 2 linhas. */}
+                  <div className="mt-6 flex flex-wrap gap-3 max-md:[zoom:0.7]">
+                    {widgets.map((widget) => {
+                      const interactive = hasInteractiveVersion(widget);
+                      return (
+                        <div
+                          key={widget.id}
+                          aria-hidden={!interactive || undefined}
+                          className={cn("contents", hidden.has(widget.id) && "max-md:hidden")}
+                        >
+                          <Widget widget={widget} solid interactive={interactive} />
                         </div>
                       );
                     })}
