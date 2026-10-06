@@ -255,36 +255,43 @@ export const site = {
       quote:
         "Com orgulho dizemos que há anos somos clientes da Vispe Capital, e fazemos questão de contatá-la em todos os nossos planos e processos, dos mais simples aos mais estratégicos…",
       name: "AONET",
+      segment: "Provedor de Internet",
     },
     {
       quote:
         "…realizamos o serviço de Valuation com a Vispe e não temos nenhum acontecimento que nos impeça de recomendar com total segurança e confiança os serviços oferecidos por ela.",
       name: "Virtex",
+      segment: "Provedor de Internet",
     },
     {
       quote:
         "…passamos por todas as etapas de reestruturação da empresa seguindo as indicações dos consultores, e os resultados foram maravilhosos.",
       name: "FlyFibra",
+      segment: "Provedor de Internet",
     },
     {
       quote:
         "…contratei o serviço de Equity Mentory, e desde então, o planejamento de minhas estratégias tem sido elaboradas e organizadas pela Vispe. Sempre indico, pois vi a diferença de perto, e foi necessária!",
       name: "GLPNET",
+      segment: "Provedor de Internet",
     },
     {
       quote:
         "Nós recomendamos com toda segurança e tranquilidade a contratação dos serviços de Consultoria, Valuation, CFO, Equity Mentory e M&A que a Vispe oferece…",
       name: "PDN Telecom",
+      segment: "Provedor de Internet",
     },
     {
       quote:
         "…devido à ótima experiência que tivemos, recomendamos os serviços da Vispe Capital. Empresa essa que sempre nos atendeu com muito profissionalismo, segurança e dedicação.",
       name: "TR Dream Telecom",
+      segment: "Provedor de Internet",
     },
     {
       quote:
         "…Com uma parceria de longa data, sempre se mostrou uma empresa idônea, com foco e atendimento excelente…",
       name: "Red Fibra Telecomunicações",
+      segment: "Provedor de Internet",
     },
   ] as readonly Testimonial[],
 
