@@ -1,5 +1,5 @@
 import { Reveal } from "@/components/motion/reveal";
-import { Widget } from "@/components/showcase/widgets/widgets";
+import { hasInteractiveVersion, Widget } from "@/components/showcase/widgets/widgets";
 import { useFinWall } from "@/content/fin-wall";
 import { useSite } from "@/content/site";
 
@@ -44,11 +44,19 @@ export function CategoryBlocks({ id }: { id?: string }) {
                     {service.includes.join(", ")}
                   </p>
 
-                  {/* Widgets ilustrativos do Fin 24/7 (decorativos), em preto sólido. */}
-                  <div aria-hidden className="mt-6 flex flex-wrap gap-3">
+                  {/* Widgets ilustrativos do Fin 24/7, em preto sólido. Os decorativos
+                      ficam fora da árvore de acessibilidade; os interativos não. */}
+                  <div className="mt-6 flex flex-wrap gap-3">
                     {service.finWidgets.map((widgetId) => {
                       const widget = finWall.find((w) => w.id === widgetId);
-                      return widget ? <Widget key={widgetId} widget={widget} solid /> : null;
+                      if (!widget) return null;
+                      return hasInteractiveVersion(widget) ? (
+                        <Widget key={widgetId} widget={widget} solid interactive />
+                      ) : (
+                        <div key={widgetId} aria-hidden className="contents">
+                          <Widget widget={widget} solid />
+                        </div>
+                      );
                     })}
                   </div>
                 </article>

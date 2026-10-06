@@ -138,9 +138,9 @@ export const finWall: readonly FinWidget[] = [
     size: "m",
     title: "Expenses by category",
     bars: [
-      { label: "Payroll", value: 82 },
-      { label: "Taxes", value: 54 },
-      { label: "Operations", value: 37 },
+      { label: "Payroll", value: 82, display: "R$ 48.2k" },
+      { label: "Taxes", value: 54, display: "R$ 31.7k" },
+      { label: "Operations", value: 37, display: "R$ 21.7k" },
     ],
   },
   { id: "tax-regime", kind: "badge", size: "s", icon: "shield", label: "Presumed", hideOnMobile: true },

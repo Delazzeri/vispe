@@ -138,9 +138,9 @@ export const finWall: readonly FinWidget[] = [
     size: "m",
     title: "Despesas por categoria",
     bars: [
-      { label: "Pessoal", value: 82 },
-      { label: "Impostos", value: 54 },
-      { label: "Operação", value: 37 },
+      { label: "Pessoal", value: 82, display: "R$ 48,2k" },
+      { label: "Impostos", value: 54, display: "R$ 31,7k" },
+      { label: "Operação", value: 37, display: "R$ 21,7k" },
     ],
   },
   { id: "tax-regime", kind: "badge", size: "s", icon: "shield", label: "Presumido", hideOnMobile: true },

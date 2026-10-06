@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import type { FinWidget, WidgetIcon, WidgetSize, WidgetTone } from "@/content/fin-wall";
 import { cn } from "@/lib/cn";
+import { Bars, Checklist } from "./interactive";
 import { LiveClock } from "./live-clock";
 
 const icons: Record<WidgetIcon, LucideIcon> = {
@@ -166,9 +167,39 @@ function Marker({ marker, tone }: { marker: "open" | "done" | "dot"; tone: Widge
   );
 }
 
-/** `solid`: fundo preto sólido, para uso fora da parede escura (ex.: cards claros). */
-export function Widget({ widget, solid }: { widget: FinWidget; solid?: boolean }) {
+/** Widgets que têm versão interativa (ver `interactive.tsx`). */
+export function hasInteractiveVersion(widget: FinWidget) {
+  return (
+    widget.kind === "bars" ||
+    (widget.kind === "list" && widget.rows.some((row) => row.marker === "open" || row.marker === "done"))
+  );
+}
+
+/**
+ * `solid`: fundo preto sólido, para uso fora da parede escura (ex.: cards claros).
+ * `interactive`: lista com checks e barras viram clicáveis (cards de Soluções).
+ */
+export function Widget({ widget, solid, interactive }: { widget: FinWidget; solid?: boolean; interactive?: boolean }) {
   const { size } = widget;
+
+  if (interactive && hasInteractiveVersion(widget)) {
+    if (widget.kind === "list") {
+      return (
+        <Shell size={size} solid={solid} className="flex-col justify-center">
+          {widget.title && <p className="text-2xs font-semibold text-paper/60">{widget.title}</p>}
+          <Checklist rows={widget.rows} />
+        </Shell>
+      );
+    }
+    if (widget.kind === "bars") {
+      return (
+        <Shell size={size} solid={solid} className="flex-col justify-center gap-0.5 py-2">
+          <p className="text-2xs font-semibold text-paper/60">{widget.title}</p>
+          <Bars bars={widget.bars} />
+        </Shell>
+      );
+    }
+  }
 
   switch (widget.kind) {
     case "stat": {
@@ -271,7 +302,7 @@ export function Widget({ widget, solid }: { widget: FinWidget; solid?: boolean }
 
     case "bars":
       return (
-        <Shell size={size} solid={solid} className="flex-col justify-center gap-1">
+        <Shell size={size} solid={solid} className="flex-col justify-center gap-0.5 py-2">
           <p className="text-2xs font-semibold text-paper/60">{widget.title}</p>
           {widget.bars.map((bar) => (
             <div key={bar.label} className="flex items-center gap-2">

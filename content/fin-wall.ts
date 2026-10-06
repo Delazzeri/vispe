@@ -51,7 +51,7 @@ export type FinWidget = Base &
         title?: string;
         rows: { label: string; value?: string; tone?: WidgetTone; marker?: "open" | "done" | "dot" }[];
       }
-    | { kind: "bars"; title: string; bars: { label: string; value: number }[] }
+    | { kind: "bars"; title: string; bars: { label: string; value: number; display?: string }[] }
     | { kind: "calendar"; month: string; days: { weekday: string; day: string }[]; active: number }
     | { kind: "event"; day: string; month: string; title: string; detail: string; value?: string }
     | { kind: "notification"; icon: WidgetIcon; eyebrow?: string; title: string; body: string }
