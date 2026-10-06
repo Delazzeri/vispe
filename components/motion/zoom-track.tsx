@@ -8,10 +8,10 @@ type ZoomTrackProps = {
 };
 
 /**
- * Faixa de 1300px em que o conteúdo fica pinned (sticky) e "aproxima" com o
+ * Faixa de 700px em que o conteúdo fica pinned (sticky) e "aproxima" com o
  * scroll. A animação começa assim que o topo da seção aparece na base da tela
- * e termina quando a faixa sai pelo topo: 300%/5% → 100%/100% (até ~38%
- * do percurso), parado até ~77%, depois 50%/0%.
+ * e termina quando a faixa sai pelo topo: 300%/5% → 100%/100% (até 40% do
+ * percurso), parado só até 55% (~375px numa tela de 900px), depois 50%/0%.
  * Com reduced motion, o conteúdo aparece estático e visível.
  */
 
@@ -22,7 +22,7 @@ export function ZoomTrack({ children }: ZoomTrackProps) {
 
   // scrollYProgress vai de 0 (topo da seção na base da tela) a 1 (fim da
   // faixa no topo da tela); os pontos de corte são frações desse percurso.
-  const stops = [0, 500 / 1300, 1000 / 1300, 1];
+  const stops = [0, 0.4, 0.55, 1];
   const scale = useTransform(scrollYProgress, stops, [3, 1, 1, 0.5]);
   // Forma com função de propósito: com ranges, o Motion acelera opacity via
   // ViewTimeline nativo, que calcula a faixa errada com o filho sticky e
@@ -35,7 +35,7 @@ export function ZoomTrack({ children }: ZoomTrackProps) {
   }
 
   return (
-    <div ref={ref} className="relative h-[calc(1300px+100vh)]">
+    <div ref={ref} className="relative h-[calc(700px+100vh)]">
       <div className="pointer-events-none sticky top-0 h-screen w-full overflow-hidden">
         <motion.div style={{ scale, opacity }} className="flex h-full w-full items-center justify-center">
           {children}
