@@ -470,6 +470,7 @@ export const site: SiteContent = {
     socialProfile: "Vispe Capital on {network}",
     testimonialInstagram: "{name} on Instagram",
     testimonialWebsite: "{name} website",
+    testimonialRating: "Rating: {rating} out of {max} stars",
     includes: "Includes:",
     pillar: "Pillar {n}",
     rating: "Rated {rating} out of 5 stars",

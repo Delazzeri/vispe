@@ -34,6 +34,8 @@ export type Testimonial = {
   /** URLs do cliente; cada ícone só aparece quando a URL existe. */
   instagram?: string;
   website?: string;
+  /** Nota de 1 a 5 em estrelas; padrão 5. */
+  rating?: number;
   /** Foto anexada ao depoimento, exibida no corpo do card. */
   media?: { src: string; alt: string; width: number; height: number };
 };

@@ -30,9 +30,10 @@ export function Testimonials({ id }: { id?: string }) {
         <div className="mt-14 grid grid-cols-1 items-start gap-6 md:grid-cols-2">
           {columns.map((column, col) => (
             <div key={col} className={cn("contents md:flex md:flex-col md:gap-6", col === 1 && "md:pt-12.5")}>
-              {column.map(({ testimonial, index }) => (
+              {column.map(({ testimonial, index }, row) => (
                 <Reveal key={testimonial.name} delay={index * 0.06}>
-                  <TestimonialCard {...testimonial} />
+                  {/* Xadrez: o perfil alterna entre topo e fim na coluna e entre as colunas. */}
+                  <TestimonialCard {...testimonial} profile={(row + col) % 2 === 0 ? "top" : "bottom"} />
                 </Reveal>
               ))}
             </div>
