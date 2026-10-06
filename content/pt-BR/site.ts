@@ -249,41 +249,41 @@ export const site = {
     description: "Feedback real de empresários que confiam na Vispe Capital.",
   },
 
-  // Depoimentos reais enviados pela Vispe (texto literal dos clientes).
+  // Depoimentos reais: trechos literais dos clientes (texto completo no commit cc3659a).
   testimonials: [
     {
       quote:
-        "Com orgulho dizemos que há anos somos clientes da Vispe Capital, e fazemos questão de contatá-la em todos os nossos planos e processos, dos mais simples aos mais estratégicos, pois nos auxiliam com empenho e cuidado, sempre fazendo um ótimo trabalho. Em todas as oportunidades que temos, indicamos os serviços da Vispe para parceiros que buscam especialistas em Consultoria, Valuation, CFO, Equity Mentory ou M&A, pois confiamos em seus serviços oferecidos.",
+        "Com orgulho dizemos que há anos somos clientes da Vispe Capital, e fazemos questão de contatá-la em todos os nossos planos e processos, dos mais simples aos mais estratégicos…",
       name: "AONET",
     },
     {
       quote:
-        "Nós da Virtex, realizamos o serviço de Valuation com a Vispe e não temos nenhum acontecimento que nos impeça de recomendar com total segurança e confiança os serviços oferecidos por ela. Somos clientes de longa data e seguimos constantemente mantendo contato e parceria, visto que após os serviços prestados, tivemos o resultado alcançado. Temos muita admiração pela transparência e dedicação da Vispe em todas as demandas já solicitadas e, com certeza, faremos mais trabalhos em conjunto.",
+        "…realizamos o serviço de Valuation com a Vispe e não temos nenhum acontecimento que nos impeça de recomendar com total segurança e confiança os serviços oferecidos por ela.",
       name: "Virtex",
     },
     {
       quote:
-        "Nós recomendamos com toda segurança e tranquilidade a contratação dos serviços de Consultoria, Valuation, CFO, Equity Mentor e M&A que a Vispe oferece. Somos clientes há muitos anos e passamos por todas as etapas de reestruturação da empresa seguindo as indicações dos consultores, e os resultados foram maravilhosos. Temos orgulho de ser clientes e temos certeza de que estarão fazendo um ótimo trabalho juntos.",
+        "…passamos por todas as etapas de reestruturação da empresa seguindo as indicações dos consultores, e os resultados foram maravilhosos.",
       name: "FlyFibra",
     },
     {
       quote:
-        "Quando estava precisando organizar a minha empresa e tinha planos para expansão sem saber por onde começar, me indicaram a Vispe Capital. Após algumas reuniões, contratei o serviço de Equity Mentory, e desde então, o planejamento de minhas estratégias tem sido elaboradas e organizadas pela Vispe. Sempre indico, pois vi a diferença de perto, e foi necessária!",
+        "…contratei o serviço de Equity Mentory, e desde então, o planejamento de minhas estratégias tem sido elaboradas e organizadas pela Vispe. Sempre indico, pois vi a diferença de perto, e foi necessária!",
       name: "GLPNET",
     },
     {
       quote:
-        "Nós recomendamos com toda segurança e tranquilidade a contratação dos serviços de Consultoria, Valuation, CFO, Equity Mentory e M&A que a Vispe oferece, somos clientes a muitos anos e passamos por todas as etapas de reestruturação da empresa seguindo as indicações dos consultores e os resultados foram maravilhosos. Temos orgulho de ser clientes e temos certeza de que estarão fazendo um ótimo trabalho juntos.",
+        "Nós recomendamos com toda segurança e tranquilidade a contratação dos serviços de Consultoria, Valuation, CFO, Equity Mentory e M&A que a Vispe oferece…",
       name: "PDN Telecom",
     },
     {
       quote:
-        "Nós da TR Dream Telecom, devido à ótima experiência que tivemos, recomendamos os serviços da Vispe Capital. Empresa essa que sempre nos atendeu com muito profissionalismo, segurança e dedicação.",
+        "…devido à ótima experiência que tivemos, recomendamos os serviços da Vispe Capital. Empresa essa que sempre nos atendeu com muito profissionalismo, segurança e dedicação.",
       name: "TR Dream Telecom",
     },
     {
       quote:
-        "Nós da Red Fibra Telecomunicações, recomendamos com muita segurança e confiança, os serviços oferecidos pela Vispe Capital. Com uma parceria de longa data, sempre se mostrou uma empresa idônea, com foco e atendimento excelente, presa pela qualidade nos serviços e o sucesso nas metas estabelecidas, atingindo os resultados esperados.",
+        "…Com uma parceria de longa data, sempre se mostrou uma empresa idônea, com foco e atendimento excelente…",
       name: "Red Fibra Telecomunicações",
     },
   ] as readonly Testimonial[],

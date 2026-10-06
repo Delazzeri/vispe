@@ -240,42 +240,42 @@ export const site: SiteContent = {
     description: "Real feedback from business owners who trust Vispe Capital.",
   },
 
-  // Real client testimonials — English translation of the Portuguese originals.
+  // Real client testimonials: English translation of the Portuguese excerpts.
   // TODO(content): confirm with each client that the translation can be published.
   testimonials: [
     {
       quote:
-        "We are proud to say we have been Vispe Capital clients for years, and we make a point of bringing them into all our plans and processes, from the simplest to the most strategic, because they support us with commitment and care, always doing great work. Whenever we have the chance, we recommend Vispe's services to partners looking for specialists in Consulting, Valuation, CFO, Equity Mentoring or M&A, because we trust the services they offer.",
+        "We are proud to say we have been Vispe Capital clients for years, and we make a point of bringing them into all our plans and processes, from the simplest to the most strategic…",
       name: "AONET",
     },
     {
       quote:
-        "At Virtex, we did our Valuation with Vispe and there is nothing that would stop us from recommending their services with complete security and confidence. We are long-standing clients and keep in constant contact and partnership, since the services they provided delivered the results we were after. We greatly admire Vispe's transparency and dedication in every request we have made, and we will certainly do more work together.",
+        "…we did our Valuation with Vispe and there is nothing that would stop us from recommending their services with complete security and confidence.",
       name: "Virtex",
     },
     {
       quote:
-        "We recommend hiring Vispe's Consulting, Valuation, CFO, Equity Mentoring and M&A services with complete confidence and peace of mind. We have been clients for many years and went through every stage of restructuring the company following the consultants' guidance, and the results were wonderful. We are proud to be clients and we are sure you will do great work together.",
+        "…we went through every stage of restructuring the company following the consultants' guidance, and the results were wonderful.",
       name: "FlyFibra",
     },
     {
       quote:
-        "When I needed to organize my company and had expansion plans but didn't know where to start, Vispe Capital was recommended to me. After a few meetings, I hired their Equity Mentoring service, and since then my strategic planning has been developed and organized by Vispe. I always recommend them, because I saw the difference up close, and it was much needed!",
+        "…I hired their Equity Mentoring service, and since then my strategic planning has been developed and organized by Vispe. I always recommend them, because I saw the difference up close, and it was much needed!",
       name: "GLPNET",
     },
     {
       quote:
-        "We recommend hiring Vispe's Consulting, Valuation, CFO, Equity Mentoring and M&A services with complete confidence and peace of mind. We have been clients for many years and went through every stage of restructuring the company following the consultants' guidance, and the results were wonderful. We are proud to be clients and we are sure you will do great work together.",
+        "We recommend hiring Vispe's Consulting, Valuation, CFO, Equity Mentoring and M&A services with complete confidence and peace of mind…",
       name: "PDN Telecom",
     },
     {
       quote:
-        "At TR Dream Telecom, thanks to the great experience we had, we recommend Vispe Capital's services. A company that has always served us with great professionalism, reliability and dedication.",
+        "…thanks to the great experience we had, we recommend Vispe Capital's services. A company that has always served us with great professionalism, reliability and dedication.",
       name: "TR Dream Telecom",
     },
     {
       quote:
-        "At Red Fibra Telecomunicações, we recommend Vispe Capital's services with great confidence and trust. Throughout a long-standing partnership, they have always proven to be a trustworthy company, focused, with excellent service, committed to quality and to reaching the agreed goals, achieving the expected results.",
+        "…Throughout a long-standing partnership, they have always proven to be a trustworthy company, focused, with excellent service…",
       name: "Red Fibra Telecomunicações",
     },
   ] as readonly Testimonial[],
