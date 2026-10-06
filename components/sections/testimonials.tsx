@@ -29,7 +29,7 @@ export function Testimonials({ id }: { id?: string }) {
             (display: contents) e os cards viram uma lista única. */}
         <div className="mt-14 grid grid-cols-1 items-start gap-6 md:grid-cols-2">
           {columns.map((column, col) => (
-            <div key={col} className={cn("contents md:flex md:flex-col md:gap-6", col === 1 && "md:pt-28")}>
+            <div key={col} className={cn("contents md:flex md:flex-col md:gap-6", col === 1 && "md:pt-12.5")}>
               {column.map(({ testimonial, index }) => (
                 <Reveal key={testimonial.name} delay={index * 0.06}>
                   <TestimonialCard {...testimonial} />
