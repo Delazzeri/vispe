@@ -281,8 +281,8 @@ export const site: SiteContent = {
     },
     {
       quote:
-        "We recommend hiring Vispe's Consulting, Valuation, CFO, Equity Mentoring and M&A services with complete confidence and peace of mind…",
-      name: "PDN Telecom",
+        "…thanks to the great experience we had, we recommend Vispe Capital's services. A company that has always served us with great professionalism, reliability and dedication.",
+      name: "TR Dream Telecom",
       segment: "Internet Service Provider",
     },
   ] as readonly Testimonial[],
