@@ -1,9 +1,12 @@
 "use client";
 
 import { useReducedMotion } from "motion/react";
+import { cn } from "@/lib/cn";
 
+// No celular a cena fica presa à base da seção: com top fixo ela passava do fim
+// do hero e o overflow cortava o degradê, deixando uma linha reta.
 const heroClassName =
-  "absolute inset-x-0 top-[280px] -z-10 h-[420px] overflow-hidden md:top-[360px] md:h-[620px]";
+  "absolute inset-x-0 bottom-0 -z-10 h-[380px] overflow-hidden md:bottom-auto md:top-[360px] md:h-[620px]";
 
 type HeroSceneProps = {
   /** Posicionamento/tamanho do wrapper (padrão: faixa do hero). */
@@ -13,9 +16,20 @@ type HeroSceneProps = {
   fadeBottom?: boolean;
   /** Vídeo único (sem versão mobile); substitui as fontes padrão do hero. */
   src?: string;
+  /**
+   * No celular, degradê inferior mais alto e com faixa sólida na base, para a
+   * passagem ao fundo não marcar uma linha (usado no hero, onde a cena é baixa).
+   */
+  softFadeOnMobile?: boolean;
 };
 
-export function HeroScene({ className = heroClassName, preload = "auto", fadeBottom = true, src }: HeroSceneProps) {
+export function HeroScene({
+  className = heroClassName,
+  preload = "auto",
+  fadeBottom = true,
+  src,
+  softFadeOnMobile,
+}: HeroSceneProps) {
   const shouldReduceMotion = useReducedMotion();
 
   return (
@@ -57,7 +71,12 @@ export function HeroScene({ className = heroClassName, preload = "auto", fadeBot
       )}
       <div className="absolute inset-x-0 top-0 h-2/5 bg-gradient-to-b from-bg to-transparent" />
       {fadeBottom && (
-        <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-bg to-transparent" />
+        <div
+          className={cn(
+            "absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-bg to-transparent",
+            softFadeOnMobile && "max-md:h-3/5 max-md:from-20%",
+          )}
+        />
       )}
     </div>
   );

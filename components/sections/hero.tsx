@@ -15,7 +15,7 @@ export function Hero({ id }: { id?: string }) {
       aria-labelledby="hero-heading"
       className="relative isolate overflow-clip bg-bg"
     >
-      <HeroScene />
+      <HeroScene softFadeOnMobile />
 
       <HeroIntro className="relative mx-auto flex max-w-4xl flex-col items-center px-6 pt-10 text-center md:pt-16">
         <HeroIntroItem>
@@ -78,11 +78,11 @@ export function Hero({ id }: { id?: string }) {
           <DashboardMockup />
         </HeroIntroItem>
 
-        <HeroIntroItem className="pointer-events-auto absolute left-[max(-40px,calc(50%-900px))] top-20 z-20 hidden w-[360px] md:top-24 md:block lg:w-[440px] xl:w-[480px]">
+        <HeroIntroItem className="pointer-events-auto absolute -left-12 top-2 z-20 w-34 md:left-[max(-40px,calc(50%-900px))] md:top-24 md:w-[360px] lg:w-[440px] xl:w-[480px]">
           <HeroRock side="left" />
         </HeroIntroItem>
 
-        <HeroIntroItem className="pointer-events-auto absolute right-[max(-40px,calc(50%-900px))] top-20 z-20 hidden w-[360px] md:top-24 md:block lg:w-[440px] xl:w-[480px]">
+        <HeroIntroItem className="pointer-events-auto absolute -right-12 top-2 z-20 w-34 md:right-[max(-40px,calc(50%-900px))] md:top-24 md:w-[360px] lg:w-[440px] xl:w-[480px]">
           <HeroRock side="right" />
         </HeroIntroItem>
       </HeroIntro>
