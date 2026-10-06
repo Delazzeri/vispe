@@ -24,11 +24,12 @@ export function Fin({ id }: { id?: string }) {
 
       <div className="mx-auto max-w-2xl px-6 pt-24 pb-24 text-center md:pb-32">
         <Reveal>
-          {/* Logo do Fin 24/7: selo verde em gradiente com "24" e o nome. */}
-          <div className="inline-flex items-center gap-3 text-left">
+          {/* Logo do Fin 24/7: selo verde em gradiente com "24" e o nome. No
+              celular o selo vira o destaque, grande e centralizado, com o nome embaixo. */}
+          <div className="flex flex-col items-center gap-4 md:inline-flex md:flex-row md:gap-3 md:text-left">
             <span
               aria-hidden
-              className="flex h-12 w-12 items-center justify-center rounded-2xl bg-linear-to-br from-fin-light to-fin text-lg font-bold text-paper"
+              className="flex h-24 w-24 items-center justify-center rounded-3xl bg-linear-to-br from-fin-light to-fin text-4xl font-bold text-paper shadow-[0_0_48px_-8px_rgba(34,197,142,0.6)] md:h-12 md:w-12 md:rounded-2xl md:text-lg md:shadow-none"
             >
               24
             </span>

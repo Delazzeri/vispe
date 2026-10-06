@@ -1,4 +1,5 @@
 import { CheckCircle2, ArrowRight } from "lucide-react";
+import type { CSSProperties } from "react";
 import { LocaleLink as Link } from "@/components/ui/locale-link";
 import { cn } from "@/lib/cn";
 import { Reveal } from "@/components/motion/reveal";
@@ -6,9 +7,15 @@ import { HeroRock } from "@/components/ui/hero-rock";
 import { useSite } from "@/content/site";
 import { format } from "@/content/types";
 
+/** Tamanho que faz uma palavra de `length` caracteres caber na largura do card. */
+function fitSize(length: number) {
+  return `min(60px, ${(100 / (length * 0.78)).toFixed(2)}cqw)`;
+}
+
 export function ServicePillars({ id }: { id?: string }) {
   const site = useSite();
   const { title, description } = site.servicesCarousel;
+  const longestLabel = Math.max(...site.servicePillars.map((pillar) => pillar.shortLabel.length));
 
   return (
     <section id={id} aria-label={site.ui.pillarsLabel} className="relative overflow-hidden bg-bg py-24 md:py-32">
@@ -54,15 +61,20 @@ export function ServicePillars({ id }: { id?: string }) {
 
                 <div className="mt-6 min-w-0" style={{ containerType: "inline-size" }}>
                   <p
-                    className="whitespace-nowrap font-bold"
-                    style={{
-                      color: "#000000",
-                      // Dimensiona pela largura real do container (cqw): ~0.78em
-                      // por caractere em caixa alta bold, então a palavra sempre
-                      // cabe em uma linha, teto de 60px.
-                      fontSize: `min(60px, ${(100 / (pillar.shortLabel.length * 0.78)).toFixed(2)}cqw)`,
-                      lineHeight: 1,
-                    }}
+                    className="whitespace-nowrap font-bold text-(length:--fit-all) md:text-(length:--fit-own)"
+                    style={
+                      {
+                        color: "#000000",
+                        // Dimensiona pela largura real do container (cqw): ~0.78em
+                        // por caractere em caixa alta bold, então a palavra sempre
+                        // cabe em uma linha, teto de 60px. No desktop cada palavra
+                        // preenche o card; no celular, com os cards empilhados, todas
+                        // usam o tamanho da mais longa para ficarem padronizadas.
+                        "--fit-own": fitSize(pillar.shortLabel.length),
+                        "--fit-all": fitSize(longestLabel),
+                        lineHeight: 1,
+                      } as CSSProperties
+                    }
                   >
                     {pillar.shortLabel}
                   </p>
