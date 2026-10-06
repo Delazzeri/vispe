@@ -134,7 +134,7 @@ export const site = {
       tagline: "Organize o seu financeiro",
       name: "Controladoria Financeira",
       description:
-        "Gestão financeira estratégica que transforma números em decisões e faturamento em lucro real.",
+        "Gestão financeira estratégica que transforma números em decisões e faturamento em lucro real. Organizamos fluxo de caixa, DRE e indicadores em uma rotina mensal clara, para você saber exatamente onde a empresa ganha e onde perde margem.",
       includes: ["Fluxo de caixa", "DRE gerencial", "Indicadores financeiros", "Rotina de fechamento"],
       // Widgets da parede da 24 Fin (ids em content/<locale>/fin-wall.ts).
       finWidgets: ["income-statement", "reconciliation", "default-rate", "payables", "receivables"],
@@ -145,7 +145,7 @@ export const site = {
       tagline: "Venda mais, com margem melhor",
       name: "Aceleração Comercial",
       description:
-        "Estruturamos a sua operação comercial do zero: processos claros, inteligência de dados e um time focado em trazer contratos de alta margem.",
+        "Estruturamos a sua operação comercial do zero: processos claros, inteligência de dados e um time focado em trazer contratos de alta margem. Cada etapa do funil passa a ser medida, para que a empresa cresça vendendo melhor, e não apenas mais.",
       includes: ["Funil comercial", "Playbook de vendas", "Inteligência de dados", "Gestão de time"],
       // Widgets da parede da 24 Fin (ids em content/<locale>/fin-wall.ts).
       finWidgets: ["revenue", "revenue-goal", "avg-ticket", "payment-confirmed", "break-even"],
@@ -156,7 +156,7 @@ export const site = {
       tagline: "Conecte-se a quem investe no seu crescimento",
       name: "Captação de Recursos",
       description:
-        "Estruturação e conexão com investidores, bancos e fundos para impulsionar o crescimento.",
+        "Estruturação e conexão com investidores, bancos e fundos para impulsionar o crescimento. Preparamos os números, a tese e a apresentação da empresa, e conduzimos a negociação para que o capital chegue nas melhores condições para o seu momento.",
       includes: ["Estruturação da rodada", "Rede de investidores", "Pitch deck", "Negociação de termos"],
       // Widgets da parede da 24 Fin (ids em content/<locale>/fin-wall.ts).
       finWidgets: ["cash-runway", "in-today", "out-today", "balance", "bank-balances"],
@@ -167,7 +167,7 @@ export const site = {
       tagline: "Compre, venda ou funda com estratégia",
       name: "Fusões e Aquisições (M&A)",
       description:
-        "Compramos, vendemos e fundimos empresas com estratégia para maximizar o retorno.",
+        "Compramos, vendemos e fundimos empresas com estratégia para maximizar o retorno. Conduzimos todo o processo, do mapeamento de oportunidades à negociação e ao fechamento, com due diligence rigorosa para que cada decisão seja tomada sem surpresas.",
       includes: ["Mapeamento de compradores", "Negociação", "Due diligence", "Fechamento do deal"],
       // Widgets da parede da 24 Fin (ids em content/<locale>/fin-wall.ts).
       finWidgets: ["cash-flow-30d", "monthly-report", "gross-margin"],
@@ -178,7 +178,7 @@ export const site = {
       tagline: "Pague só o imposto que você deve",
       name: "Planejamento Tributário",
       description:
-        "Pare de pagar mais imposto do que deve. Redução legal da carga tributária com estratégia.",
+        "Pare de pagar mais imposto do que deve. Redução legal da carga tributária com estratégia. Revisamos o enquadramento fiscal e a estrutura societária da empresa para liberar margem dentro da lei, com segurança e conformidade em cada etapa.",
       includes: ["Diagnóstico tributário", "Reorganização societária", "Enquadramento fiscal", "Compliance"],
       // Widgets da parede da 24 Fin (ids em content/<locale>/fin-wall.ts).
       finWidgets: ["tax-savings", "tax-regime", "fixed-cost", "taxes", "expenses-by-category"],
@@ -188,7 +188,8 @@ export const site = {
       shortLabel: "VALUATION",
       tagline: "Saiba o real valor da sua empresa",
       name: "Valuation",
-      description: "O valor real da sua empresa calculado com precisão. Você negocia com poder.",
+      description:
+        "O valor real da sua empresa calculado com precisão. Você negocia com poder. Combinamos fluxo de caixa descontado e múltiplos de mercado em um laudo técnico que sustenta cada número na mesa, seja para vender, captar ou planejar a sucessão.",
       includes: ["Laudo técnico", "Múltiplos de mercado", "Fluxo de caixa descontado", "Relatório para negociação"],
       // Widgets da parede da 24 Fin (ids em content/<locale>/fin-wall.ts).
       finWidgets: ["ytd-profit", "ebitda", "net-margin"],
