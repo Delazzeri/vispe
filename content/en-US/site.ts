@@ -303,7 +303,7 @@ export const site: SiteContent = {
     name: "Fin 24/7",
     title: "Your virtual CFO, available 24/7",
     description:
-      "Track today's cash, the 90-day projection and alerts for accounts payable and receivable in a single dashboard. Fin 24/7 also builds your weekly plan, simulates scenarios and answers your questions with an AI assistant, connected to your banks through Open Finance.",
+      "Fin 24/7 connects your banks via Open Finance and shows cash, a 90-day forecast, and payables and receivables in one dashboard. Simulate scenarios and ask the AI anything to decide with confidence, any time.",
     ctaLabel: "Discover Fin 24/7",
     ctaHref: "https://vispeos.vercel.app/cfo/portal/login",
   },

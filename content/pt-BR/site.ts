@@ -310,7 +310,7 @@ export const site = {
     name: "Fin 24/7",
     title: "Seu CFO virtual, disponível 24 horas",
     description:
-      "Acompanhe o caixa de hoje, a projeção para os próximos 90 dias e os alertas de contas a pagar e a receber em um só painel. O Fin 24/7 também monta o plano da semana, simula cenários e tira suas dúvidas com um assistente de IA, conectado aos seus bancos via Open Finance.",
+      "O Fin 24/7 conecta seus bancos via Open Finance e mostra caixa, projeção de 90 dias e contas a pagar e a receber em um só painel. Simule cenários e tire dúvidas com a IA para decidir com segurança, a qualquer hora.",
     ctaLabel: "Conhecer o Fin 24/7",
     // Login do portal do Fin 24/7 (link externo, abre em nova aba).
     ctaHref: "https://vispeos.vercel.app/cfo/portal/login",
