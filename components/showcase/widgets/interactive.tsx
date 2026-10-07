@@ -17,9 +17,18 @@ const toneText: Record<WidgetTone, string> = {
 
 type ChecklistRow = { label: string; value?: string; tone?: WidgetTone; marker?: "open" | "done" | "dot" };
 
-/** Lista com checkboxes de verdade: clicar (ou Espaço no teclado) marca o item. */
-export function Checklist({ rows }: { rows: readonly ChecklistRow[] }) {
-  const [checked, setChecked] = useState(() => rows.map((row) => row.marker === "done"));
+/** Estado controlado de fora (cards com cálculo, ver linked.tsx). */
+export type ChecklistControl = { onToggle: (index: number) => void };
+
+/**
+ * Lista com checkboxes de verdade: clicar (ou Espaço no teclado) marca o item.
+ * Sem `control`, guarda o próprio estado; com ele, o marcado vem de `row.marker`.
+ */
+export function Checklist({ rows, control }: { rows: readonly ChecklistRow[]; control?: ChecklistControl }) {
+  const [local, setLocal] = useState(() => rows.map((row) => row.marker === "done"));
+  const checked = control ? rows.map((row) => row.marker === "done") : local;
+  const toggle = (i: number) =>
+    control ? control.onToggle(i) : setLocal((prev) => prev.map((value, j) => (j === i ? !value : value)));
 
   return (
     <ul className="space-y-0.5">
@@ -28,12 +37,7 @@ export function Checklist({ rows }: { rows: readonly ChecklistRow[] }) {
         return (
           <li key={row.label}>
             <label className="-mx-1 flex cursor-pointer items-center gap-1.5 rounded-md px-1 text-xs leading-4 transition-colors hover:bg-paper/10 has-focus-visible:ring-1 has-focus-visible:ring-brand">
-              <input
-                type="checkbox"
-                className="sr-only"
-                checked={isChecked}
-                onChange={() => setChecked((prev) => prev.map((value, j) => (j === i ? !value : value)))}
-              />
+              <input type="checkbox" className="sr-only" checked={isChecked} onChange={() => toggle(i)} />
               <span
                 aria-hidden
                 className={cn(

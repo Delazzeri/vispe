@@ -5,10 +5,11 @@ import type { FinWidget } from "@/content/fin-wall";
 // reproduzem exatamente os números ilustrativos de content/*/fin-wall.ts, e
 // as constantes abaixo são derivadas deles (ex.: clientes = receita / ticket).
 
-export type ModelId = "sales" | "runway" | "tax" | "deal" | "valuation";
+export type ModelId = "controls" | "sales" | "runway" | "tax" | "deal" | "valuation";
 
 /** Card de Soluções (slug do serviço) → modelo de cálculo. */
 export const linkedModelBySlug: Partial<Record<string, ModelId>> = {
+  "controladoria-financeira": "controls",
   "aceleracao-comercial": "sales",
   "captacao-de-recursos": "runway",
   ma: "deal",
@@ -30,8 +31,22 @@ export type NumberFormat = (value: number, decimals?: number) => string;
 type Model = {
   initial: Values;
   controls: Record<string, Control>;
+  /**
+   * Listas com checks ligadas ao cálculo: id do widget → chave em `values`,
+   * onde cada item marcado é um bit (item i = 1 << i).
+   */
+  toggles?: Record<string, string>;
+  /**
+   * Animação de entrada: `values.intro` vai de 0 a 1 quando o card aparece na
+   * tela (números sobem do zero). No servidor e com reduced motion, fica em 1.
+   */
+  intro?: boolean;
   derive: (widget: FinWidget, values: Values, format: NumberFormat) => FinWidget;
 };
+
+/** Quantos itens marcados numa máscara de bits. */
+const countBits = (mask: number) => mask.toString(2).replaceAll("0", "").length;
+const isSet = (mask: number, index: number) => (mask & (1 << index)) !== 0;
 
 /** Troca o primeiro número do texto mantendo prefixo e sufixo ("R$ 186.200", "4,2 meses"). */
 function replaceNumber(text: string, formatted: string) {
@@ -46,6 +61,17 @@ function replaceDelta(text: string, ratio: number, format: NumberFormat, decimal
 }
 
 const trend = (ratio: number): "up" | "down" => (ratio < 1 ? "down" : "up");
+
+// — Controladoria Financeira: contas pagas e recebimentos sobem a conciliação
+// (98% → 100%); o que entra dos clientes derruba a inadimplência, na proporção
+// do valor recebido. Na entrada, DRE e indicadores sobem do zero.
+const controls = {
+  statement: [186, 121, 65], // DRE em R$ mil: receita, custos, lucro
+  reconciliation: 98,
+  defaultRate: 3,
+  receivables: [12.4, 8.9, 5.1], // A receber em R$ mil, na ordem das linhas
+  payables: 3,
+};
 
 // — Aceleração Comercial: receita = clientes × ticket médio.
 const sales = {
@@ -73,6 +99,53 @@ const deal = { margin: 42, cashFlow: 48_320 };
 const valuation = { margin: 18, profit: 512_900, ebitda: 71, growth: 1.21 };
 
 export const models: Record<ModelId, Model> = {
+  controls: {
+    initial: { intro: 1, paid: 0, received: 0 },
+    controls: {},
+    toggles: { payables: "paid", receivables: "received" },
+    intro: true,
+    derive(widget, { intro, paid, received }, format) {
+      const receivedShare =
+        controls.receivables.reduce((sum, amount, i) => (isSet(received, i) ? sum + amount : sum), 0) /
+        controls.receivables.reduce((sum, amount) => sum + amount, 0);
+      const done = countBits(paid) + countBits(received);
+      const total = controls.payables + controls.receivables.length;
+      switch (widget.id) {
+        case "income-statement":
+          if (widget.kind !== "list") return widget;
+          return {
+            ...widget,
+            rows: widget.rows.map((row, i) =>
+              row.value && controls.statement[i] !== undefined
+                ? { ...row, value: replaceNumber(row.value, format(controls.statement[i] * intro)) }
+                : row,
+            ),
+          };
+        case "reconciliation": {
+          if (widget.kind !== "badge") return widget;
+          const percent = (controls.reconciliation + (100 - controls.reconciliation) * (done / total)) * intro;
+          return { ...widget, label: `${format(percent, 1)}%` };
+        }
+        case "default-rate": {
+          if (widget.kind !== "gauge") return widget;
+          const rate = controls.defaultRate * (1 - receivedShare) * intro;
+          return { ...widget, value: rate, display: `${format(rate, 1)}%` };
+        }
+        case "payables":
+          if (widget.kind !== "list") return widget;
+          return { ...widget, rows: widget.rows.map((row, i) => ({ ...row, marker: isSet(paid, i) ? "done" : "open" })) };
+        case "receivables":
+          if (widget.kind !== "list") return widget;
+          return {
+            ...widget,
+            rows: widget.rows.map((row, i) => ({ ...row, marker: isSet(received, i) ? "done" : "open" })),
+          };
+        default:
+          return widget;
+      }
+    },
+  },
+
   sales: {
     initial: { ticket: sales.ticket },
     controls: { "avg-ticket": { kind: "scrub", key: "ticket", min: 1500, max: 4500, step: 100 } },

@@ -1,7 +1,8 @@
 "use client";
 
 import { useLocale } from "next-intl";
-import { useMemo, useRef, useState, type KeyboardEvent, type PointerEvent, type ReactNode } from "react";
+import { useEffect, useMemo, useRef, useState, type KeyboardEvent, type PointerEvent, type ReactNode } from "react";
+import { useReducedMotion } from "motion/react";
 import type { FinWidget } from "@/content/fin-wall";
 import { cn } from "@/lib/cn";
 import { models, type CycleControl, type ModelId, type NumberFormat, type ScrubControl, type Values } from "./models";
@@ -9,6 +10,8 @@ import { hasInteractiveVersion, Widget } from "./widgets";
 
 /** Distância de arraste (px) que percorre a faixa inteira do controle. */
 const dragRange = 240;
+/** Duração (ms) da animação de entrada dos números. */
+const introDuration = 1200;
 
 type LinkedLabels = { adjust: string; cycle: string };
 
@@ -170,10 +173,61 @@ export function LinkedWidgets({
     setValues((prev) => ({ ...prev, [key]: value }));
   };
 
-  return widgets.map((source) => {
+  // Animação de entrada (models com `intro`): números sobem do zero quando o
+  // card aparece. O servidor renderiza o valor final (intro = 1); só depois do
+  // mount ele volta a 0, enquanto o card ainda está fora da tela.
+  const sentinel = useRef<HTMLSpanElement>(null);
+  const shouldReduceMotion = useReducedMotion();
+  const hasIntro = Boolean(model.intro);
+  useEffect(() => {
+    const target = sentinel.current?.parentElement;
+    if (!hasIntro || shouldReduceMotion || !target) return;
+    let frame = requestAnimationFrame(() => setValues((prev) => ({ ...prev, intro: 0 })));
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry?.isIntersecting) return;
+        observer.disconnect();
+        const start = performance.now();
+        const tick = (now: number) => {
+          const t = Math.min(1, (now - start) / introDuration);
+          setValues((prev) => ({ ...prev, intro: 1 - (1 - t) ** 3 })); // ease-out
+          if (t < 1) frame = requestAnimationFrame(tick);
+        };
+        frame = requestAnimationFrame(tick);
+      },
+      { threshold: 0.4 },
+    );
+    observer.observe(target);
+    return () => {
+      observer.disconnect();
+      cancelAnimationFrame(frame);
+    };
+  }, [hasIntro, shouldReduceMotion]);
+
+  // Sentinela fora do fluxo (absolute não ocupa espaço nem gap no flex): marca o container a observar.
+  const marker = hasIntro ? <span key="intro-sentinel" ref={sentinel} aria-hidden className="absolute" /> : null;
+
+  return [marker, ...widgets.map((source) => {
     const widget = model.derive(source, values, format);
     const control = model.controls[widget.id];
     const hidden = hiddenOnMobile.includes(widget.id) && "max-md:hidden";
+    const toggleKey = model.toggles?.[widget.id];
+
+    if (toggleKey && widget.kind === "list") {
+      // Lista com checks ligada ao cálculo: cada item marcado é um bit em values[toggleKey].
+      const mask = values[toggleKey] ?? 0;
+      return (
+        <div key={widget.id} className={cn("relative", hidden)}>
+          <Hint visible={!touched} />
+          <Widget
+            widget={widget}
+            solid
+            interactive
+            checklist={{ onToggle: (index) => update(toggleKey, mask ^ (1 << index)) }}
+          />
+        </div>
+      );
+    }
 
     if (control?.kind === "scrub") {
       return (
@@ -216,5 +270,5 @@ export function LinkedWidgets({
         <Widget widget={widget} solid interactive={interactive} />
       </div>
     );
-  });
+  })];
 }

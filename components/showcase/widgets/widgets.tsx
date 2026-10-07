@@ -22,7 +22,7 @@ import {
 } from "lucide-react";
 import type { FinWidget, WidgetIcon, WidgetSize, WidgetTone } from "@/content/fin-wall";
 import { cn } from "@/lib/cn";
-import { Bars, Checklist } from "./interactive";
+import { Bars, Checklist, type ChecklistControl } from "./interactive";
 import { LiveClock } from "./live-clock";
 
 const icons: Record<WidgetIcon, LucideIcon> = {
@@ -138,15 +138,18 @@ function Ring({ value, tone }: { value: number; tone: WidgetTone }) {
   return (
     <svg viewBox="0 0 36 36" className="absolute inset-0 h-full w-full -rotate-90">
       <circle cx="18" cy="18" r="15.9155" className="fill-none stroke-paper/10" strokeWidth={3} />
-      <circle
-        cx="18"
-        cy="18"
-        r="15.9155"
-        className={cn("fill-none", tone === "default" ? "stroke-paper" : tone === "accent" ? "stroke-accent" : "stroke-brand")}
-        strokeWidth={3}
-        strokeLinecap="round"
-        strokeDasharray={`${value} 100`}
-      />
+      {/* Em 0 o traço some: a ponta arredondada desenharia um ponto mesmo sem comprimento. */}
+      {value > 0.1 && (
+        <circle
+          cx="18"
+          cy="18"
+          r="15.9155"
+          className={cn("fill-none", tone === "default" ? "stroke-paper" : tone === "accent" ? "stroke-accent" : "stroke-brand")}
+          strokeWidth={3}
+          strokeLinecap="round"
+          strokeDasharray={`${value} 100`}
+        />
+      )}
     </svg>
   );
 }
@@ -178,8 +181,19 @@ export function hasInteractiveVersion(widget: FinWidget) {
 /**
  * `solid`: fundo preto sólido, para uso fora da parede escura (ex.: cards claros).
  * `interactive`: lista com checks e barras viram clicáveis (cards de Soluções).
+ * `checklist`: a lista com checks passa a ser controlada de fora (cards com cálculo).
  */
-export function Widget({ widget, solid, interactive }: { widget: FinWidget; solid?: boolean; interactive?: boolean }) {
+export function Widget({
+  widget,
+  solid,
+  interactive,
+  checklist,
+}: {
+  widget: FinWidget;
+  solid?: boolean;
+  interactive?: boolean;
+  checklist?: ChecklistControl;
+}) {
   const { size } = widget;
 
   if (interactive && hasInteractiveVersion(widget)) {
@@ -187,7 +201,7 @@ export function Widget({ widget, solid, interactive }: { widget: FinWidget; soli
       return (
         <Shell size={size} solid={solid} className="flex-col justify-center">
           {widget.title && <p className="text-2xs font-semibold text-paper/60">{widget.title}</p>}
-          <Checklist rows={widget.rows} />
+          <Checklist rows={widget.rows} control={checklist} />
         </Shell>
       );
     }
