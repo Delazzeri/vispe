@@ -484,8 +484,16 @@ export const site = {
     columns: {
       company: {
         title: "Empresa",
-        // Os mesmos itens do menu (site.nav) entram antes destes, pelo componente.
-        links: [{ label: "Carreiras", href: "/trabalhe-conosco" }],
+        // Mesmos destinos do menu (site.nav), com outras palavras; + Carreiras.
+        links: [
+          { label: "Conheça a Vispe", href: "/#solucoes" },
+          { label: "Nossas soluções", href: "/#servicos" },
+          { label: "O que dizem nossos clientes", href: "/#depoimentos" },
+          { label: "Pilares do Equity", href: "/#equity" },
+          { label: "Conteúdos e artigos", href: "/#blog" },
+          { label: "Perguntas frequentes", href: "/#faq" },
+          { label: "Carreiras", href: "/trabalhe-conosco" },
+        ],
       },
       services: {
         title: "Soluções",

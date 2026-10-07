@@ -92,8 +92,7 @@ export function Footer() {
             <FooterSocial />
           </div>
 
-          {/* Empresa = os itens do menu + extras (Carreiras). */}
-          <FooterColumn title={company.title} links={[...site.nav, ...company.links]} />
+          <FooterColumn title={company.title} links={company.links} />
           <FooterColumn
             title={services.title}
             links={site.services.map((service) => ({

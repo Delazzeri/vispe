@@ -471,8 +471,16 @@ export const site: SiteContent = {
     columns: {
       company: {
         title: "Company",
-        // The same items as the menu (site.nav) come first, added by the component.
-        links: [{ label: "Careers", href: "/trabalhe-conosco" }],
+        // Same destinations as the menu (site.nav), in other words; + Careers.
+        links: [
+          { label: "Meet Vispe", href: "/#solucoes" },
+          { label: "Our solutions", href: "/#servicos" },
+          { label: "What our clients say", href: "/#depoimentos" },
+          { label: "Equity pillars", href: "/#equity" },
+          { label: "Articles and insights", href: "/#blog" },
+          { label: "Frequently asked questions", href: "/#faq" },
+          { label: "Careers", href: "/trabalhe-conosco" },
+        ],
       },
       services: {
         title: "Solutions",
