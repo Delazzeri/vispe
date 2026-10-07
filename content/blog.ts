@@ -81,6 +81,12 @@ export const blogPosts: readonly BlogPost[] = [
     tags: ["Valuation"],
     // TODO(content): data real de publicação (provisória: dia em que entrou no site).
     publishedAt: "2026-10-07",
+    cover: {
+      src: "/media/blog/nintendo-739.webp",
+      alt: "Fachada da loja Nintendo Tokyo com o logotipo da Nintendo",
+      width: 739,
+      height: 416,
+    },
     sections: [
       {
         paragraphs: [
@@ -166,6 +172,12 @@ export const blogPosts: readonly BlogPost[] = [
     tags: ["Gestão Financeira", "Turnaround Financeiro"],
     // TODO(content): data real de publicação (provisória: dia em que entrou no site).
     publishedAt: "2026-10-07",
+    cover: {
+      src: "/media/blog/nokia-1280.webp",
+      alt: "Entrada do Nokia Campus com o logotipo da empresa",
+      width: 1280,
+      height: 720,
+    },
     sections: [
       {
         paragraphs: [
@@ -239,6 +251,12 @@ export const blogPosts: readonly BlogPost[] = [
     tags: ["Planejamento Tributário"],
     // TODO(content): data real de publicação (provisória: dia em que entrou no site).
     publishedAt: "2026-10-07",
+    cover: {
+      src: "/media/blog/eficiencia-tributaria-739.webp",
+      alt: "Equipe reunida em uma mesa de trabalho analisando gráficos financeiros em um notebook",
+      width: 739,
+      height: 416,
+    },
     sections: [
       {
         paragraphs: [
@@ -319,6 +337,12 @@ export const blogPosts: readonly BlogPost[] = [
     tags: ["Fusões e Aquisições", "Due Diligence"],
     // TODO(content): data real de publicação (provisória: dia em que entrou no site).
     publishedAt: "2026-10-07",
+    cover: {
+      src: "/media/blog/ibm-1600.webp",
+      alt: "Logotipo da IBM na fachada de um prédio",
+      width: 1600,
+      height: 900,
+    },
     sections: [
       {
         paragraphs: [
@@ -396,6 +420,12 @@ export const blogPosts: readonly BlogPost[] = [
     tags: ["Gestão Financeira"],
     // TODO(content): data real de publicação (provisória: dia em que entrou no site).
     publishedAt: "2026-10-07",
+    cover: {
+      src: "/media/blog/netflix-1300.webp",
+      alt: "Logotipo da Netflix sobre um gráfico de linha em queda",
+      width: 1300,
+      height: 731,
+    },
     sections: [
       {
         paragraphs: [
@@ -471,6 +501,12 @@ export const blogPosts: readonly BlogPost[] = [
     tags: ["Turnaround Financeiro"],
     // TODO(content): data real de publicação (provisória: dia em que entrou no site).
     publishedAt: "2026-10-07",
+    cover: {
+      src: "/media/blog/kongsberg-v2-1600.webp",
+      alt: "Cerimônia da Kongsberg com executivos cortando a fita diante de um painel com veículo militar",
+      width: 1600,
+      height: 900,
+    },
     sections: [
       {
         paragraphs: [
