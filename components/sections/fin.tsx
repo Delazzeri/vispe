@@ -33,7 +33,7 @@ export function Fin({ id }: { id?: string }) {
             <span
               role="img"
               aria-label={name}
-              className="flex h-28 w-28 items-center justify-center rounded-4xl bg-linear-to-br from-fin-light to-fin text-5xl font-bold tracking-tight text-paper shadow-[0_0_64px_-8px_rgba(34,197,142,0.55),inset_0_1px_0_rgba(255,255,255,0.35)] md:h-36 md:w-36 md:text-6xl"
+              className="flex h-28 w-28 items-center justify-center rounded-4xl bg-linear-to-br from-fin-light to-fin text-5xl font-bold tracking-tight text-paper shadow-[inset_0_1px_0_rgba(255,255,255,0.35)] md:h-36 md:w-36 md:text-6xl"
             >
               <span aria-hidden>24</span>
             </span>
