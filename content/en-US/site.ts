@@ -319,7 +319,7 @@ export const site: SiteContent = {
   },
 
   blog: {
-    title: "Vispe Blog",
+    title: "Content to keep you up to date on Equity",
     subtitle:
       "Practical content on financial management, equity and growth for business owners. Articles are available in Portuguese.",
   },
@@ -422,7 +422,7 @@ export const site: SiteContent = {
     { label: "Solutions", href: "/#servicos" },
     { label: "Testimonials", href: "/#depoimentos" },
     { label: "Equity", href: "/#equity" },
-    { label: "Blog", href: "/#blog" },
+    { label: "Content", href: "/#blog" },
     { label: "FAQ", href: "/#faq" },
   ],
 
@@ -517,7 +517,9 @@ export const site: SiteContent = {
     blogPosts: "Blog articles",
     blogPages: "Blog pages",
     blogGoToPage: "Go to group {page} of {total}",
-    backToBlog: "Back to blog",
+    blogCategories: "Filter by category",
+    blogAllCategories: "All",
+    backToBlog: "Back to content",
     portugueseOnly: "This article is available in Portuguese only.",
   },
 

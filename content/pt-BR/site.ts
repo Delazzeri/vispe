@@ -329,7 +329,7 @@ export const site = {
 
   // TODO(content): validar respostas com o time da Vispe antes de publicar.
   blog: {
-    title: "Blog da Vispe",
+    title: "Conteúdos para você ficar por dentro sobre Equity",
     subtitle:
       "Conteúdo prático sobre gestão financeira, equity e crescimento para donos de empresa.",
   },
@@ -433,7 +433,7 @@ export const site = {
     { label: "Soluções", href: "/#servicos" },
     { label: "Feedbacks", href: "/#depoimentos" },
     { label: "Equity", href: "/#equity" },
-    { label: "Blog", href: "/#blog" },
+    { label: "Conteúdo", href: "/#blog" },
     { label: "FAQ", href: "/#faq" },
   ],
 
@@ -533,7 +533,9 @@ export const site = {
     blogPosts: "Artigos do blog",
     blogPages: "Páginas do blog",
     blogGoToPage: "Ir para o grupo {page} de {total}",
-    backToBlog: "Voltar ao blog",
+    blogCategories: "Filtrar por categoria",
+    blogAllCategories: "Todos",
+    backToBlog: "Voltar aos conteúdos",
     // Aviso exibido nos artigos fora do português (o blog só existe em pt-BR).
     portugueseOnly: "",
   },

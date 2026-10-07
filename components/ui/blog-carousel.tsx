@@ -22,10 +22,20 @@ export function BlogCarousel({ posts }: BlogCarouselProps) {
   // 3 por vez no desktop, 1 no mobile. O servidor renderiza a versão desktop.
   const [perView, setPerView] = useState(3);
   const [activePage, setActivePage] = useState(0);
+  // Categoria filtrada (null = todas), na ordem em que aparecem nos posts.
+  const [category, setCategory] = useState<string | null>(null);
+  const categories = [...new Set(posts.map((post) => post.category))];
+  const visible = category ? posts.filter((post) => post.category === category) : posts;
 
-  const pageCount = Math.ceil(posts.length / perView);
+  const pageCount = Math.ceil(visible.length / perView);
   // Espaçadores completam a última página para ela poder ser alinhada ao início.
-  const spacerCount = pageCount * perView - posts.length;
+  const spacerCount = pageCount * perView - visible.length;
+
+  function selectCategory(next: string | null) {
+    setCategory(next);
+    setActivePage(0);
+    scrollerRef.current?.scrollTo({ left: 0 });
+  }
 
   useEffect(() => {
     const media = window.matchMedia(DESKTOP_QUERY);
@@ -51,8 +61,39 @@ export function BlogCarousel({ posts }: BlogCarouselProps) {
     });
   }
 
+  const chipClass = (active: boolean) =>
+    cn(
+      "rounded-full px-4 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand",
+      active ? "bg-ink text-paper" : "bg-surface text-fg-muted shadow-xs hover:text-ink",
+    );
+
   return (
     <div>
+      {categories.length > 1 && (
+        <div role="group" aria-label={ui.blogCategories} className="mb-8 flex flex-wrap justify-center gap-2">
+          <button
+            type="button"
+            aria-pressed={category === null}
+            onClick={() => selectCategory(null)}
+            className={chipClass(category === null)}
+          >
+            {ui.blogAllCategories}
+          </button>
+          {categories.map((name) => (
+            <button
+              key={name}
+              type="button"
+              lang="pt-BR"
+              aria-pressed={category === name}
+              onClick={() => selectCategory(name)}
+              className={chipClass(category === name)}
+            >
+              {name}
+            </button>
+          ))}
+        </div>
+      )}
+
       <ul
         ref={scrollerRef}
         aria-label={ui.blogPosts}
@@ -60,7 +101,7 @@ export function BlogCarousel({ posts }: BlogCarouselProps) {
         className="-my-4 flex snap-x snap-mandatory gap-6 overflow-x-auto py-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
         style={{ ["--per-view" as string]: perView }}
       >
-        {posts.map((post, index) => (
+        {visible.map((post, index) => (
           <li
             key={post.slug}
             className={cn(
