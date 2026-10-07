@@ -46,7 +46,7 @@ export function FAQ({ id }: { id?: string }) {
         <div className="mt-12 grid gap-4 sm:grid-cols-2">
           {site.faq.map((item, index) => (
             <Reveal key={item.question} delay={index * 0.05}>
-              <details className="group rounded-3xl bg-surface p-6 shadow-[0_1px_2px_rgba(38,38,38,0.04),0_4px_12px_-4px_rgba(38,38,38,0.1)] open:sm:col-span-2">
+              <details className="group rounded-xl bg-surface p-6 shadow-[0_1px_2px_rgba(38,38,38,0.04),0_4px_12px_-4px_rgba(38,38,38,0.1)] open:sm:col-span-2">
                 <summary className="flex cursor-pointer list-none items-start gap-4 text-left text-sm font-semibold text-ink lg:whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand">
                   <Plus
                     className="mt-0.5 h-5 w-5 shrink-0 text-brand-dark transition-transform group-open:rotate-45"

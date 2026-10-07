@@ -52,7 +52,7 @@ export function FeatureChips({ id }: { id?: string }) {
             {chips.map((label) => (
               <li
                 key={label}
-                className="rounded-full bg-surface px-3 py-1.5 text-xs font-medium text-fg shadow-[0_1px_2px_rgba(38,38,38,0.04),0_4px_12px_-4px_rgba(38,38,38,0.1)]"
+                className="rounded-lg bg-surface px-3 py-1.5 text-xs font-medium text-fg shadow-[0_1px_2px_rgba(38,38,38,0.04),0_4px_12px_-4px_rgba(38,38,38,0.1)]"
               >
                 {label}
               </li>
@@ -71,7 +71,7 @@ export function FeatureChips({ id }: { id?: string }) {
               <motion.li
                 key={label}
                 variants={chip}
-                className="rounded-full bg-surface px-3 py-1.5 text-xs font-medium text-fg shadow-[0_1px_2px_rgba(38,38,38,0.04),0_4px_12px_-4px_rgba(38,38,38,0.1)]"
+                className="rounded-lg bg-surface px-3 py-1.5 text-xs font-medium text-fg shadow-[0_1px_2px_rgba(38,38,38,0.04),0_4px_12px_-4px_rgba(38,38,38,0.1)]"
               >
                 {label}
               </motion.li>

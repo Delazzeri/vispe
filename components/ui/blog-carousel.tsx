@@ -70,7 +70,7 @@ export function BlogCarousel({ posts, groups }: BlogCarouselProps) {
 
   const chipClass = (active: boolean) =>
     cn(
-      "rounded-full px-4 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand",
+      "rounded-lg px-4 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand",
       active ? "bg-ink text-paper" : "bg-surface text-fg-muted shadow-xs hover:text-ink",
     );
 
