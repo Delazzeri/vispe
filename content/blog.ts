@@ -28,6 +28,12 @@ export type BlogPost = {
   seoTitle?: string;
   description: string;
   category: string;
+  /**
+   * Serviços relacionados, com os mesmos nomes dos pilares (servicePillars.includes
+   * em pt-BR). Definem em quais filtros do blog (Organização, Margem, Crescimento) o
+   * post aparece; pode estar em mais de um.
+   */
+  tags: readonly string[];
   /** ISO date (YYYY-MM-DD). */
   publishedAt: string;
   /** ISO date da última atualização relevante; omitir se nunca foi editado. */
@@ -62,6 +68,7 @@ export const blogPosts: readonly BlogPost[] = [
     description:
       "LTV não é meta bonita nem sonho solto. É a metodologia que define valuation, receita, time e propósito para sua empresa valer mais em 5 anos.",
     category: "Equity",
+    tags: ["Valuation"],
     publishedAt: "2026-09-04",
     author: "Pablo Constantino",
     cover: {
@@ -215,6 +222,7 @@ export const blogPosts: readonly BlogPost[] = [
     description:
       "Entenda para que serve a avaliação do valor de uma empresa e em quais momentos ela faz diferença.",
     category: "Equity",
+    tags: ["Valuation"],
     publishedAt: "2026-10-02",
     sections: [
       {
@@ -237,6 +245,7 @@ export const blogPosts: readonly BlogPost[] = [
     description:
       "Como rever o enquadramento fiscal da empresa pode liberar margem sem sair da lei.",
     category: "Tributário",
+    tags: ["Planejamento Tributário"],
     publishedAt: "2026-10-02",
     sections: [
       {
@@ -259,6 +268,7 @@ export const blogPosts: readonly BlogPost[] = [
     description:
       "Quando faz sentido entregar contas a pagar, a receber e conciliação a um time especializado.",
     category: "BPO",
+    tags: ["BPO Financeiro"],
     publishedAt: "2026-10-02",
     sections: [
       {
@@ -281,6 +291,7 @@ export const blogPosts: readonly BlogPost[] = [
     description:
       "Os pontos financeiros, contratuais e de risco que merecem atenção antes de fechar uma aquisição.",
     category: "M&A",
+    tags: ["Due Diligence"],
     publishedAt: "2026-10-02",
     sections: [
       {
@@ -303,6 +314,7 @@ export const blogPosts: readonly BlogPost[] = [
     description:
       "O que organizar antes de procurar investidores ou instituições financeiras.",
     category: "Crescimento",
+    tags: ["Captação de Recursos"],
     publishedAt: "2026-10-02",
     sections: [
       {

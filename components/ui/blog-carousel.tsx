@@ -8,24 +8,31 @@ import type { BlogPost } from "@/content/blog";
 import { useSite } from "@/content/site";
 import { format } from "@/content/types";
 
+/** Filtro do blog: um pilar e as tags (serviços) que ele reúne. */
+export type BlogGroup = { slug: string; label: string; tags: readonly string[] };
+
 type BlogCarouselProps = {
   posts: readonly BlogPost[];
+  groups: readonly BlogGroup[];
 };
+
+const inGroup = (post: BlogPost, group: BlogGroup) => post.tags.some((tag) => group.tags.includes(tag));
 
 const GAP_PX = 24; // gap-6
 const DESKTOP_QUERY = "(min-width: 768px)";
 
-export function BlogCarousel({ posts }: BlogCarouselProps) {
+export function BlogCarousel({ posts, groups }: BlogCarouselProps) {
   const { ui } = useSite();
   const shouldReduceMotion = useReducedMotion();
   const scrollerRef = useRef<HTMLUListElement>(null);
   // 3 por vez no desktop, 1 no mobile. O servidor renderiza a versão desktop.
   const [perView, setPerView] = useState(3);
   const [activePage, setActivePage] = useState(0);
-  // Categoria filtrada (null = todas), na ordem em que aparecem nos posts.
+  // Pilar filtrado (null = tudo). Pilares sem nenhum post não aparecem.
   const [category, setCategory] = useState<string | null>(null);
-  const categories = [...new Set(posts.map((post) => post.category))];
-  const visible = category ? posts.filter((post) => post.category === category) : posts;
+  const available = groups.filter((group) => posts.some((post) => inGroup(post, group)));
+  const selected = available.find((group) => group.slug === category);
+  const visible = selected ? posts.filter((post) => inGroup(post, selected)) : posts;
 
   const pageCount = Math.ceil(visible.length / perView);
   // Espaçadores completam a última página para ela poder ser alinhada ao início.
@@ -69,7 +76,7 @@ export function BlogCarousel({ posts }: BlogCarouselProps) {
 
   return (
     <div>
-      {categories.length > 1 && (
+      {available.length > 0 && (
         <div role="group" aria-label={ui.blogCategories} className="mb-8 flex flex-wrap justify-center gap-2">
           <button
             type="button"
@@ -79,16 +86,15 @@ export function BlogCarousel({ posts }: BlogCarouselProps) {
           >
             {ui.blogAllCategories}
           </button>
-          {categories.map((name) => (
+          {available.map((group) => (
             <button
-              key={name}
+              key={group.slug}
               type="button"
-              lang="pt-BR"
-              aria-pressed={category === name}
-              onClick={() => selectCategory(name)}
-              className={chipClass(category === name)}
+              aria-pressed={category === group.slug}
+              onClick={() => selectCategory(group.slug)}
+              className={chipClass(category === group.slug)}
             >
-              {name}
+              {group.label}
             </button>
           ))}
         </div>

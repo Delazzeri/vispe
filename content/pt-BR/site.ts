@@ -534,7 +534,7 @@ export const site = {
     blogPages: "Páginas do blog",
     blogGoToPage: "Ir para o grupo {page} de {total}",
     blogCategories: "Filtrar por categoria",
-    blogAllCategories: "Todos",
+    blogAllCategories: "Tudo",
     backToBlog: "Voltar aos conteúdos",
     // Aviso exibido nos artigos fora do português (o blog só existe em pt-BR).
     portugueseOnly: "",

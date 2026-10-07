@@ -1,11 +1,18 @@
 import { Reveal } from "@/components/motion/reveal";
 import { BlogCarousel } from "@/components/ui/blog-carousel";
 import { blogPosts } from "@/content/blog";
-import { useSite } from "@/content/site";
+import { getSite, useSite } from "@/content/site";
 
 export function Blog({ id }: { id?: string }) {
   const site = useSite();
   const { title, subtitle } = site.blog;
+  // Filtros = pilares da seção Equity. As tags dos posts usam os nomes dos
+  // serviços em pt-BR (o blog só existe em português); o rótulo segue o idioma.
+  const groups = getSite("pt-BR").servicePillars.map((pillar) => ({
+    slug: pillar.slug,
+    label: site.servicePillars.find((local) => local.slug === pillar.slug)?.name ?? pillar.name,
+    tags: pillar.includes,
+  }));
 
   return (
     <section id={id} aria-labelledby="blog-heading" className="bg-bg py-24 md:py-32">
@@ -24,7 +31,7 @@ export function Blog({ id }: { id?: string }) {
         </Reveal>
 
         <div className="mt-14">
-          <BlogCarousel posts={blogPosts} />
+          <BlogCarousel posts={blogPosts} groups={groups} />
         </div>
       </div>
     </section>
