@@ -1,11 +1,14 @@
 import { CheckCircle2, ArrowRight } from "lucide-react";
 import type { CSSProperties } from "react";
-import { LocaleLink as Link } from "@/components/ui/locale-link";
+import { useLocale } from "next-intl";
+import { localizeHref } from "@/i18n/href";
+import { resolveLocale } from "@/i18n/routing";
 import { cn } from "@/lib/cn";
 import { Reveal } from "@/components/motion/reveal";
 import { HeroRock } from "@/components/ui/hero-rock";
 import { useSite } from "@/content/site";
 import { format } from "@/content/types";
+import { leadAnchor } from "@/lib/lead";
 
 /** Tamanho que faz uma palavra de `length` caracteres caber na largura do card. */
 function fitSize(length: number) {
@@ -14,6 +17,7 @@ function fitSize(length: number) {
 
 export function ServicePillars({ id }: { id?: string }) {
   const site = useSite();
+  const locale = resolveLocale(useLocale());
   const { title, description } = site.servicesCarousel;
   const longestLabel = Math.max(...site.servicePillars.map((pillar) => pillar.shortLabel.length));
 
@@ -94,13 +98,16 @@ export function ServicePillars({ id }: { id?: string }) {
                   ))}
                 </ul>
 
-                <Link
-                  href="/contato"
+                {/* Leva ao formulário da home já com o pilar marcado como interesse.
+                    <a> comum de propósito: na mesma página, só a navegação nativa
+                    dispara o hashchange que o formulário escuta (o next/link não). */}
+                <a
+                  href={localizeHref(`/#${leadAnchor}-${pillar.slug}`, locale)}
                   className="mt-8 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-ink px-6 py-4 text-sm font-semibold text-paper transition-transform hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand"
                 >
                   {pillar.cta}
                   <ArrowRight className="h-4 w-4" aria-hidden />
-                </Link>
+                </a>
               </div>
             </Reveal>
           );

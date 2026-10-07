@@ -10,6 +10,7 @@ import { ImageCarousel } from "@/components/sections/image-carousel";
 import { ServicePillars } from "@/components/sections/service-pillars";
 import { Blog } from "@/components/sections/blog";
 import { FAQ } from "@/components/sections/faq";
+import { LeadSection } from "@/components/sections/lead-section";
 
 export default async function HomePage({ params }: PageProps<"/[locale]">) {
   const { locale } = await params;
@@ -27,6 +28,8 @@ export default async function HomePage({ params }: PageProps<"/[locale]">) {
       <ServicePillars id="equity" />
       <Blog id="blog" />
       <FAQ id="faq" />
+      {/* Destino de todos os CTAs de diagnóstico (#diagnostico). */}
+      <LeadSection />
     </>
   );
 }

@@ -14,7 +14,7 @@ export const site: SiteContent = {
       "Stop losing money to a lack of financial control. We organize your finances and increase your profit.",
     description:
       "We grow your cash position and maximize your profit margin, without hiring a full-time executive director.",
-    ctaPrimary: { label: "Boost your profit now", href: "/contato" },
+    ctaPrimary: { label: "Boost your profit now", href: "/#diagnostico" },
     ctaSecondary: { label: "How CFO as a Service works", href: "#servicos" },
     bullets: [
       "No lock-in contract",
@@ -415,6 +415,43 @@ export const site: SiteContent = {
     subtitle: "Ready to maximize your company's value?",
     description:
       "Fill out the form and a Vispe Capital specialist will get in touch, with the clarity of a team that has transformed hundreds of companies across Brazil.",
+    form: {
+      fields: {
+        name: "Name",
+        email: "Email",
+        phone: "WhatsApp",
+        company: "Company",
+        segment: "Industry",
+        revenue: "Monthly revenue",
+        interest: "How can we help?",
+        message: "Tell us a bit about where you are (optional)",
+      },
+      revenueOptions: [
+        "Up to R$ 100k",
+        "R$ 100k to R$ 500k",
+        "R$ 500k to R$ 2M",
+        "Over R$ 2M",
+      ],
+      revenuePlaceholder: "Select",
+      notSure: "Not sure yet",
+      consent: "I agree that Vispe Capital may use this data to contact me about the diagnosis, under Brazil's LGPD.",
+      submit: "Get my diagnosis",
+      sending: "Sending…",
+    },
+    messages: {
+      invalid: "Please review the highlighted fields.",
+      success: "We got your details. A Vispe Capital specialist will reach out soon.",
+      unavailable:
+        "Sending through the site is still being set up. In the meantime, reach us on Vispe's social channels.",
+      errors: {
+        required: "Please fill in this field.",
+        email: "Enter a valid email.",
+        phone: "Enter a WhatsApp number with area code.",
+        revenue: "Select a revenue range.",
+        interest: "Choose an option.",
+        consent: "Please agree so we can get in touch.",
+      },
+    },
   },
 
   nav: [
@@ -429,7 +466,7 @@ export const site: SiteContent = {
   footer: {
     description:
       "We grow your cash position and maximize your profit margin, without hiring a full-time executive director.",
-    cta: { label: "Book a diagnosis", href: "/contato" },
+    cta: { label: "Book a diagnosis", href: "/#diagnostico" },
     socialLabel: "Follow Vispe",
     columns: {
       company: {
@@ -452,7 +489,7 @@ export const site: SiteContent = {
         title: "Get in touch",
         links: [
           { label: "Talk to Vispe", href: "/contato" },
-          { label: "Book a diagnosis", href: "/contato" },
+          { label: "Book a diagnosis", href: "/#diagnostico" },
           { label: "Fin 24/7 virtual CFO", href: "/#fin" },
         ],
       },
@@ -464,7 +501,7 @@ export const site: SiteContent = {
 
   ui: {
     mainNav: "Main navigation",
-    headerCta: { label: "Book a diagnosis", href: "/contato" },
+    headerCta: { label: "Book a diagnosis", href: "/#diagnostico" },
     openMenu: "Open menu",
     closeMenu: "Close menu",
     resultsLabel: "Vispe Capital results",

@@ -12,7 +12,7 @@ export const site = {
       "Pare de perder dinheiro por falta de controle financeiro. Organizamos o seu financeiro e aumentamos o seu lucro.",
     description:
       "Aumentamos seu caixa e maximizamos sua margem de lucro, sem precisar contratar um diretor executivo em tempo integral.",
-    ctaPrimary: { label: "Potencialize seu lucro agora", href: "/contato" },
+    ctaPrimary: { label: "Potencialize seu lucro agora", href: "/#diagnostico" },
     ctaSecondary: { label: "Como funciona o CFO as Service", href: "#servicos" },
     bullets: [
       "Sem contrato de fidelidade",
@@ -425,6 +425,43 @@ export const site = {
     subtitle: "Pronto para maximizar o valor da sua empresa?",
     description:
       "Preencha o formulário e um especialista da Vispe Capital entrará em contato, com a clareza de quem já transformou centenas de empresas Brasil afora.",
+    form: {
+      fields: {
+        name: "Nome",
+        email: "E-mail",
+        phone: "WhatsApp",
+        company: "Empresa",
+        segment: "Segmento",
+        revenue: "Faturamento mensal",
+        interest: "Como podemos ajudar?",
+        message: "Conte um pouco do seu momento (opcional)",
+      },
+      revenueOptions: [
+        "Até R$ 100 mil",
+        "R$ 100 mil a R$ 500 mil",
+        "R$ 500 mil a R$ 2 milhões",
+        "Acima de R$ 2 milhões",
+      ],
+      revenuePlaceholder: "Selecione",
+      notSure: "Ainda não sei",
+      consent: "Concordo que a Vispe Capital use estes dados para entrar em contato sobre o diagnóstico, conforme a LGPD.",
+      submit: "Quero meu diagnóstico",
+      sending: "Enviando…",
+    },
+    messages: {
+      invalid: "Revise os campos destacados.",
+      success: "Recebemos seus dados. Um especialista da Vispe Capital vai entrar em contato em breve.",
+      unavailable:
+        "O envio pelo site ainda está sendo configurado. Enquanto isso, fale com a gente pelas redes da Vispe.",
+      errors: {
+        required: "Preencha este campo.",
+        email: "Informe um e-mail válido.",
+        phone: "Informe um WhatsApp com DDD.",
+        revenue: "Selecione uma faixa de faturamento.",
+        interest: "Escolha uma opção.",
+        consent: "É preciso concordar para enviarmos o contato.",
+      },
+    },
   },
 
   // Âncoras da home ("/#id" funciona também a partir das páginas internas).
@@ -442,7 +479,7 @@ export const site = {
   footer: {
     description:
       "Aumentamos seu caixa e maximizamos sua margem de lucro, sem precisar contratar um diretor executivo em tempo integral.",
-    cta: { label: "Agendar diagnóstico", href: "/contato" },
+    cta: { label: "Agendar diagnóstico", href: "/#diagnostico" },
     socialLabel: "Siga a Vispe",
     columns: {
       company: {
@@ -466,7 +503,7 @@ export const site = {
         title: "Atendimento",
         links: [
           { label: "Fale com a Vispe", href: "/contato" },
-          { label: "Agende um diagnóstico", href: "/contato" },
+          { label: "Agende um diagnóstico", href: "/#diagnostico" },
           { label: "Fin 24/7, CFO virtual", href: "/#fin" },
         ],
       },
@@ -480,7 +517,7 @@ export const site = {
   // Textos de interface usados pelos componentes (acessibilidade, rótulos).
   ui: {
     mainNav: "Navegação principal",
-    headerCta: { label: "Agendar diagnóstico", href: "/contato" },
+    headerCta: { label: "Agendar diagnóstico", href: "/#diagnostico" },
     openMenu: "Abrir menu",
     closeMenu: "Fechar menu",
     resultsLabel: "Resultados da Vispe Capital",
