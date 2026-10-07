@@ -17,7 +17,7 @@ export const site: SiteContent = {
     ctaPrimary: { label: "Boost your profit now", href: "/#diagnostico" },
     ctaSecondary: { label: "How CFO as a Service works", href: "#servicos" },
     bullets: [
-      "No lock-in contract",
+      "SMB specialists",
       "A team dedicated to your cash flow",
       "Free diagnosis",
       "Ready for liquidity events",

@@ -15,7 +15,7 @@ export const site = {
     ctaPrimary: { label: "Potencialize seu lucro agora", href: "/#diagnostico" },
     ctaSecondary: { label: "Como funciona o CFO as Service", href: "#servicos" },
     bullets: [
-      "Sem contrato de fidelidade",
+      "Especialistas em PMEs",
       "Time dedicado ao seu caixa",
       "Diagnóstico sem custo",
       "Pronto para eventos de liquidez",
