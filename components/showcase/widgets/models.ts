@@ -5,12 +5,13 @@ import type { FinWidget } from "@/content/fin-wall";
 // reproduzem exatamente os números ilustrativos de content/*/fin-wall.ts, e
 // as constantes abaixo são derivadas deles (ex.: clientes = receita / ticket).
 
-export type ModelId = "sales" | "runway" | "tax" | "valuation";
+export type ModelId = "sales" | "runway" | "tax" | "deal" | "valuation";
 
 /** Card de Soluções (slug do serviço) → modelo de cálculo. */
 export const linkedModelBySlug: Partial<Record<string, ModelId>> = {
   "aceleracao-comercial": "sales",
   "captacao-de-recursos": "runway",
+  ma: "deal",
   "planejamento-tributario": "tax",
   valuation: "valuation",
 };
@@ -63,6 +64,10 @@ const runway = { inflow: 18_000, outflow: 9_400, balance: 312_480, dayGrowth: 1.
 // do widget tax-regime). Economia no ano = diferença para o regime mais caro.
 const taxTotals = [14_200 + 38_600 / 12, 14_200, 11_900]; // Simples = Presumido + economia de R$ 38.600/ano
 const tax = { regime: 1, pisCofins: 6_800, iss: 3_700, taxesBar: 54, taxesBarAmount: 31_700 };
+
+// — M&A: fluxo de caixa de 30 dias proporcional à margem bruta (a série
+// "anterior" tracejada fica fixa, então a linha sobe ou desce em relação a ela).
+const deal = { margin: 42, cashFlow: 48_320 };
 
 // — Valuation: lucro e EBITDA proporcionais à margem líquida.
 const valuation = { margin: 18, profit: 512_900, ebitda: 71, growth: 1.21 };
@@ -178,6 +183,27 @@ export const models: Record<ModelId, Model> = {
                   }
                 : bar,
             ),
+          };
+        default:
+          return widget;
+      }
+    },
+  },
+
+  deal: {
+    initial: { margin: deal.margin },
+    controls: { "gross-margin": { kind: "scrub", key: "margin", min: 20, max: 65, step: 1 } },
+    derive(widget, { margin }, format) {
+      const ratio = margin / deal.margin;
+      switch (widget.id) {
+        case "gross-margin":
+          return widget.kind === "gauge" ? { ...widget, value: margin, display: `${format(margin)}%` } : widget;
+        case "cash-flow-30d":
+          if (widget.kind !== "sparkline") return widget;
+          return {
+            ...widget,
+            value: replaceNumber(widget.value, format(Math.round((deal.cashFlow * ratio) / 10) * 10)),
+            points: widget.points.map((point) => point * ratio),
           };
         default:
           return widget;
