@@ -5,13 +5,17 @@ import { SocialLinks } from "@/components/ui/social-links";
 import { blogPosts } from "@/content/blog";
 import { brand, useSite } from "@/content/site";
 import { CookiePreferencesButton } from "@/components/ui/cookie-consent";
+import { cn } from "@/lib/cn";
 
 const linkClass =
   "text-sm text-ink transition-colors hover:text-brand-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-dark rounded-sm";
 const headingClass = "text-base font-bold text-ink";
 
-/** `lang` marca links cujo texto está em outro idioma (títulos do blog, só pt-BR). */
-type FooterLink = { label: string; href: string; lang?: string };
+/**
+ * `lang` marca links cujo texto está em outro idioma (títulos do blog, só pt-BR).
+ * `clamp` corta o texto em 2 linhas com reticências (o título completo fica no `title`).
+ */
+type FooterLink = { label: string; href: string; lang?: string; clamp?: boolean };
 
 function FooterColumn({ title, links }: { title: string; links: readonly FooterLink[] }) {
   return (
@@ -21,7 +25,12 @@ function FooterColumn({ title, links }: { title: string; links: readonly FooterL
         {links.map((link) => (
           <li key={link.label}>
             {link.href.startsWith("/") ? (
-              <Link href={link.href} lang={link.lang} className={linkClass}>
+              <Link
+                href={link.href}
+                lang={link.lang}
+                title={link.clamp ? link.label : undefined}
+                className={cn(linkClass, link.clamp && "line-clamp-2")}
+              >
                 {link.label}
               </Link>
             ) : (
@@ -83,7 +92,8 @@ export function Footer() {
             <FooterSocial />
           </div>
 
-          <FooterColumn title={company.title} links={company.links} />
+          {/* Empresa = os itens do menu + extras (Carreiras). */}
+          <FooterColumn title={company.title} links={[...site.nav, ...company.links]} />
           <FooterColumn
             title={services.title}
             links={site.services.map((service) => ({
@@ -98,7 +108,7 @@ export function Footer() {
               ...[...blogPosts]
                 .sort((a, b) => b.publishedAt.localeCompare(a.publishedAt))
                 .slice(0, content.postsLimit)
-                .map((post) => ({ label: post.title, href: `/blog/${post.slug}`, lang: "pt-BR" })),
+                .map((post) => ({ label: post.title, href: `/blog/${post.slug}`, lang: "pt-BR", clamp: true })),
               { label: content.moreLabel, href: content.moreHref },
             ]}
           />

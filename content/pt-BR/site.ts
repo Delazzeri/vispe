@@ -236,7 +236,7 @@ export const site = {
 
   testimonialsSection: {
     title: "Empresários que crescem com a gente",
-    description: "Feedback real de empresários que confiam na Vispe Capital.",
+    description: "Depoimentos reais de empresários que confiam na Vispe Capital.",
   },
 
   // Depoimentos reais: trechos literais dos clientes (texto completo no commit cc3659a).
@@ -468,7 +468,7 @@ export const site = {
   nav: [
     { label: "Sobre", href: "/#solucoes" },
     { label: "Soluções", href: "/#servicos" },
-    { label: "Feedbacks", href: "/#depoimentos" },
+    { label: "Depoimentos", href: "/#depoimentos" },
     { label: "Equity", href: "/#equity" },
     { label: "Conteúdo", href: "/#blog" },
     { label: "FAQ", href: "/#faq" },
@@ -484,13 +484,8 @@ export const site = {
     columns: {
       company: {
         title: "Empresa",
-        links: [
-          { label: "Quem somos", href: "/sobre" },
-          { label: "Depoimentos", href: "/#depoimentos" },
-          { label: "Equity", href: "/#equity" },
-          { label: "Trabalhe conosco", href: "/trabalhe-conosco" },
-          { label: "Perguntas frequentes", href: "/#faq" },
-        ],
+        // Os mesmos itens do menu (site.nav) entram antes destes, pelo componente.
+        links: [{ label: "Carreiras", href: "/trabalhe-conosco" }],
       },
       services: {
         title: "Soluções",

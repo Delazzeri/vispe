@@ -229,7 +229,7 @@ export const site: SiteContent = {
 
   testimonialsSection: {
     title: "Business owners who grow with us",
-    description: "Real feedback from business owners who trust Vispe Capital.",
+    description: "Real testimonials from business owners who trust Vispe Capital.",
   },
 
   // Real client testimonials: English translation of the Portuguese excerpts.
@@ -471,13 +471,8 @@ export const site: SiteContent = {
     columns: {
       company: {
         title: "Company",
-        links: [
-          { label: "About us", href: "/sobre" },
-          { label: "Testimonials", href: "/#depoimentos" },
-          { label: "Equity", href: "/#equity" },
-          { label: "Careers", href: "/trabalhe-conosco" },
-          { label: "FAQ", href: "/#faq" },
-        ],
+        // The same items as the menu (site.nav) come first, added by the component.
+        links: [{ label: "Careers", href: "/trabalhe-conosco" }],
       },
       services: {
         title: "Solutions",

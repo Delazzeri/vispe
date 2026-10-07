@@ -29,7 +29,7 @@ export type FaqItem = {
   items?: { label: string; text: string }[];
 };
 
-/** Depoimento de cliente (seção Feedbacks). Todos os extras são opcionais. */
+/** Depoimento de cliente (seção Depoimentos). Todos os extras são opcionais. */
 export type Testimonial = {
   quote: string;
   /** Nome da empresa (ou da pessoa). */
