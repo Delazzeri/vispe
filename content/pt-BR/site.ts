@@ -494,6 +494,8 @@ export const site = {
     testimonialWebsite: "Site da {name}",
     testimonialRating: "Avaliação: {rating} de {max} estrelas",
     byAuthor: "Por {name}",
+    followTitle: "Acompanhe a Vispe nas redes",
+    followText: "Mais conteúdo sobre equity, gestão e crescimento no Instagram, LinkedIn, Facebook, YouTube e no podcast Equity Talks, no Spotify.",
     widgetAdjust: "Arraste para os lados para ajustar",
     widgetCycle: "Toque para trocar",
     cookies: {

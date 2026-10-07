@@ -2,12 +2,22 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
-import { blogPosts, formatPostDate, getPostBySlug, getReadingMinutes, type BlogBlock } from "@/content/blog";
+import type { ReactNode } from "react";
+import { SocialLinks } from "@/components/ui/social-links";
+import {
+  blogPosts,
+  formatPostDate,
+  getPostBySlug,
+  getReadingMinutes,
+  inlineLinkPattern,
+  plainText,
+  type BlogBlock,
+} from "@/content/blog";
 import { brand, getSite } from "@/content/site";
 import { format } from "@/content/types";
 import { setRequestLocale } from "next-intl/server";
 import { localizeHref } from "@/i18n/href";
-import { resolveLocale } from "@/i18n/routing";
+import { resolveLocale, type Locale } from "@/i18n/routing";
 import { cn } from "@/lib/cn";
 import { articleJsonLd, breadcrumbJsonLd, buildMetadata } from "@/lib/seo";
 
@@ -20,14 +30,48 @@ export function generateStaticParams() {
 }
 
 const paragraphClass = "max-w-[65ch] text-base leading-relaxed text-fg";
+const inlineLinkClass =
+  "font-medium text-ink underline decoration-brand-dark/50 underline-offset-4 transition-colors hover:text-brand-dark hover:decoration-brand-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand rounded-sm";
+
+/** Texto com links [texto](href): internos via next/link (no idioma da página), externos em nova aba. */
+function RichText({ text, locale }: { text: string; locale: Locale }) {
+  const parts: ReactNode[] = [];
+  let last = 0;
+  for (const match of text.matchAll(inlineLinkPattern)) {
+    const [whole, label, href] = match;
+    const start = match.index ?? 0;
+    if (start > last) parts.push(text.slice(last, start));
+    const external = /^https?:\/\//.test(href);
+    parts.push(
+      external ? (
+        <a key={start} href={href} target="_blank" rel="noopener" className={inlineLinkClass}>
+          {label}
+        </a>
+      ) : (
+        <Link key={start} href={localizeHref(href, locale)} className={inlineLinkClass}>
+          {label}
+        </Link>
+      ),
+    );
+    last = start + whole.length;
+  }
+  if (last < text.length) parts.push(text.slice(last));
+  return <>{parts}</>;
+}
 
 /** Bloco do corpo: parágrafo, frase em destaque ou lista com rótulos em negrito. */
-function Block({ block }: { block: BlogBlock }) {
-  if (typeof block === "string") return <p className={paragraphClass}>{block}</p>;
+function Block({ block, locale }: { block: BlogBlock; locale: Locale }) {
+  if (typeof block === "string") {
+    return (
+      <p className={paragraphClass}>
+        <RichText text={block} locale={locale} />
+      </p>
+    );
+  }
   if (block.kind === "highlight") {
     return (
       <blockquote className="max-w-[65ch] border-l-4 border-brand pl-5 text-lg font-semibold leading-relaxed text-ink">
-        {block.text}
+        <RichText text={block.text} locale={locale} />
       </blockquote>
     );
   }
@@ -35,7 +79,8 @@ function Block({ block }: { block: BlogBlock }) {
     <ul className="max-w-[65ch] list-disc space-y-2 pl-5 text-base leading-relaxed text-fg marker:text-brand-dark">
       {block.items.map((item) => (
         <li key={item.text}>
-          {item.label && <strong className="font-semibold text-ink">{item.label}</strong>} {item.text}
+          {item.label && <strong className="font-semibold text-ink">{item.label}</strong>}{" "}
+          <RichText text={item.text} locale={locale} />
         </li>
       ))}
     </ul>
@@ -100,7 +145,7 @@ export default async function BlogPostPage({ params }: PageProps) {
               mainEntity: post.faq.items.map((item) => ({
                 "@type": "Question",
                 name: item.question,
-                acceptedAnswer: { "@type": "Answer", text: item.answer },
+                acceptedAnswer: { "@type": "Answer", text: plainText(item.answer) },
               })),
             }),
           }}
@@ -176,7 +221,7 @@ export default async function BlogPostPage({ params }: PageProps) {
               )}
               <div className={cn("space-y-4", section.heading && "mt-4")}>
                 {section.paragraphs.map((block, i) => (
-                  <Block key={i} block={block} />
+                  <Block key={i} block={block} locale={locale} />
                 ))}
               </div>
             </section>
@@ -192,13 +237,28 @@ export default async function BlogPostPage({ params }: PageProps) {
               {post.faq.items.map((item) => (
                 <div key={item.question}>
                   <h3 className="text-lg font-semibold text-ink">{item.question}</h3>
-                  <p className={cn(paragraphClass, "mt-2")}>{item.answer}</p>
+                  <p className={cn(paragraphClass, "mt-2")}>
+                    <RichText text={item.answer} locale={locale} />
+                  </p>
                 </div>
               ))}
             </div>
           </section>
         )}
       </div>
+
+      {/* Fim de todo artigo: redes da Vispe (links externos). */}
+      <aside
+        lang={locale}
+        aria-labelledby="post-follow-heading"
+        className="mt-16 rounded-3xl bg-surface p-8 shadow-[0_1px_2px_rgba(38,38,38,0.04),0_4px_12px_-4px_rgba(38,38,38,0.1)]"
+      >
+        <h2 id="post-follow-heading" className="text-xl font-bold tracking-tight text-ink">
+          {ui.followTitle}
+        </h2>
+        <p className="mt-2 max-w-[65ch] text-sm leading-relaxed text-fg-muted">{ui.followText}</p>
+        <SocialLinks className="mt-5 gap-4" />
+      </aside>
     </article>
   );
 }

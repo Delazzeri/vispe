@@ -1,6 +1,8 @@
 /**
  * Bloco do corpo de uma seção: parágrafo (texto simples), frase em destaque
  * ou lista (itens com rótulo opcional em negrito, ex.: "Sem valuation-alvo:").
+ * Textos aceitam links no formato [texto](/caminho) — internos (ex.: "/#servicos",
+ * "/contato", "/blog/slug") ou externos ("https://...").
  */
 export type BlogBlock =
   | string
@@ -50,11 +52,19 @@ export type BlogPost = {
   faq?: BlogFaq;
 };
 
+/** Padrão dos links no texto: [texto](href). */
+export const inlineLinkPattern = /\[([^\]]+)\]\(([^)\s]+)\)/g;
+
+/** Remove a marcação de links, mantendo só o texto (JSON-LD, tempo de leitura). */
+export function plainText(text: string): string {
+  return text.replace(inlineLinkPattern, "$1");
+}
+
 /** Texto puro de um bloco (tempo de leitura, JSON-LD). */
 export function blockText(block: BlogBlock): string {
-  if (typeof block === "string") return block;
-  if (block.kind === "highlight") return block.text;
-  return block.items.map((item) => (item.label ? `${item.label} ${item.text}` : item.text)).join(" ");
+  if (typeof block === "string") return plainText(block);
+  if (block.kind === "highlight") return plainText(block.text);
+  return block.items.map((item) => plainText(item.label ? `${item.label} ${item.text}` : item.text)).join(" ");
 }
 
 // Artigos reais primeiro. TODO(content): os posts depois deste ainda são
@@ -96,7 +106,7 @@ export const blogPosts: readonly BlogPost[] = [
       {
         heading: "O que é o método LTV da Vispe",
         paragraphs: [
-          "LTV significa Long Term Vision. Na Vispe, é a metodologia que usamos para transformar uma empresa que tem planos em uma empresa que tem destino. Destino com número, estrutura e narrativa.",
+          "LTV significa Long Term Vision. Na [Vispe](/sobre), é a metodologia que usamos para transformar uma empresa que tem planos em uma empresa que tem destino. Destino com número, estrutura e narrativa.",
           "Um LTV real precisa responder quatro perguntas. Todas as quatro. Se uma falta, o método não está completo.",
         ],
       },
@@ -104,7 +114,7 @@ export const blogPosts: readonly BlogPost[] = [
         heading: "Destino de Valor: quanto a empresa precisa valer em 5 anos?",
         level: 3,
         paragraphs: [
-          "Esse é o ponto de chegada. Não em faturamento, não em funcionários: em valuation. Porque valuation é a métrica que resume tudo.",
+          "Esse é o ponto de chegada. Não em faturamento, não em funcionários: em [valuation](/#servicos). Porque valuation é a métrica que resume tudo.",
           "Um exemplo concreto: “Queremos transformar uma empresa que hoje vale R$ 8 milhões em uma companhia de R$ 40 milhões.” Isso é um destino. É um número que você pode trabalhar de trás pra frente e descobrir o que precisa mudar agora para chegar lá.",
           "Quem não define valuation-alvo constrói um negócio no escuro. Às vezes cresce, às vezes não. Mas raramente chega onde poderia.",
         ],
@@ -124,7 +134,7 @@ export const blogPosts: readonly BlogPost[] = [
         paragraphs: [
           "Esse é o ponto que mais dói. Porque a maioria das PMEs não tem um time: tem um dono que faz tudo e algumas pessoas que ajudam.",
           "Empresa centrada no dono não escala. E empresa que não escala sem o dono vale muito menos do que poderia. Para o comprador, você não está vendendo uma empresa: está vendendo um emprego embrulhado em CNPJ.",
-          "O LTV exige que você defina quais cadeiras precisam existir em 5 anos. Direção comercial, financeiro estruturado, liderança operacional, gestão por indicadores. Cada cadeira que você preenche é risco que você tira do comprador. E menos risco para o comprador significa mais dinheiro no seu bolso.",
+          "O LTV exige que você defina quais cadeiras precisam existir em 5 anos. Direção comercial, financeiro estruturado, liderança operacional, [gestão por indicadores](/#fin). Cada cadeira que você preenche é risco que você tira do comprador. E menos risco para o comprador significa mais dinheiro no seu bolso.",
         ],
       },
       {
@@ -179,7 +189,7 @@ export const blogPosts: readonly BlogPost[] = [
         heading: "Por que isso importa para uma PME agora",
         paragraphs: [
           "Eu ouvi durante anos que equity era coisa de startup, de empresa grande, de quem já tinha chegado lá. Ouvi isso quando estava construindo a IPv7. Ouvi isso quando vendia. E ouvi isso das pessoas que ficaram de fora de negócios que poderiam ter feito.",
-          "Não é verdade. Equity é pra qualquer empresa que tem concorrente, que fatura, que tem operação. O que muda é o preparo. E o LTV é exatamente esse preparo.",
+          "Não é verdade. [Equity](/#equity) é pra qualquer empresa que tem concorrente, que fatura, que tem operação. O que muda é o preparo. E o LTV é exatamente esse preparo.",
           "Quem define um LTV hoje não está sonhando. Está construindo, com método, uma empresa que em 5 anos vai ter mais valor do que teria se continuasse no automático.",
           "A pergunta que fica é simples: você sabe quanto a sua empresa precisa valer em 5 anos? Ou está construindo sem saber o destino?",
         ],
@@ -206,7 +216,7 @@ export const blogPosts: readonly BlogPost[] = [
         {
           question: "Quanto tempo leva para montar um LTV?",
           answer:
-            "Depende do nível de clareza que o dono já tem sobre o negócio. Na Vispe, o processo envolve diagnóstico de valuation atual, análise de receita e margem, mapeamento de estrutura de time e definição de tese de mercado. Em geral, algumas semanas de trabalho estruturado já produzem um LTV funcional e acionável.",
+            "Depende do nível de clareza que o dono já tem sobre o negócio. Na Vispe, o processo envolve [diagnóstico de valuation atual](/contato), análise de receita e margem, mapeamento de estrutura de time e definição de tese de mercado. Em geral, algumas semanas de trabalho estruturado já produzem um LTV funcional e acionável.",
         },
         {
           question: "LTV e valuation são a mesma coisa?",
@@ -340,7 +350,7 @@ export function getPostBySlug(slug: string): BlogPost | undefined {
 export function getReadingMinutes(post: BlogPost): number {
   const words = [
     ...post.sections.flatMap((section) => [section.heading, ...section.paragraphs.map(blockText)]),
-    ...(post.faq?.items.flatMap((item) => [item.question, item.answer]) ?? []),
+    ...(post.faq?.items.flatMap((item) => [item.question, plainText(item.answer)]) ?? []),
   ]
     .join(" ")
     .split(/\s+/).length;

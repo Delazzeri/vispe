@@ -478,6 +478,8 @@ export const site: SiteContent = {
     testimonialWebsite: "{name} website",
     testimonialRating: "Rating: {rating} out of {max} stars",
     byAuthor: "By {name}",
+    followTitle: "Follow Vispe",
+    followText: "More on equity, management and growth on Instagram, LinkedIn, Facebook, YouTube and the Equity Talks podcast on Spotify.",
     widgetAdjust: "Drag sideways to adjust",
     widgetCycle: "Tap to switch",
     cookies: {
