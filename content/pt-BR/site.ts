@@ -578,6 +578,6 @@ export const site = {
   pages: {
     about: { title: "Sobre", heading: "Sobre a Vispe Capital" },
     contact: { title: "Contato" },
-    careers: { title: "Trabalhe conosco" },
+    careers: { title: "Carreiras" },
   },
 } as const;

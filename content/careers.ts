@@ -3,7 +3,7 @@ import type { Widen } from "./types";
 import { careers as enUS } from "./en-US/careers";
 import { careers as ptBR } from "./pt-BR/careers";
 
-// Acesso por idioma ao conteúdo da página "Trabalhe conosco".
+// Acesso por idioma ao conteúdo da página "Carreiras".
 
 export type CareersContent = Widen<typeof ptBR>;
 

@@ -1,11 +1,11 @@
 import { brand } from "../brand";
 import { site } from "./site";
 
-// Página "Trabalhe conosco" — textos e regras do formulário de currículos.
+// Página "Carreiras" — textos e regras do formulário de currículos.
 
 export const careers = {
   hero: {
-    eyebrow: "Trabalhe conosco",
+    eyebrow: "Carreiras",
     title: "Construa com a gente o futuro financeiro das PMEs brasileiras",
     description:
       "Procuramos pessoas com rigor técnico, visão de dono e vontade de gerar impacto real na vida de empresários. Se é você, queremos conhecer sua trajetória.",
