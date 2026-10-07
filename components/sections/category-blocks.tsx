@@ -1,4 +1,6 @@
 import { Reveal } from "@/components/motion/reveal";
+import { LinkedWidgets } from "@/components/showcase/widgets/linked";
+import { linkedModelBySlug } from "@/components/showcase/widgets/models";
 import { hasInteractiveVersion, Widget } from "@/components/showcase/widgets/widgets";
 import { useFinWall, type FinWidget } from "@/content/fin-wall";
 import { useSite } from "@/content/site";
@@ -48,6 +50,7 @@ export function CategoryBlocks({ id }: { id?: string }) {
           {site.services.map((service, index) => {
             const widgets = service.finWidgets.flatMap((widgetId) => finWall.filter((w) => w.id === widgetId));
             const hidden = hiddenOnMobile(widgets);
+            const modelId = linkedModelBySlug[service.slug];
             return (
               <Reveal key={service.slug} delay={index * 0.06}>
                 <article className="h-full rounded-3xl bg-surface p-8 shadow-[0_1px_2px_rgba(38,38,38,0.04),0_4px_12px_-4px_rgba(38,38,38,0.1)]">
@@ -68,7 +71,16 @@ export function CategoryBlocks({ id }: { id?: string }) {
                   {/* No celular, zoom (que também encolhe o espaço ocupado, ao contrário
                       de scale) deixa os widgets menores e cabendo em até 2 linhas. */}
                   <div className="mt-6 flex flex-wrap gap-3 max-md:[zoom:0.7]">
-                    {widgets.map((widget) => {
+                    {modelId ? (
+                      // Card com cálculo: os widgets "controle" recalculam os demais.
+                      <LinkedWidgets
+                        modelId={modelId}
+                        widgets={widgets}
+                        hiddenOnMobile={[...hidden]}
+                        labels={{ adjust: site.ui.widgetAdjust, cycle: site.ui.widgetCycle }}
+                      />
+                    ) : (
+                      widgets.map((widget) => {
                       const interactive = hasInteractiveVersion(widget);
                       return (
                         <div
@@ -79,7 +91,8 @@ export function CategoryBlocks({ id }: { id?: string }) {
                           <Widget widget={widget} solid interactive={interactive} />
                         </div>
                       );
-                    })}
+                    })
+                    )}
                   </div>
                 </article>
               </Reveal>

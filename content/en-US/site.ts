@@ -477,6 +477,8 @@ export const site: SiteContent = {
     testimonialInstagram: "{name} on Instagram",
     testimonialWebsite: "{name} website",
     testimonialRating: "Rating: {rating} out of {max} stars",
+    widgetAdjust: "Drag sideways to adjust",
+    widgetCycle: "Tap to switch",
     cookies: {
       title: "We value your privacy",
       description:

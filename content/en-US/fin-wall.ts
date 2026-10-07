@@ -143,7 +143,15 @@ export const finWall: readonly FinWidget[] = [
       { label: "Operations", value: 37, display: "R$ 21.7k" },
     ],
   },
-  { id: "tax-regime", kind: "badge", size: "s", icon: "shield", label: "Presumed", hideOnMobile: true },
+  {
+    id: "tax-regime",
+    kind: "badge",
+    size: "s",
+    icon: "shield",
+    label: "Presumed",
+    options: ["Simples", "Presumed", "Actual"],
+    hideOnMobile: true,
+  },
   {
     id: "ebitda",
     kind: "sparkline",

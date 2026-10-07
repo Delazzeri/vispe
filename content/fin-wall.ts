@@ -56,7 +56,13 @@ export type FinWidget = Base &
     | { kind: "event"; day: string; month: string; title: string; detail: string; value?: string }
     | { kind: "notification"; icon: WidgetIcon; eyebrow?: string; title: string; body: string }
     | { kind: "progress"; label: string; display: string; value: number; caption: string }
-    | { kind: "badge"; icon: WidgetIcon; label: string }
+    | {
+        kind: "badge";
+        icon: WidgetIcon;
+        label: string;
+        /** Opções que o widget alterna quando é um controle (ex.: regimes tributários). */
+        options?: string[];
+      }
     | { kind: "search"; placeholder: string }
     | { kind: "clock" }
   );
