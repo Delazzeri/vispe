@@ -493,6 +493,7 @@ export const site = {
     testimonialInstagram: "Instagram da {name}",
     testimonialWebsite: "Site da {name}",
     testimonialRating: "Avaliação: {rating} de {max} estrelas",
+    byAuthor: "Por {name}",
     widgetAdjust: "Arraste para os lados para ajustar",
     widgetCycle: "Toque para trocar",
     cookies: {
