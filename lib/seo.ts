@@ -86,6 +86,8 @@ export function organizationJsonLd(locale: Locale) {
     name: brand.name,
     url: brand.url,
     description: getSite(locale).tagline,
+    // Perfis oficiais: ajudam o Google a associar as redes à marca.
+    sameAs: Object.values(brand.social).filter((url): url is string => Boolean(url)),
   };
 }
 

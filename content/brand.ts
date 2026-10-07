@@ -3,13 +3,13 @@ export const brand = {
   name: "Vispe Capital",
   url: "https://www.vispe.com.br",
   social: {
-    // TODO(content): preencher as URLs oficiais. Enquanto estiverem
-    // undefined, o footer mostra o ícone sem link.
-    instagram: undefined as string | undefined,
-    facebook: undefined as string | undefined,
-    linkedin: undefined as string | undefined,
-    spotify: undefined as string | undefined,
-    youtube: undefined as string | undefined,
+    instagram: "https://www.instagram.com/vispecapital",
+    facebook: "https://www.facebook.com/vispecapital/",
+    linkedin: "https://www.linkedin.com/company/vispe-capital/",
+    // Link do programa sem os parâmetros de rastreio do compartilhamento.
+    spotify: "https://open.spotify.com/show/09f6Lx4ckx7sltGudSAu92",
+    youtube: "https://www.youtube.com/@vispecapital",
+    // TODO(content): número oficial. Enquanto for undefined, não aparece.
     whatsapp: undefined as string | undefined,
   },
 } as const;
