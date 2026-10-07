@@ -65,7 +65,7 @@ export const blogPosts: readonly BlogPost[] = [
     publishedAt: "2026-09-04",
     author: "Pablo Constantino",
     cover: {
-      src: "/media/blog/planejamento-estrategico-1600.webp",
+      src: "/media/blog/planejamento-estrategico-v2-1600.webp",
       alt: "A visão de longo prazo que define quanto sua empresa vai valer: crescimento sustentável e visão estratégica",
       width: 1600,
       height: 750,
