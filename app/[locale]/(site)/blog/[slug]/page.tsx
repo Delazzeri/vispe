@@ -9,6 +9,7 @@ import {
   formatPostDate,
   getPostBySlug,
   getReadingMinutes,
+  inlineBoldPattern,
   inlineLinkPattern,
   plainText,
   type BlogBlock,
@@ -33,14 +34,31 @@ const paragraphClass = "max-w-[65ch] text-base leading-relaxed text-fg";
 const inlineLinkClass =
   "font-medium text-ink underline decoration-brand-dark/50 underline-offset-4 transition-colors hover:text-brand-dark hover:decoration-brand-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand rounded-sm";
 
-/** Texto com links [texto](href): internos via next/link (no idioma da página), externos em nova aba. */
+/** Trecho de texto com **negrito**. */
+function withBold(text: string, key: string): ReactNode[] {
+  return text.split(inlineBoldPattern).map((part, i) =>
+    // split com grupo de captura: posições ímpares são os trechos em negrito.
+    i % 2 === 1 ? (
+      <strong key={`${key}-${i}`} className="font-semibold text-ink">
+        {part}
+      </strong>
+    ) : (
+      part
+    ),
+  );
+}
+
+/**
+ * Texto com links [texto](href) e **negrito**: links internos via next/link
+ * (no idioma da página), externos em nova aba.
+ */
 function RichText({ text, locale }: { text: string; locale: Locale }) {
   const parts: ReactNode[] = [];
   let last = 0;
   for (const match of text.matchAll(inlineLinkPattern)) {
     const [whole, label, href] = match;
     const start = match.index ?? 0;
-    if (start > last) parts.push(text.slice(last, start));
+    if (start > last) parts.push(...withBold(text.slice(last, start), `t${last}`));
     const external = /^https?:\/\//.test(href);
     parts.push(
       external ? (
@@ -55,7 +73,7 @@ function RichText({ text, locale }: { text: string; locale: Locale }) {
     );
     last = start + whole.length;
   }
-  if (last < text.length) parts.push(text.slice(last));
+  if (last < text.length) parts.push(...withBold(text.slice(last), `t${last}`));
   return <>{parts}</>;
 }
 
@@ -75,15 +93,21 @@ function Block({ block, locale }: { block: BlogBlock; locale: Locale }) {
       </blockquote>
     );
   }
+  const List = block.ordered ? "ol" : "ul";
   return (
-    <ul className="max-w-[65ch] list-disc space-y-2 pl-5 text-base leading-relaxed text-fg marker:text-brand-dark">
+    <List
+      className={cn(
+        "max-w-[65ch] space-y-2 pl-5 text-base leading-relaxed text-fg marker:text-brand-dark",
+        block.ordered ? "list-decimal marker:font-semibold" : "list-disc",
+      )}
+    >
       {block.items.map((item) => (
         <li key={item.text}>
           {item.label && <strong className="font-semibold text-ink">{item.label}</strong>}{" "}
           <RichText text={item.text} locale={locale} />
         </li>
       ))}
-    </ul>
+    </List>
   );
 }
 

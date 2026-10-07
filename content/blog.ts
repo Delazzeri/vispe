@@ -2,12 +2,12 @@
  * Bloco do corpo de uma seção: parágrafo (texto simples), frase em destaque
  * ou lista (itens com rótulo opcional em negrito, ex.: "Sem valuation-alvo:").
  * Textos aceitam links no formato [texto](/caminho) — internos (ex.: "/#servicos",
- * "/contato", "/blog/slug") ou externos ("https://...").
+ * "/contato", "/blog/slug") ou externos ("https://...") — e negrito com **trecho**.
  */
 export type BlogBlock =
   | string
   | { kind: "highlight"; text: string }
-  | { kind: "list"; items: readonly { label?: string; text: string }[] };
+  | { kind: "list"; ordered?: boolean; items: readonly { label?: string; text: string }[] };
 
 export type BlogSection = {
   /** Sem título: bloco de abertura logo abaixo do h1. */
@@ -54,10 +54,12 @@ export type BlogPost = {
 
 /** Padrão dos links no texto: [texto](href). */
 export const inlineLinkPattern = /\[([^\]]+)\]\(([^)\s]+)\)/g;
+/** Padrão do negrito no texto: **trecho**. */
+export const inlineBoldPattern = /\*\*([^*]+)\*\*/g;
 
-/** Remove a marcação de links, mantendo só o texto (JSON-LD, tempo de leitura). */
+/** Remove a marcação de links e negrito, mantendo só o texto (JSON-LD, tempo de leitura). */
 export function plainText(text: string): string {
-  return text.replace(inlineLinkPattern, "$1");
+  return text.replace(inlineLinkPattern, "$1").replace(inlineBoldPattern, "$1");
 }
 
 /** Texto puro de um bloco (tempo de leitura, JSON-LD). */
@@ -67,9 +69,165 @@ export function blockText(block: BlogBlock): string {
   return block.items.map((item) => plainText(item.label ? `${item.label} ${item.text}` : item.text)).join(" ");
 }
 
-// Artigos reais primeiro. TODO(content): os posts depois deste ainda são
-// provisórios (só para montar a estrutura) — substituir pelos artigos reais.
+// Artigos reais, do mais recente para o mais antigo.
 export const blogPosts: readonly BlogPost[] = [
+  {
+    slug: "efeito-nintendo-ativos-intangiveis-valuation",
+    title: "O Efeito Nintendo: como a gestão de ativos intangíveis eleva o valuation da sua empresa",
+    seoTitle: "Efeito Nintendo: intangíveis que elevam o valuation",
+    description:
+      "A estratégia da gigante dos games revela como proteger margens, blindar a propriedade intelectual e construir valor de mercado sustentável no longo prazo.",
+    category: "Valuation",
+    tags: ["Valuation"],
+    // TODO(content): data real de publicação (provisória: dia em que entrou no site).
+    publishedAt: "2026-10-07",
+    sections: [
+      {
+        paragraphs: [
+          "No mercado B2B e no ecossistema de investimentos, poucas empresas demonstram tanta resiliência financeira quanto a **Nintendo**. Enquanto concorrentes diretos enfrentam ciclos severos de depreciação de hardware e dependência de subsídios cruzados, a companhia japonesa mantém margens operacionais invejáveis e uma posição de caixa líquido extraordinária. O segredo dessa perenidade não está apenas na inovação de produto, mas na gestão milimétrica de seus **ativos intangíveis** e do seu **Valuation**.",
+          "Ao longo das últimas décadas, a Nintendo transformou suas propriedades intelectuais (IPs), marcas registradas e patentes nos principais direcionadores de valor do seu balanço patrimonial. Quando uma organização consegue desassociar a sua precificação do custo direto de produção ou das oscilações de commodities e insumos, ela atinge o ápice da diferenciação estratégica, o verdadeiro propulsor do valor da marca.",
+        ],
+      },
+      {
+        heading: "A anatomia dos intangíveis: o que realmente constrói valor?",
+        paragraphs: [
+          "No ecossistema corporativo tradicional, gestores frequentemente cometem o erro de focar excessivamente no patrimônio líquido tangível (máquinas, imóveis, estoques e frota). Contudo, na economia moderna, a participação dos **ativos intangíveis** no valuation total de grandes empresas supera os 80%.",
+          "A Nintendo exemplifica como a governança sobre ativos não materiais blinda a empresa contra flutuações de mercado por meio de quatro pilares essenciais:",
+          {
+            kind: "list",
+            ordered: true,
+            items: [
+              {
+                label: "Poder de Precificação (Pricing Power):",
+                text: "A recusa histórica em realizar descontos agressivos em seus títulos principais preserva a percepção de valor e garante margens brutas elevadas de forma consistente.",
+              },
+              {
+                label: "Moat Competitivo (Barreira de Entrada):",
+                text: "A proteção rigorosa de suas marcas e patentes impede que concorrentes repliquem suas dinâmicas de consumo ou usufruam da sua reputação.",
+              },
+              {
+                label: "Previsibilidade de Fluxo de Caixa:",
+                text: "Personagens e franquias consolidadas geram receitas recorrentes não apenas via produtos diretos, mas por meio de licenciamento, parques temáticos e produções audiovisuais.",
+              },
+              {
+                label: "Governança de Marcas:",
+                text: "O rigor com que a empresa gerencia a exposição e a qualidade de seus ativos evita a diluição do valor da marca ao longo do tempo.",
+              },
+            ],
+          },
+        ],
+      },
+      {
+        heading: "O impacto direto no valuation de médias e grandes empresas",
+        paragraphs: [
+          "Para CEOs, CFOs e Founders de empresas em crescimento, o modelo da Nintendo traz uma lição crucial: **o valor real de um negócio não se resume ao múltiplo do EBITDA atual, mas à capacidade de perpetuar e proteger a geração de caixa futuro.**",
+          "Ao realizar uma avaliação corporativa, investidores e compradores estratégicos precificam rigorosamente a sustentabilidade dos ativos intangíveis. Empresas que possuem marca forte, processos proprietários, contratos de longo prazo e propriedade intelectual bem estruturada alcançam:",
+          {
+            kind: "list",
+            items: [
+              {
+                label: "Múltiplos de transação expressivamente superiores",
+                text: "em rodadas de captação ou [processos de M&A](/#equity);",
+              },
+              {
+                label: "Menor custo de capital,",
+                text: "reduzindo a percepção de risco por parte dos credores e investidores;",
+              },
+              {
+                label: "Proteção contra volatilidades do setor,",
+                text: "garantindo resiliência de caixa mesmo sob pressão macroeconômica.",
+              },
+            ],
+          },
+          "Se a sua empresa depende exclusivamente da disputa por preço ou da alocação de ativos físicos para crescer, seu valuation está vulnerável e subtraído da sua real capacidade de mercado.",
+        ],
+      },
+      {
+        heading: "Descubra o real valor da sua empresa com a Vispe Capital",
+        paragraphs: [
+          "Mapear, precificar e maximizar os ativos tangíveis e intangíveis é o primeiro passo para garantir a [longevidade do negócio](/blog/planejamento-estrategico) e preparar a empresa para captar recursos, atrair sócios ou realizar transações estratégicas.",
+          "A **Vispe Capital** desenvolve estudos profundos de [Valuation de Precisão](/#servicos), alinhando metodologia financeira de ponta (Fluxo de Caixa Descontado, Múltiplos de Mercado e Avaliação de Intangíveis) às dinâmicas reais do seu setor.",
+          {
+            kind: "highlight",
+            text: "Sua empresa está pronta para [descobrir e expandir seu valor de mercado](/contato)?",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    slug: "licao-nokia-governanca-controladoria-financeira",
+    title:
+      "A lição de R$ 1,5 bilhão da Nokia: como a falta de governança e processos financeiros destrói empresas gigantes",
+    seoTitle: "Lição da Nokia: governança e controladoria financeira",
+    description:
+      "Uma análise crítica sobre como a cegueira operacional, a falta de visibilidade sobre margens e a ausência de uma controladoria estratégica minaram o líder mundial da tecnologia.",
+    category: "Controladoria",
+    tags: ["Gestão Financeira", "Turnaround Financeiro"],
+    // TODO(content): data real de publicação (provisória: dia em que entrou no site).
+    publishedAt: "2026-10-07",
+    sections: [
+      {
+        paragraphs: [
+          "Durante mais de uma década, a marca **Nokia** foi sinônimo incontestável de liderança global em telecomunicações e dispositivos móveis. Em seu pico de mercado, a gigante finlandesa detinha mais de 40% de participação de mercado global e gerava bilhões de Euros em caixa livre. No entanto, o colapso vertiginoso que culminou na venda da sua divisão de celulares por uma fração do seu valor histórico não foi causado apenas pela ascensão do iPhone ou do ecossistema Android.",
+          "Sob a ótica de M&A e [turnaround financeiro](/#equity), a queda da Nokia foi provocada por falhas profundas de **visibilidade de custos, rigidez operacional e ausência de uma controladoria financeira estratégica**. Quando os números de margem começam a ser mascarados por eficiências passadas, o conselho e a diretoria perdem o termômetro do negócio: um erro fatal para empresas de qualquer porte.",
+        ],
+      },
+      {
+        heading: "A anatomia do colapso: o que os demonstrativos não mostravam",
+        paragraphs: [
+          "Enquanto a receita consolidada da Nokia ainda impressionava os analistas de mercado nos anos 2000, a estrutura interna de custos e a margem por unidade operacional já apresentavam sérios sinais de degradação.",
+          "Uma análise minuciosa da estratégia da Nokia revela três erros graves de gestão financeira e operacional:",
+          {
+            kind: "list",
+            ordered: true,
+            items: [
+              {
+                label: "Ilusão do Volume vs. Margem de Contribuição:",
+                text: "A empresa focava em manter o volume de vendas global por meio de aparelhos de baixa margem em mercados emergentes, camuflando a erosão acelerada do EBITDA nos segmentos premium.",
+              },
+              {
+                label: "Desconexão do DRE Gerencial:",
+                text: "A alocação de recursos em P&D (Pesquisa e Desenvolvimento) era bilionária, porém sem KPIs claros de retorno sobre o capital investido (ROIC). Bilhões de Euros foram queimados em software proprietário sem aderência de mercado.",
+              },
+              {
+                label: "Ausência de Indicadores Antecedentes de Caixa:",
+                text: "O ciclo de conversão de caixa (CCC) da companhia se deteriorou à medida que estoques de componentes obsoletos se acumulavam nos centros de distribuição mundiais, destruindo o capital de giro.",
+              },
+            ],
+          },
+        ],
+      },
+      {
+        heading: "Do erro da gigante à realidade das médias e grandes empresas",
+        paragraphs: [
+          "No ecossistema corporativo médio e grande, a “Síndrome de Nokia” acontece com frequência assustadora. Empresas em fase de crescimento acelerado frequentemente negligenciam a [Controladoria Financeira](/#servicos) e a figura do [CFO as Service](/#faq), acreditando que o aumento do faturamento corrige qualquer desalinhamento interno.",
+          "Quando a governança de caixa falha, os sintomas surgem de forma silenciosa:",
+          {
+            kind: "list",
+            items: [
+              { text: "Incapacidade de identificar a lucratividade real por produto, cliente ou canal;" },
+              { text: "Descasamento entre o faturamento contábil e a liquidez real na conta bancária;" },
+              { text: "Modelos orçamentários estáticos que impedem pivotagens estratégicas rápidas;" },
+              { text: "Aumento da dependência de linhas de crédito de curto prazo para honrar capital de giro." },
+            ],
+          },
+          "A Nokia demonstrou que o volume de caixa acumulado no passado não garante sobrevivência se os processos de gestão financeira do presente não forem ágeis, transparentes e orientados à tomada de decisão.",
+        ],
+      },
+      {
+        heading: "Transforme a gestão do seu caixa com a Vispe Capital",
+        paragraphs: [
+          "Ter controle absoluto sobre DRE gerencial, margens de contribuição, [fluxo de caixa projetado](/#fin) e capital de giro é a diferença entre liderar o mercado ou ser engolido por ele.",
+          "A **Vispe Capital** oferece soluções completas de **Controladoria Financeira e CFO as Service**, estruturando governança de dados, relatórios executivos para conselho e [otimização de margens operacionais](/blog/efeito-nintendo-ativos-intangiveis-valuation) para médias e grandes empresas.",
+          {
+            kind: "highlight",
+            text: "Sua empresa possui [total visibilidade sobre as margens](/contato) e a geração real de caixa do seu negócio?",
+          },
+        ],
+      },
+    ],
+  },
   {
     // Mesmo slug da URL original (vispe.com.br/planejamento-estrategico/).
     slug: "planejamento-estrategico",
@@ -225,121 +383,6 @@ export const blogPosts: readonly BlogPost[] = [
         },
       ],
     },
-  },
-  {
-    slug: "o-que-e-valuation-e-quando-fazer",
-    title: "O que é valuation e quando fazer o da sua empresa",
-    description:
-      "Entenda para que serve a avaliação do valor de uma empresa e em quais momentos ela faz diferença.",
-    category: "Equity",
-    tags: ["Valuation"],
-    publishedAt: "2026-10-02",
-    sections: [
-      {
-        heading: "Valuation em poucas palavras",
-        paragraphs: [
-          "É a avaliação do valor de uma empresa com base em resultados, perspectivas e riscos. Ela transforma a percepção do dono em um número defensável.",
-        ],
-      },
-      {
-        heading: "Quando faz sentido",
-        paragraphs: [
-          "Antes de vender o negócio, buscar sócios ou investidores, planejar a sucessão ou simplesmente entender quanto a empresa vale hoje e o que move esse valor.",
-        ],
-      },
-    ],
-  },
-  {
-    slug: "planejamento-tributario-sem-complicacao",
-    title: "Planejamento tributário sem complicação",
-    description:
-      "Como rever o enquadramento fiscal da empresa pode liberar margem sem sair da lei.",
-    category: "Tributário",
-    tags: ["Planejamento Tributário"],
-    publishedAt: "2026-10-02",
-    sections: [
-      {
-        heading: "Imposto também é custo a ser planejado",
-        paragraphs: [
-          "Muitas empresas pagam mais do que precisam por manter o mesmo enquadramento durante anos, mesmo depois de mudar de tamanho ou de operação.",
-        ],
-      },
-      {
-        heading: "Por onde começar",
-        paragraphs: [
-          "Reúna o histórico de faturamento, a folha e a estrutura de custos. Com esses dados, compare os regimes possíveis e escolha o mais eficiente para o momento.",
-        ],
-      },
-    ],
-  },
-  {
-    slug: "bpo-financeiro-vale-a-pena",
-    title: "BPO financeiro: vale a pena terceirizar a rotina?",
-    description:
-      "Quando faz sentido entregar contas a pagar, a receber e conciliação a um time especializado.",
-    category: "BPO",
-    tags: ["BPO Financeiro"],
-    publishedAt: "2026-10-02",
-    sections: [
-      {
-        heading: "O que o BPO assume",
-        paragraphs: [
-          "Contas a pagar e a receber, conciliação bancária e fluxo de caixa: a rotina que consome tempo do dono e costuma ficar para depois.",
-        ],
-      },
-      {
-        heading: "Sinais de que chegou a hora",
-        paragraphs: [
-          "Decisões tomadas sem números confiáveis, atrasos frequentes em fechamentos e um dono preso a tarefas operacionais são os sinais mais comuns.",
-        ],
-      },
-    ],
-  },
-  {
-    slug: "due-diligence-o-que-olhar-antes-de-comprar",
-    title: "Due diligence: o que olhar antes de comprar uma empresa",
-    description:
-      "Os pontos financeiros, contratuais e de risco que merecem atenção antes de fechar uma aquisição.",
-    category: "M&A",
-    tags: ["Due Diligence"],
-    publishedAt: "2026-10-02",
-    sections: [
-      {
-        heading: "Por que investigar antes de assinar",
-        paragraphs: [
-          "Uma aquisição leva para dentro da sua empresa também os problemas da outra. A due diligence existe para encontrá-los antes do fechamento.",
-        ],
-      },
-      {
-        heading: "Onde concentrar a análise",
-        paragraphs: [
-          "Qualidade dos resultados, dívidas e passivos, contratos relevantes e dependência de poucos clientes ou pessoas-chave são os primeiros pontos de atenção.",
-        ],
-      },
-    ],
-  },
-  {
-    slug: "captacao-de-recursos-como-se-preparar",
-    title: "Captação de recursos: como se preparar",
-    description:
-      "O que organizar antes de procurar investidores ou instituições financeiras.",
-    category: "Crescimento",
-    tags: ["Captação de Recursos"],
-    publishedAt: "2026-10-02",
-    sections: [
-      {
-        heading: "Comece pelos números",
-        paragraphs: [
-          "Quem financia quer entender o histórico, a geração de caixa e para onde o dinheiro vai. Demonstrativos organizados encurtam a conversa.",
-        ],
-      },
-      {
-        heading: "Escolha a fonte certa",
-        paragraphs: [
-          "Dívida, sócio investidor e linhas de fomento servem a momentos diferentes. A melhor opção depende do estágio da empresa e do uso do recurso.",
-        ],
-      },
-    ],
   },
 ] as const;
 
