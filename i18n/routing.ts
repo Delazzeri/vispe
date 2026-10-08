@@ -24,6 +24,8 @@ export const routing = defineRouting({
     "/contato": { "pt-BR": "/contato", "en-US": "/contact" },
     "/trabalhe-conosco": { "pt-BR": "/trabalhe-conosco", "en-US": "/careers" },
     "/franquia": { "pt-BR": "/franquia", "en-US": "/franchise" },
+    "/franquia/comercial": { "pt-BR": "/franquia/comercial", "en-US": "/franchise/commercial" },
+    "/franquia/financeira": { "pt-BR": "/franquia/financeira", "en-US": "/franchise/financial" },
     "/materiais": { "pt-BR": "/materiais", "en-US": "/free-materials" },
     "/blog/[slug]": "/blog/[slug]",
   },

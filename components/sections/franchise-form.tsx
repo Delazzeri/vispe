@@ -8,19 +8,21 @@ import {
   type FranchiseState,
 } from "@/app/[locale]/(site)/franquia/actions";
 import { ConsentField, Field, fieldA11y, Honeypot, inputClass } from "@/components/ui/form-field";
-import type { FranchiseContent } from "@/content/franchise";
+import type { FranchiseContent, FranchiseModel } from "@/content/franchise";
 import type { Locale } from "@/i18n/routing";
 import { cn } from "@/lib/cn";
 
 type FranchiseFormProps = {
   locale: Locale;
+  /** Modelo de franquia da página (vai junto no cadastro). */
+  model: FranchiseModel;
   copy: FranchiseContent["form"];
   messages: FranchiseContent["messages"];
   /** Exibido quando o envio pelo site ainda não está disponível (ex.: redes da Vispe). */
   fallback: ReactNode;
 };
 
-export function FranchiseForm({ locale, copy, messages, fallback }: FranchiseFormProps) {
+export function FranchiseForm({ locale, model, copy, messages, fallback }: FranchiseFormProps) {
   const [state, setState] = useState<FranchiseState>({ status: "idle" });
   const [pending, startTransition] = useTransition();
   const { fields } = copy;
@@ -51,6 +53,7 @@ export function FranchiseForm({ locale, copy, messages, fallback }: FranchiseFor
   return (
     <form onSubmit={onSubmit} noValidate className="relative mt-8 space-y-5">
       <input type="hidden" name="locale" value={locale} />
+      <input type="hidden" name="model" value={model} />
       <Honeypot />
 
       <div aria-live="polite">

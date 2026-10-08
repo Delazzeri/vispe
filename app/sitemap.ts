@@ -16,6 +16,8 @@ const pages: { path: string; changeFrequency: Frequency; priority: number }[] = 
   { path: "/contato", changeFrequency: "monthly", priority: 0.6 },
   { path: "/trabalhe-conosco", changeFrequency: "monthly", priority: 0.5 },
   { path: "/franquia", changeFrequency: "monthly", priority: 0.6 },
+  { path: "/franquia/comercial", changeFrequency: "monthly", priority: 0.6 },
+  { path: "/franquia/financeira", changeFrequency: "monthly", priority: 0.6 },
   { path: "/materiais", changeFrequency: "weekly", priority: 0.7 },
 ];
 

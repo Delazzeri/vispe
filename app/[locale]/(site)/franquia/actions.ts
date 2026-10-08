@@ -1,9 +1,9 @@
 "use server";
 
-import { getFranchise } from "@/content/franchise";
+import { getFranchise, isFranchiseModel } from "@/content/franchise";
 import { resolveLocale } from "@/i18n/routing";
 
-export type FranchiseField = "name" | "email" | "phone" | "city" | "background" | "capital" | "consent";
+export type FranchiseField = "name" | "email" | "phone" | "city" | "background" | "capital" | "model" | "consent";
 
 export type FranchiseState =
   | { status: "idle" }
@@ -30,6 +30,7 @@ export async function submitFranchise(_prev: FranchiseState, formData: FormData)
     city: text(formData, "city"),
     background: text(formData, "background"),
     capital: text(formData, "capital"),
+    model: text(formData, "model"),
     message: text(formData, "message").slice(0, 2000),
   };
 
@@ -40,6 +41,7 @@ export async function submitFranchise(_prev: FranchiseState, formData: FormData)
   if (!lead.city) errors.city = msg.required;
   if (!lead.background) errors.background = msg.required;
   if (!form.capitalOptions.some((option) => option === lead.capital)) errors.capital = msg.capital;
+  if (!isFranchiseModel(lead.model)) errors.model = msg.model;
   if (formData.get("consent") !== "on") errors.consent = msg.consent;
 
   if (Object.keys(errors).length > 0) return { status: "invalid", errors };
