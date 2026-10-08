@@ -72,7 +72,7 @@ export function FranchiseModelPage({ locale, model }: { locale: Locale; model: F
       <section aria-labelledby="franchise-heading" className="relative isolate overflow-clip bg-bg">
         <HeroScene
           softFadeOnMobile
-          className="absolute inset-x-0 bottom-0 -z-10 h-80 overflow-hidden md:h-[520px]"
+          className="absolute inset-x-0 bottom-0 -z-10 h-60 overflow-hidden md:h-[360px]"
           {...franchiseScene(model)}
         />
 
@@ -128,11 +128,11 @@ export function FranchiseModelPage({ locale, model }: { locale: Locale; model: F
         </HeroIntro>
 
         {/* Respiro inferior quase da altura do vídeo: ele começa logo abaixo dos destaques. */}
-        <div aria-hidden className="h-72 md:h-[440px]" />
+        <div aria-hidden className="h-48 md:h-72" />
       </section>
 
       {/* Como funciona */}
-      <section aria-labelledby="franchise-about" className="mx-auto max-w-6xl px-6 pt-24 md:pt-32">
+      <section aria-labelledby="franchise-about" className="mx-auto max-w-6xl px-6 pt-12 md:pt-16">
         <Reveal className="max-w-3xl">
           <h2 id="franchise-about" className={h2Class} style={h2Style}>
             {page.about.title}
