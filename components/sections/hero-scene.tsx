@@ -18,6 +18,8 @@ type HeroSceneProps = {
   fadeBottom?: boolean;
   /** Vídeo único (sem versão mobile); substitui as fontes padrão do hero. */
   src?: string;
+  /** Capa do vídeo (e imagem sob reduced motion). Padrão: a da paisagem do hero. */
+  poster?: string;
   /**
    * No celular, degradê inferior mais alto e com faixa sólida na base, para a
    * passagem ao fundo não marcar uma linha (usado no hero, onde a cena é baixa).
@@ -30,6 +32,7 @@ export function HeroScene({
   preload = "auto",
   fadeBottom = true,
   src,
+  poster = "/media/hero/scene-poster-1600.jpg",
   softFadeOnMobile,
 }: HeroSceneProps) {
   const shouldReduceMotion = useReducedMotion();
@@ -49,7 +52,7 @@ export function HeroScene({
       {shouldReduceMotion ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img
-          src="/media/hero/scene-poster-1600.jpg"
+          src={poster}
           alt=""
           className="absolute inset-0 h-full w-full object-cover"
         />
@@ -60,7 +63,7 @@ export function HeroScene({
             if (el) el.playbackRate = 0.5;
           }}
           className="absolute inset-0 h-full w-full object-cover"
-          poster="/media/hero/scene-poster-1600.jpg"
+          poster={poster}
           autoPlay={!paused}
           muted
           loop
