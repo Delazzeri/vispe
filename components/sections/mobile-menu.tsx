@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { LocaleLink as Link } from "@/components/ui/locale-link";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
-import { Menu, X } from "lucide-react";
+import { Download, Menu, X } from "lucide-react";
 import { spring } from "@/components/motion/presets";
 import { LanguageSwitcher } from "@/components/ui/language-switcher";
 import { useSite } from "@/content/site";
@@ -53,6 +53,14 @@ export function MobileMenu() {
                 className="mt-6 rounded-full bg-ink px-5 py-3 text-center text-sm font-semibold text-paper focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-dark"
               >
                 {site.ui.headerCta.label}
+              </Link>
+              <Link
+                href={site.ui.materialsCta.href}
+                onClick={() => setOpen(false)}
+                className="mt-3 inline-flex items-center justify-center gap-2 rounded-full border border-border bg-surface px-5 py-3 text-sm font-semibold text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-dark"
+              >
+                <Download className="h-4 w-4" aria-hidden />
+                {site.ui.materialsCta.label}
               </Link>
               {/* No celular o seletor de idioma mora aqui (no desktop, no canto da página). */}
               <LanguageSwitcher className="mt-4 self-center" />

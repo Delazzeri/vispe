@@ -1,5 +1,6 @@
 import { LocaleLink as Link } from "@/components/ui/locale-link";
 import Image from "next/image";
+import { Download } from "lucide-react";
 import { brand, useSite } from "@/content/site";
 import { HeaderChrome } from "@/components/sections/header-chrome";
 import { MobileMenu } from "@/components/sections/mobile-menu";
@@ -32,12 +33,22 @@ export function Header() {
           ))}
         </nav>
 
-        <Link
-          href={site.ui.headerCta.href}
-          className="hidden rounded-lg bg-ink px-4 py-2 text-sm font-semibold text-paper transition-transform hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-dark md:inline-block"
-        >
-          {site.ui.headerCta.label}
-        </Link>
+        <div className="hidden shrink-0 items-center gap-2 md:flex">
+          <Link
+            href={site.ui.materialsCta.href}
+            // Só a partir de lg: entre md e lg não cabe ao lado do menu (fica no menu mobile e no footer).
+            className="hidden items-center gap-1.5 rounded-lg border border-border bg-surface px-3.5 py-2 text-sm font-semibold text-fg transition-transform hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-dark lg:inline-flex"
+          >
+            <Download className="h-4 w-4" aria-hidden />
+            {site.ui.materialsCta.label}
+          </Link>
+          <Link
+            href={site.ui.headerCta.href}
+            className="rounded-lg bg-ink px-4 py-2 text-sm font-semibold text-paper transition-transform hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-dark"
+          >
+            {site.ui.headerCta.label}
+          </Link>
+        </div>
 
         <MobileMenu />
       </div>

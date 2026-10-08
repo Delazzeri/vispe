@@ -493,6 +493,7 @@ export const site = {
           { label: "Conteúdos e artigos", href: "/#blog" },
           { label: "Perguntas frequentes", href: "/#faq" },
           { label: "Carreiras", href: "/trabalhe-conosco" },
+          { label: "Seja um franqueado", href: "/franquia" },
         ],
       },
       services: {
@@ -508,6 +509,7 @@ export const site = {
           { label: "Fale com a Vispe", href: "/contato" },
           { label: "Agende um diagnóstico", href: "/#diagnostico" },
           { label: "Fin 24/7, CFO virtual", href: "/#fin" },
+          { label: "Materiais gratuitos", href: "/materiais" },
         ],
       },
     },
@@ -523,6 +525,7 @@ export const site = {
   ui: {
     mainNav: "Navegação principal",
     headerCta: { label: "Agendar diagnóstico", href: "/#diagnostico" },
+    materialsCta: { label: "Materiais gratuitos", href: "/materiais" },
     openMenu: "Abrir menu",
     closeMenu: "Fechar menu",
     resultsLabel: "Resultados da Vispe Capital",
@@ -589,5 +592,7 @@ export const site = {
     about: { title: "Sobre", heading: "Sobre a Vispe Capital" },
     contact: { title: "Contato" },
     careers: { title: "Carreiras" },
+    franchise: { title: "Seja um franqueado" },
+    materials: { title: "Materiais gratuitos" },
   },
 } as const;

@@ -23,6 +23,8 @@ export const routing = defineRouting({
     "/sobre": { "pt-BR": "/sobre", "en-US": "/about" },
     "/contato": { "pt-BR": "/contato", "en-US": "/contact" },
     "/trabalhe-conosco": { "pt-BR": "/trabalhe-conosco", "en-US": "/careers" },
+    "/franquia": { "pt-BR": "/franquia", "en-US": "/franchise" },
+    "/materiais": { "pt-BR": "/materiais", "en-US": "/free-materials" },
     "/blog/[slug]": "/blog/[slug]",
   },
 });

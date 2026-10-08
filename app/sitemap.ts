@@ -15,6 +15,8 @@ const pages: { path: string; changeFrequency: Frequency; priority: number }[] = 
   { path: "/sobre", changeFrequency: "monthly", priority: 0.6 },
   { path: "/contato", changeFrequency: "monthly", priority: 0.6 },
   { path: "/trabalhe-conosco", changeFrequency: "monthly", priority: 0.5 },
+  { path: "/franquia", changeFrequency: "monthly", priority: 0.6 },
+  { path: "/materiais", changeFrequency: "weekly", priority: 0.7 },
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {

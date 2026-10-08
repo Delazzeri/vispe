@@ -480,6 +480,7 @@ export const site: SiteContent = {
           { label: "Articles and insights", href: "/#blog" },
           { label: "Frequently asked questions", href: "/#faq" },
           { label: "Careers", href: "/trabalhe-conosco" },
+          { label: "Become a franchisee", href: "/franquia" },
         ],
       },
       services: {
@@ -494,6 +495,7 @@ export const site: SiteContent = {
           { label: "Talk to Vispe", href: "/contato" },
           { label: "Book a diagnosis", href: "/#diagnostico" },
           { label: "Fin 24/7 virtual CFO", href: "/#fin" },
+          { label: "Free materials", href: "/materiais" },
         ],
       },
     },
@@ -507,6 +509,7 @@ export const site: SiteContent = {
   ui: {
     mainNav: "Main navigation",
     headerCta: { label: "Book a diagnosis", href: "/#diagnostico" },
+    materialsCta: { label: "Free materials", href: "/materiais" },
     openMenu: "Open menu",
     closeMenu: "Close menu",
     resultsLabel: "Vispe Capital results",
@@ -571,5 +574,7 @@ export const site: SiteContent = {
     about: { title: "About", heading: "About Vispe Capital" },
     contact: { title: "Contact" },
     careers: { title: "Careers" },
+    franchise: { title: "Become a franchisee" },
+    materials: { title: "Free materials" },
   },
 };
