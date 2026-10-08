@@ -19,12 +19,10 @@ export const franchise = {
       comercial: {
         title: "Franquia Comercial",
         text: "Para quem tem perfil de vendas e rede de relacionamento: você abre portas com empresários e a Vispe entrega os projetos.",
-        highlights: ["Foco em prospecção e relacionamento", "Entrega feita pelo time Vispe", "Operação enxuta"],
       },
       financeira: {
         title: "Franquia Financeira",
         text: "Para profissionais de finanças e contabilidade: você atende os clientes da sua região com o método e a tecnologia da Vispe.",
-        highlights: ["Atendimento financeiro aos clientes", "Método, Fin 24/7 e treinamento", "Para quem domina finanças"],
       },
     },
   },

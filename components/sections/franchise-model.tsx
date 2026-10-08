@@ -1,7 +1,7 @@
 import { ArrowLeft, ArrowRight, Check, Compass, GraduationCap, Megaphone, MonitorSmartphone, type LucideIcon } from "lucide-react";
 import { Reveal } from "@/components/motion/reveal";
 import { FranchiseForm } from "@/components/sections/franchise-form";
-import { BrandPattern } from "@/components/ui/brand-pattern";
+import { HeroScene } from "@/components/sections/hero-scene";
 import { LocaleLink as Link } from "@/components/ui/locale-link";
 import { SocialLinks } from "@/components/ui/social-links";
 import { franchiseModelPath, franchiseModels, getFranchise, type FranchiseModel } from "@/content/franchise";
@@ -50,56 +50,56 @@ export function FranchiseModelPage({ locale, model }: { locale: Locale; model: F
         }}
       />
 
-      {/* Abertura + número de franqueados */}
-      <section aria-labelledby="franchise-heading" className="mx-auto max-w-6xl px-4 pt-28 md:px-6 md:pt-32">
-        <div className="relative isolate overflow-hidden rounded-3xl bg-ink px-6 py-12 text-paper md:px-14 md:py-16">
-          <BrandPattern className="absolute inset-0 -z-10 text-paper/5" />
-          <div aria-hidden className="absolute -top-24 -right-24 -z-10 h-72 w-72 rounded-full bg-brand/20 blur-3xl" />
-
+      {/* Abertura no estilo da home: clara, centralizada, com a paisagem ao fundo. */}
+      <section
+        aria-labelledby="franchise-heading"
+        className="relative isolate overflow-clip bg-bg px-6 pt-32 pb-80 md:pt-40 md:pb-[480px]"
+      >
+        <HeroScene
+          preload="metadata"
+          // Mesma altura do respiro inferior: a paisagem começa logo abaixo do CTA.
+          className="absolute inset-x-0 bottom-0 -z-10 h-80 overflow-hidden md:h-[480px]"
+        />
+        <div className="mx-auto flex max-w-4xl flex-col items-center text-center">
           <Link
             href="/franquia"
-            className="inline-flex items-center gap-1.5 rounded-sm text-sm font-medium text-paper/60 transition-colors hover:text-paper focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand"
+            className="inline-flex items-center gap-1.5 rounded-sm text-sm font-medium text-fg-muted transition-colors hover:text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-dark"
           >
             <ArrowLeft className="h-4 w-4" aria-hidden />
             {selector.eyebrow}
           </Link>
-
-          <div className="mt-8 grid gap-10 md:grid-cols-12 md:items-end">
-            <div className="md:col-span-8">
-              <p className="text-sm font-bold text-brand">{page.eyebrow}</p>
-              <h1
-                id="franchise-heading"
-                className="mt-4 text-balance text-4xl font-bold tracking-tight md:text-6xl"
-                style={{ letterSpacing: "-0.05em" }}
-              >
-                {page.title}
-              </h1>
-              <p className="mt-6 max-w-2xl text-base leading-7 text-paper/70 md:text-lg">{page.description}</p>
-              <a
-                href={`#${formAnchor}`}
-                className="mt-8 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-brand px-7 py-4 text-sm font-semibold text-brand-fg transition-transform hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-paper md:w-auto"
-              >
-                {page.cta}
-                <ArrowRight className="h-4 w-4" aria-hidden />
-              </a>
-            </div>
-
-            <dl className="md:col-span-4">
-              {page.stats.map((stat) => (
-                <div key={stat.label} className="flex flex-col rounded-2xl border border-paper/10 bg-paper/5 p-6">
-                  <dt className="text-sm text-paper/60">{stat.label}</dt>
-                  <dd className="order-first text-5xl font-bold tracking-tight text-brand tabular-nums md:text-6xl">
-                    {stat.value}
-                  </dd>
-                </div>
-              ))}
-            </dl>
-          </div>
+          <h1
+            id="franchise-heading"
+            className="mt-6 text-balance text-4xl font-bold tracking-tight text-fg md:text-7xl"
+            style={{ letterSpacing: "-0.03em" }}
+          >
+            {page.title}
+          </h1>
+          <p className="mt-5 max-w-2xl text-balance text-lg leading-relaxed text-fg-muted md:text-xl">
+            {page.description}
+          </p>
+          <dl className="mt-8 flex flex-wrap justify-center gap-x-10 gap-y-4">
+            {page.stats.map((stat) => (
+              <div key={stat.label} className="flex flex-col items-center">
+                <dt className="text-sm font-medium text-fg-muted">{stat.label}</dt>
+                <dd className="order-first text-4xl font-bold tracking-tight text-ink tabular-nums md:text-5xl">
+                  {stat.value}
+                </dd>
+              </div>
+            ))}
+          </dl>
+          <a
+            href={`#${formAnchor}`}
+            className="mt-8 flex w-full items-center justify-center gap-2 rounded-xl bg-ink px-7 py-4 text-base font-semibold text-paper transition-transform hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-dark sm:inline-flex sm:w-auto sm:text-sm"
+          >
+            {page.cta}
+            <ArrowRight className="h-4 w-4" aria-hidden />
+          </a>
         </div>
       </section>
 
       {/* Como funciona */}
-      <section aria-labelledby="franchise-about" className="mx-auto max-w-6xl px-6 pt-24 md:pt-32">
+      <section aria-labelledby="franchise-about" className="mx-auto max-w-6xl px-6 pt-8 md:pt-12">
         <Reveal className="max-w-3xl">
           <h2 id="franchise-about" className={h2Class} style={h2Style}>
             {page.about.title}
@@ -193,10 +193,9 @@ export function FranchiseModelPage({ locale, model }: { locale: Locale; model: F
         className="mx-auto max-w-6xl scroll-mt-24 px-4 pt-24 md:px-6 md:pt-32"
       >
         <div className="rounded-3xl bg-surface p-6 shadow-[0_1px_2px_rgba(38,38,38,0.04),0_4px_12px_-4px_rgba(38,38,38,0.1)] md:p-12">
-          <p className="text-sm font-bold text-brand-dark">{page.eyebrow}</p>
           <h2
             id="franchise-form-heading"
-            className="mt-2 text-3xl font-bold tracking-tight text-fg md:text-4xl"
+            className="text-3xl font-bold tracking-tight text-fg md:text-4xl"
             style={{ letterSpacing: "-0.04em" }}
           >
             {form.title}

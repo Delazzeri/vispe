@@ -14,12 +14,10 @@ export const franchise: Widen<typeof ptBR> = {
       comercial: {
         title: "Commercial Franchise",
         text: "For people with a sales profile and a strong network: you open doors with business owners and Vispe delivers the projects.",
-        highlights: ["Focus on prospecting and relationships", "Delivery by the Vispe team", "Lean operation"],
       },
       financeira: {
         title: "Financial Franchise",
         text: "For finance and accounting professionals: you serve clients in your region with Vispe's method and technology.",
-        highlights: ["Financial services to clients", "Method, Fin 24/7 and training", "For finance experts"],
       },
     },
   },
