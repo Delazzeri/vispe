@@ -1,7 +1,11 @@
-import { ArrowLeft, ArrowRight, Check, Compass, GraduationCap, Megaphone, MonitorSmartphone, type LucideIcon } from "lucide-react";
+import Image from "next/image";
+import { ArrowRight, Check, Compass, GraduationCap, Megaphone, MonitorSmartphone, type LucideIcon } from "lucide-react";
 import { Reveal } from "@/components/motion/reveal";
 import { FranchiseForm } from "@/components/sections/franchise-form";
+import { HeroIntro, HeroIntroItem } from "@/components/sections/hero-intro";
 import { HeroScene } from "@/components/sections/hero-scene";
+import { DashboardMockup } from "@/components/showcase/dashboard-mockup";
+import { HeroRock } from "@/components/ui/hero-rock";
 import { LocaleLink as Link } from "@/components/ui/locale-link";
 import { SocialLinks } from "@/components/ui/social-links";
 import { franchiseModelPath, franchiseModels, getFranchise, type FranchiseModel } from "@/content/franchise";
@@ -50,56 +54,76 @@ export function FranchiseModelPage({ locale, model }: { locale: Locale; model: F
         }}
       />
 
-      {/* Abertura no estilo da home: clara, centralizada, com a paisagem ao fundo. */}
-      <section
-        aria-labelledby="franchise-heading"
-        className="relative isolate overflow-clip bg-bg px-6 pt-32 pb-80 md:pt-40 md:pb-[480px]"
-      >
-        <HeroScene
-          preload="metadata"
-          // Mesma altura do respiro inferior: a paisagem começa logo abaixo do CTA.
-          className="absolute inset-x-0 bottom-0 -z-10 h-80 overflow-hidden md:h-[480px]"
-        />
-        <div className="mx-auto flex max-w-4xl flex-col items-center text-center">
-          <Link
-            href="/franquia"
-            className="inline-flex items-center gap-1.5 rounded-sm text-sm font-medium text-fg-muted transition-colors hover:text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-dark"
-          >
-            <ArrowLeft className="h-4 w-4" aria-hidden />
-            {selector.eyebrow}
-          </Link>
-          <h1
-            id="franchise-heading"
-            className="mt-6 text-balance text-4xl font-bold tracking-tight text-fg md:text-7xl"
-            style={{ letterSpacing: "-0.03em" }}
-          >
-            {page.title}
-          </h1>
-          <p className="mt-5 max-w-2xl text-balance text-lg leading-relaxed text-fg-muted md:text-xl">
-            {page.description}
-          </p>
-          <dl className="mt-8 flex flex-wrap justify-center gap-x-10 gap-y-4">
-            {page.stats.map((stat) => (
-              <div key={stat.label} className="flex flex-col items-center">
-                <dt className="text-sm font-medium text-fg-muted">{stat.label}</dt>
-                <dd className="order-first text-4xl font-bold tracking-tight text-ink tabular-nums md:text-5xl">
-                  {stat.value}
-                </dd>
-              </div>
-            ))}
-          </dl>
-          <a
-            href={`#${formAnchor}`}
-            className="mt-8 flex w-full items-center justify-center gap-2 rounded-xl bg-ink px-7 py-4 text-base font-semibold text-paper transition-transform hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-dark sm:inline-flex sm:w-auto sm:text-sm"
-          >
-            {page.cta}
-            <ArrowRight className="h-4 w-4" aria-hidden />
-          </a>
-        </div>
+      {/* Abertura igual ao hero da home (mesma estrutura, intro e cena). */}
+      <section aria-labelledby="franchise-heading" className="relative isolate overflow-clip bg-bg">
+        <HeroScene softFadeOnMobile />
+
+        <HeroIntro className="relative mx-auto flex max-w-4xl flex-col items-center px-6 pt-10 text-center md:pt-16">
+          <HeroIntroItem>
+            <p className="mb-3 flex items-center justify-center gap-2 text-[20px] font-semibold text-ink">
+              <Image src="/media/brand/simbolo-vispe-preto-326.png" alt="" width={24} height={24} className="h-6 w-6" />
+              {page.eyebrow}
+            </p>
+          </HeroIntroItem>
+
+          <HeroIntroItem>
+            <h1
+              id="franchise-heading"
+              className="text-balance text-4xl font-bold tracking-tight text-fg md:text-7xl"
+              style={{ letterSpacing: "-0.03em" }}
+            >
+              {page.title}
+            </h1>
+          </HeroIntroItem>
+
+          <HeroIntroItem className="max-w-full">
+            <p className="mt-5 w-[680px] max-w-full text-balance text-[18px] leading-[25.2px] tracking-[-0.18px] text-fg-muted md:text-[20px] md:leading-[28px] md:tracking-[-0.2px]">
+              {page.description}
+            </p>
+          </HeroIntroItem>
+
+          <HeroIntroItem className="w-full sm:w-auto">
+            <a
+              href={`#${formAnchor}`}
+              className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-ink px-7 py-4 text-base font-semibold text-paper transition-transform hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-dark sm:inline-flex sm:w-auto sm:text-sm"
+            >
+              {page.cta}
+              <ArrowRight className="h-4 w-4" aria-hidden />
+            </a>
+          </HeroIntroItem>
+
+          {/* Número de franqueados + destaques, na linha de bullets da home. */}
+          <HeroIntroItem>
+            <ul className="mt-6 flex flex-wrap items-center justify-center gap-x-5 gap-y-2">
+              {page.stats.map((stat) => (
+                <li key={stat.label} className="text-xs font-medium text-fg-muted">
+                  <strong className="font-bold text-fg">{stat.value}</strong> {stat.label}
+                </li>
+              ))}
+              {page.bullets.map((label) => (
+                <li key={label} className="text-xs font-medium text-fg-muted">
+                  {label}
+                </li>
+              ))}
+            </ul>
+          </HeroIntroItem>
+        </HeroIntro>
+
+        <HeroIntro className="relative flex w-full justify-center px-6 pb-12 md:pb-16">
+          <HeroIntroItem className="relative z-10 -mt-6 md:-mt-10">
+            <DashboardMockup />
+          </HeroIntroItem>
+          <HeroIntroItem className="pointer-events-auto absolute -left-12 top-2 z-20 w-34 md:left-[max(-40px,calc(50%-900px))] md:top-24 md:w-[360px] lg:w-[440px] xl:w-[480px]">
+            <HeroRock side="left" />
+          </HeroIntroItem>
+          <HeroIntroItem className="pointer-events-auto absolute -right-12 top-2 z-20 w-34 md:right-[max(-40px,calc(50%-900px))] md:top-24 md:w-[360px] lg:w-[440px] xl:w-[480px]">
+            <HeroRock side="right" />
+          </HeroIntroItem>
+        </HeroIntro>
       </section>
 
       {/* Como funciona */}
-      <section aria-labelledby="franchise-about" className="mx-auto max-w-6xl px-6 pt-8 md:pt-12">
+      <section aria-labelledby="franchise-about" className="mx-auto max-w-6xl px-6 pt-24 md:pt-32">
         <Reveal className="max-w-3xl">
           <h2 id="franchise-about" className={h2Class} style={h2Style}>
             {page.about.title}
