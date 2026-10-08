@@ -5,6 +5,7 @@ import { ArrowRight, CircleAlert, CircleCheck } from "lucide-react";
 import { submitLead, type LeadField, type LeadState } from "@/app/[locale]/(site)/contato/actions";
 import type { SiteContent } from "@/content/site";
 import type { Locale } from "@/i18n/routing";
+import { Field, inputClass } from "@/components/ui/form-field";
 import { cn } from "@/lib/cn";
 import { leadAnchor } from "@/lib/lead";
 
@@ -17,38 +18,6 @@ type LeadFormProps = {
   /** Exibido quando o envio pelo site ainda não está disponível (ex.: redes da Vispe). */
   fallback: ReactNode;
 };
-
-const inputClass =
-  "mt-2 block w-full rounded-xl border border-border bg-bg/60 px-4 py-3 text-base text-fg placeholder:text-fg-muted transition-colors focus:bg-surface focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-dark aria-invalid:border-brand-dark";
-
-function Field({
-  id,
-  label,
-  error,
-  className,
-  children,
-}: {
-  id: string;
-  label: string;
-  error?: string;
-  className?: string;
-  children: ReactNode;
-}) {
-  return (
-    <div className={className}>
-      <label htmlFor={id} className="text-sm font-medium text-fg">
-        {label}
-      </label>
-      {children}
-      {error && (
-        <p id={`${id}-error`} className="mt-1.5 flex items-center gap-1.5 text-sm font-medium text-brand-dark">
-          <CircleAlert className="h-4 w-4 shrink-0" aria-hidden />
-          {error}
-        </p>
-      )}
-    </div>
-  );
-}
 
 /** Interesse pré-selecionado pela âncora "#diagnostico-<pilar>" (CTAs dos pilares). */
 function interestFromHash(values: readonly string[]) {
