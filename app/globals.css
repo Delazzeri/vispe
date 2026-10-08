@@ -39,6 +39,31 @@ html {
   }
 }
 
+/*
+ * Alto contraste automático: segue a preferência do sistema do visitante
+ * (sem botão no site). Os utilitários leem var(--color-*), então basta
+ * sobrescrever os tokens.
+ */
+@media (prefers-contrast: more) {
+  :root {
+    --color-fg-muted: #262626; /* texto secundário = principal (~13:1) */
+    --color-border: rgba(38, 38, 38, 0.45);
+    --color-glass: #ffffff; /* vidro vira superfície sólida */
+    --color-brand-dark: #7a520f; /* dourado de texto/foco ~6:1 sobre o fundo */
+  }
+}
+
+/*
+ * Modo de alto contraste do Windows: o ring do Tailwind é box-shadow, que o
+ * sistema remove — junto com outline-none o foco sumiria.
+ */
+@media (forced-colors: active) {
+  :focus-visible {
+    outline: 2px solid Highlight !important;
+    outline-offset: 2px;
+  }
+}
+
 /* Compensa o header fixo ao navegar por âncoras. */
 section[id] {
   scroll-margin-top: 6rem;

@@ -5,6 +5,7 @@ import { SocialLinks } from "@/components/ui/social-links";
 import { blogPosts } from "@/content/blog";
 import { brand, useSite } from "@/content/site";
 import { CookiePreferencesButton } from "@/components/ui/cookie-consent";
+import { MotionToggle } from "@/components/ui/motion-toggle";
 import { cn } from "@/lib/cn";
 
 const linkClass =
@@ -85,7 +86,7 @@ export function Footer() {
             <p className="mt-3 max-w-xs text-sm leading-5 text-fg-muted">{footer.description}</p>
             <Link
               href={footer.cta.href}
-              className="mt-6 inline-flex rounded-lg bg-ink px-4 py-2 text-[13px] font-semibold leading-4 text-paper transition-transform hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand"
+              className="mt-6 inline-flex rounded-lg bg-ink px-4 py-2 text-[13px] font-semibold leading-4 text-paper transition-transform hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-dark"
             >
               {footer.cta.label}
             </Link>
@@ -120,6 +121,10 @@ export function Footer() {
           </p>
           <div className="flex flex-wrap gap-x-5 gap-y-2">
             <CookiePreferencesButton label={footer.cookiePreferences} className="rounded-sm transition-colors hover:text-brand-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-dark text-left" />
+            <MotionToggle
+              labels={{ pause: footer.motionPause, play: footer.motionPlay }}
+              className="rounded-sm text-left transition-colors hover:text-brand-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-dark"
+            />
             <a href="#main-content" className="rounded-sm transition-colors hover:text-brand-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-dark">
               {footer.backToTop}
             </a>

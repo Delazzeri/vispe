@@ -32,7 +32,7 @@ export function generateStaticParams() {
 
 const paragraphClass = "max-w-[65ch] text-base leading-relaxed text-fg";
 const inlineLinkClass =
-  "font-medium text-ink underline decoration-brand-dark/50 underline-offset-4 transition-colors hover:text-brand-dark hover:decoration-brand-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand rounded-sm";
+  "font-medium text-ink underline decoration-brand-dark/50 underline-offset-4 transition-colors hover:text-brand-dark hover:decoration-brand-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-dark rounded-sm";
 
 /** Trecho de texto com **negrito**. */
 function withBold(text: string, key: string): ReactNode[] {
@@ -179,7 +179,7 @@ export default async function BlogPostPage({ params }: PageProps) {
       <Link
         href={localizeHref("/#blog", locale)}
         lang={locale}
-        className="inline-flex items-center gap-2 rounded-sm text-sm font-medium text-fg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand"
+        className="inline-flex items-center gap-2 rounded-sm text-sm font-medium text-fg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-dark"
       >
         <ArrowLeft className="h-4 w-4" aria-hidden />
         {ui.backToBlog}

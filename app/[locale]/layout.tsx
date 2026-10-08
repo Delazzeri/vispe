@@ -6,6 +6,7 @@ import { isLocale, locales, resolveLocale, type Locale } from "@/i18n/routing";
 import { Inter } from "next/font/google";
 import localFont from "next/font/local";
 import { buildMetadata, organizationJsonLd, websiteJsonLd } from "@/lib/seo";
+import { motionInitScript } from "@/lib/motion-preference";
 import { Header } from "@/components/sections/header";
 import { Footer } from "@/components/sections/footer";
 import { CookieConsent } from "@/components/ui/cookie-consent";
@@ -75,8 +76,11 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
     <html
       lang={locale}
       className={`${inter.variable} ${interDisplay.variable} h-full antialiased`}
+      // data-motion é aplicado pelo script abaixo antes da hidratação.
+      suppressHydrationWarning
     >
       <body className="flex min-h-full flex-col font-sans">
+        <script dangerouslySetInnerHTML={{ __html: motionInitScript }} />
         <a href="#main-content" className="skip-link">
           {t("skipLink")}
         </a>

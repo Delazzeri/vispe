@@ -44,8 +44,7 @@ export function Hero({ id }: { id?: string }) {
         {/* max-w-full: sem ele o item cresce até os 680px do parágrafo e gera scroll horizontal no celular. */}
         <HeroIntroItem className="max-w-full">
           <p
-            className="mt-5 w-[680px] max-w-full text-balance text-[18px] leading-[25.2px] tracking-[-0.18px] md:text-[20px] md:leading-[28px] md:tracking-[-0.2px]"
-            style={{ color: "#5f6062" }}
+            className="mt-5 w-[680px] max-w-full text-balance text-[18px] leading-[25.2px] tracking-[-0.18px] md:text-[20px] md:leading-[28px] md:tracking-[-0.2px] text-fg-muted"
           >
             {site.hero.description}
           </p>
@@ -55,7 +54,7 @@ export function Hero({ id }: { id?: string }) {
         <HeroIntroItem className="w-full sm:w-auto">
           <Link
             href={site.hero.ctaPrimary.href}
-            className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-ink px-7 py-4 text-base font-semibold text-paper transition-transform hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand sm:inline-flex sm:w-auto sm:text-sm"
+            className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-ink px-7 py-4 text-base font-semibold text-paper transition-transform hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-dark sm:inline-flex sm:w-auto sm:text-sm"
           >
             {site.hero.ctaPrimary.label}
             <ArrowRight className="h-4 w-4" aria-hidden />

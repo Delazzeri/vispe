@@ -22,7 +22,7 @@ export function VideoPlaceholder({ title, className }: VideoPlaceholderProps) {
           <Play className="h-6 w-6 translate-x-0.5 text-paper" aria-hidden fill="currentColor" />
         </span>
         <p className="max-w-xs text-sm font-medium text-paper/60">{title}</p>
-        <p className="text-xs text-paper/40">{ui.videoPlaceholder}</p>
+        <p className="text-xs text-paper/60">{ui.videoPlaceholder}</p>
       </div>
     </div>
   );

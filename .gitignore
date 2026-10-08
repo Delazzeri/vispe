@@ -40,3 +40,13 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Originais brutos de mídia (o site usa as versões otimizadas com a largura no nome)
+/public/media/blog/Art *.jpg
+/public/media/clients/*_*.png
+/public/media/clients/aonet.png
+/public/media/clients/cyber.png
+/public/media/clients/glp.png
+/public/media/clients/virtex.png
+/public/media/episodes/0*.*
+/public/media/hero/Tela-mac-us.png

@@ -11,7 +11,8 @@ type MarqueeProps = {
 /**
  * Loop CSS puro (sem JS/motion) com conteúdo duplicado para o efeito de
  * fileira contínua — a cópia é aria-hidden e inert para não duplicar
- * conteúdo para leitores de tela nem links no Tab. Pausa no hover;
+ * conteúdo para leitores de tela nem links no Tab. Pausa no hover, quando algo
+ * dentro recebe foco e pelo "Pausar animações" do rodapé (WCAG 2.2.2);
  * motion-safe: desliga sob prefers-reduced-motion.
  */
 export function Marquee({ children, direction = "left", speed = 30, className }: MarqueeProps) {
@@ -19,21 +20,15 @@ export function Marquee({ children, direction = "left", speed = 30, className }:
     animationDuration: `${speed}s`,
     animationDirection: direction === "right" ? "reverse" : "normal",
   };
+  const trackClass =
+    "flex shrink-0 items-center gap-8 pr-8 motion-safe:animate-[marquee_linear_infinite] group-hover:[animation-play-state:paused]! group-focus-within:[animation-play-state:paused]! in-data-[motion=paused]:[animation-play-state:paused]!";
 
   return (
     <div className={cn("group flex overflow-hidden", className)}>
-      <div
-        className="flex shrink-0 items-center gap-8 pr-8 motion-safe:animate-[marquee_linear_infinite] group-hover:[animation-play-state:paused]"
-        style={trackStyle}
-      >
+      <div className={trackClass} style={trackStyle}>
         {children}
       </div>
-      <div
-        aria-hidden
-        inert
-        className="flex shrink-0 items-center gap-8 pr-8 motion-safe:animate-[marquee_linear_infinite] group-hover:[animation-play-state:paused]"
-        style={trackStyle}
-      >
+      <div aria-hidden inert className={trackClass} style={trackStyle}>
         {children}
       </div>
     </div>

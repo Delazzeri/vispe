@@ -1,7 +1,9 @@
 "use client";
 
+import { useEffect, useRef, useSyncExternalStore } from "react";
 import { useReducedMotion } from "motion/react";
 import { cn } from "@/lib/cn";
+import { isMotionPaused, subscribeMotion } from "@/lib/motion-preference";
 
 // No celular a cena fica presa à base da seção: com top fixo ela passava do fim
 // do hero e o overflow cortava o degradê, deixando uma linha reta.
@@ -31,6 +33,16 @@ export function HeroScene({
   softFadeOnMobile,
 }: HeroSceneProps) {
   const shouldReduceMotion = useReducedMotion();
+  const paused = useSyncExternalStore(subscribeMotion, isMotionPaused, () => false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  // "Pausar animações" do rodapé (WCAG 2.2.2): o vídeo em loop também para.
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    if (paused) video.pause();
+    else video.play().catch(() => {});
+  }, [paused]);
 
   return (
     <div aria-hidden className={className}>
@@ -44,11 +56,12 @@ export function HeroScene({
       ) : (
         <video
           ref={(el) => {
+            videoRef.current = el;
             if (el) el.playbackRate = 0.5;
           }}
           className="absolute inset-0 h-full w-full object-cover"
           poster="/media/hero/scene-poster-1600.jpg"
-          autoPlay
+          autoPlay={!paused}
           muted
           loop
           playsInline

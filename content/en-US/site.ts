@@ -475,7 +475,7 @@ export const site: SiteContent = {
         links: [
           { label: "Meet Vispe", href: "/#solucoes" },
           { label: "Our solutions", href: "/#servicos" },
-          { label: "What our clients say", href: "/#depoimentos" },
+          { label: "Testimonials", href: "/#depoimentos" },
           { label: "Equity pillars", href: "/#equity" },
           { label: "Articles and insights", href: "/#blog" },
           { label: "Frequently asked questions", href: "/#faq" },
@@ -500,6 +500,8 @@ export const site: SiteContent = {
     rights: "All rights reserved.",
     backToTop: "Back to top ↑",
     cookiePreferences: "Cookie preferences",
+    motionPause: "Pause animations",
+    motionPlay: "Resume animations",
   },
 
   ui: {

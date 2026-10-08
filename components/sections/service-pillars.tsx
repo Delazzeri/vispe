@@ -57,18 +57,16 @@ export function ServicePillars({ id }: { id?: string }) {
                 )}
               >
                 <h3
-                  className="text-[25px] font-bold leading-[30px]"
-                  style={{ color: "#000000" }}
+                  className="text-[25px] font-bold leading-[30px] text-ink"
                 >
                   {format(site.ui.pillar, { n: index + 1 })}
                 </h3>
 
                 <div className="mt-6 min-w-0" style={{ containerType: "inline-size" }}>
                   <p
-                    className="whitespace-nowrap font-bold text-(length:--fit-all) md:text-(length:--fit-own)"
+                    className="whitespace-nowrap font-bold text-ink text-(length:--fit-all) md:text-(length:--fit-own)"
                     style={
                       {
-                        color: "#000000",
                         // Dimensiona pela largura real do container (cqw): ~0.78em
                         // por caractere em caixa alta bold, então a palavra sempre
                         // cabe em uma linha, teto de 60px. No desktop cada palavra
@@ -82,7 +80,7 @@ export function ServicePillars({ id }: { id?: string }) {
                   >
                     {pillar.shortLabel}
                   </p>
-                  <p className="mt-3 text-[12px]" style={{ color: "#65666a" }}>
+                  <p className="mt-3 text-[12px] text-fg-muted">
                     {pillar.tagline}
                   </p>
                 </div>
@@ -91,7 +89,7 @@ export function ServicePillars({ id }: { id?: string }) {
                   {pillar.includes.map((item) => (
                     <li key={item} className="flex items-start gap-3">
                       <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-fg-muted" aria-hidden />
-                      <span className="text-[14px]" style={{ color: "#000000" }}>
+                      <span className="text-[14px] text-ink">
                         {item}
                       </span>
                     </li>
@@ -103,7 +101,7 @@ export function ServicePillars({ id }: { id?: string }) {
                     dispara o hashchange que o formulário escuta (o next/link não). */}
                 <a
                   href={localizeHref(`/#${leadAnchor}-${pillar.slug}`, locale)}
-                  className="mt-8 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-ink px-6 py-4 text-sm font-semibold text-paper transition-transform hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand"
+                  className="mt-8 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-ink px-6 py-4 text-sm font-semibold text-paper transition-transform hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-dark"
                 >
                   {pillar.cta}
                   <ArrowRight className="h-4 w-4" aria-hidden />

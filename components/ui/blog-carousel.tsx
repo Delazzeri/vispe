@@ -70,7 +70,7 @@ export function BlogCarousel({ posts, groups }: BlogCarouselProps) {
 
   const chipClass = (active: boolean) =>
     cn(
-      "rounded-lg px-4 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand",
+      "rounded-lg px-4 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-dark",
       active ? "bg-ink text-paper" : "bg-surface text-fg-muted shadow-xs hover:text-ink",
     );
 
@@ -137,7 +137,7 @@ export function BlogCarousel({ posts, groups }: BlogCarouselProps) {
               aria-label={format(ui.blogGoToPage, { page: page + 1, total: pageCount })}
               aria-current={page === activePage ? "true" : undefined}
               className={cn(
-                "h-2 rounded-full transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand",
+                "h-2 rounded-full transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-dark",
                 page === activePage ? "w-6 bg-ink" : "w-2 bg-fg-muted/30 hover:bg-fg-muted/60",
               )}
             />

@@ -20,7 +20,7 @@ type CareersFormProps = {
 };
 
 const inputClass =
-  "mt-2 block w-full rounded-xl border border-border bg-bg/60 px-4 py-3 text-base text-fg placeholder:text-fg-muted/70 transition-colors focus:bg-surface focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-dark aria-invalid:border-brand-dark";
+  "mt-2 block w-full rounded-xl border border-border bg-bg/60 px-4 py-3 text-base text-fg placeholder:text-fg-muted transition-colors focus:bg-surface focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-dark aria-invalid:border-brand-dark";
 
 function ErrorText({ id, children }: { id: string; children: ReactNode }) {
   return (
@@ -346,7 +346,7 @@ export function CareersForm({ locale, copy, messages, hrEmail, maxBytes }: Caree
         <button
           type="submit"
           disabled={pending}
-          className="mt-8 inline-flex w-full items-center justify-center rounded-lg bg-ink px-7 py-4 text-sm font-semibold text-paper transition-transform hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand disabled:cursor-wait disabled:opacity-70 sm:w-auto"
+          className="mt-8 inline-flex w-full items-center justify-center rounded-lg bg-ink px-7 py-4 text-sm font-semibold text-paper transition-transform hover:scale-[1.02] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-dark disabled:cursor-wait disabled:opacity-70 sm:w-auto"
         >
           {pending ? copy.submitting : copy.submit}
         </button>

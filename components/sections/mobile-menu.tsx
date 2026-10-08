@@ -21,7 +21,7 @@ export function MobileMenu() {
         aria-expanded={open}
         aria-controls="mobile-nav"
         aria-label={open ? site.ui.closeMenu : site.ui.openMenu}
-        className="flex h-10 w-10 items-center justify-center rounded-full text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand"
+        className="flex h-10 w-10 items-center justify-center rounded-full text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-dark"
       >
         {open ? <X className="h-5 w-5" aria-hidden /> : <Menu className="h-5 w-5" aria-hidden />}
       </button>
@@ -42,7 +42,7 @@ export function MobileMenu() {
                   key={item.href}
                   href={item.href}
                   onClick={() => setOpen(false)}
-                  className="border-b border-border py-3 text-base font-medium text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand last:border-none"
+                  className="border-b border-border py-3 text-base font-medium text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-dark last:border-none"
                 >
                   {item.label}
                 </Link>
@@ -50,7 +50,7 @@ export function MobileMenu() {
               <Link
                 href={site.ui.headerCta.href}
                 onClick={() => setOpen(false)}
-                className="mt-6 rounded-full bg-ink px-5 py-3 text-center text-sm font-semibold text-paper focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand"
+                className="mt-6 rounded-full bg-ink px-5 py-3 text-center text-sm font-semibold text-paper focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-dark"
               >
                 {site.ui.headerCta.label}
               </Link>

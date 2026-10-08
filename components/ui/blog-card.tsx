@@ -39,7 +39,7 @@ export function BlogCard({ post }: BlogCardProps) {
         <h3 className="mt-3 text-lg font-bold leading-snug text-ink">
           <Link
             href={`/blog/${post.slug}`}
-            className="after:absolute after:inset-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand"
+            className="after:absolute after:inset-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-dark"
           >
             {post.title}
           </Link>
