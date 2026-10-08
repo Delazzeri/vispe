@@ -18,15 +18,11 @@ type HeroSceneProps = {
   fadeBottom?: boolean;
   /** Vídeo único (sem versão mobile); substitui as fontes padrão do hero. */
   src?: string;
-  /** Capa do vídeo (e imagem sob reduced motion). Padrão: a da paisagem do hero. */
-  poster?: string;
   /**
    * No celular, degradê inferior mais alto e com faixa sólida na base, para a
    * passagem ao fundo não marcar uma linha (usado no hero, onde a cena é baixa).
    */
   softFadeOnMobile?: boolean;
-  /** Classes extras do degradê inferior (ex.: mais alto, para esconder a borda do vídeo). */
-  bottomFadeClassName?: string;
 };
 
 export function HeroScene({
@@ -34,9 +30,7 @@ export function HeroScene({
   preload = "auto",
   fadeBottom = true,
   src,
-  poster = "/media/hero/scene-poster-1600.jpg",
   softFadeOnMobile,
-  bottomFadeClassName,
 }: HeroSceneProps) {
   const shouldReduceMotion = useReducedMotion();
   const paused = useSyncExternalStore(subscribeMotion, isMotionPaused, () => false);
@@ -55,7 +49,7 @@ export function HeroScene({
       {shouldReduceMotion ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img
-          src={poster}
+          src="/media/hero/scene-poster-1600.jpg"
           alt=""
           className="absolute inset-0 h-full w-full object-cover"
         />
@@ -66,7 +60,7 @@ export function HeroScene({
             if (el) el.playbackRate = 0.5;
           }}
           className="absolute inset-0 h-full w-full object-cover"
-          poster={poster}
+          poster="/media/hero/scene-poster-1600.jpg"
           autoPlay={!paused}
           muted
           loop
@@ -94,7 +88,6 @@ export function HeroScene({
           className={cn(
             "absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-bg to-transparent",
             softFadeOnMobile && "max-md:h-3/5 max-md:from-20%",
-            bottomFadeClassName,
           )}
         />
       )}

@@ -29,7 +29,7 @@ export const franchise: Widen<typeof ptBR> = {
       description:
         "You connect business owners in your region to Vispe Capital's solutions and earn on every closed contract. The Vispe team handles delivery.",
       cta: "Become a commercial franchisee",
-      stats: [{ value: "{{N}}", label: "commercial franchisees" }],
+      stats: [{ value: "12+", label: "commercial franchisees" }],
       bullets: ["Delivery by the Vispe team", "Sales training", "Full solutions portfolio"],
       about: {
         title: "How it works",
@@ -65,7 +65,7 @@ export const franchise: Widen<typeof ptBR> = {
       description:
         "You provide Vispe Capital's financial services to business owners in your market, with the method, technology and support of SMB specialists.",
       cta: "Become a financial franchisee",
-      stats: [{ value: "{{N}}", label: "financial franchisees" }],
+      stats: [{ value: "20+", label: "financial franchisees" }],
       bullets: ["Vispe method and Fin 24/7", "Training and technical support", "A reference SMB brand"],
       about: {
         title: "How it works",

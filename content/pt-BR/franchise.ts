@@ -34,8 +34,7 @@ export const franchise = {
       description:
         "Você conecta empresários da sua região às soluções da Vispe Capital e é remunerado pelos contratos fechados. O time Vispe cuida da entrega.",
       cta: "Quero ser franqueado comercial",
-      // TODO(content): número real de unidades da Franquia Comercial.
-      stats: [{ value: "{{N}}", label: "franqueados comerciais" }],
+      stats: [{ value: "+12", label: "franqueados comerciais" }],
       bullets: ["Entrega feita pelo time Vispe", "Treinamento comercial", "Portfólio completo de soluções"],
       about: {
         title: "Como funciona",
@@ -71,8 +70,7 @@ export const franchise = {
       description:
         "Você presta os serviços financeiros da Vispe Capital aos empresários da sua praça, com a metodologia, a tecnologia e o suporte de quem é especialista em PMEs.",
       cta: "Quero ser franqueado financeiro",
-      // TODO(content): número real de unidades da Franquia Financeira.
-      stats: [{ value: "{{N}}", label: "franqueados financeiros" }],
+      stats: [{ value: "+20", label: "franqueados financeiros" }],
       bullets: ["Método Vispe e Fin 24/7", "Treinamento e suporte técnico", "Marca de referência em PMEs"],
       about: {
         title: "Como funciona",

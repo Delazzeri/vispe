@@ -1,11 +1,8 @@
-import { existsSync } from "node:fs";
-import { join } from "node:path";
 import Image from "next/image";
 import { ArrowRight, Check, Compass, GraduationCap, Megaphone, MonitorSmartphone, type LucideIcon } from "lucide-react";
 import { Reveal } from "@/components/motion/reveal";
 import { FranchiseForm } from "@/components/sections/franchise-form";
 import { HeroIntro, HeroIntroItem } from "@/components/sections/hero-intro";
-import { HeroScene } from "@/components/sections/hero-scene";
 import { LocaleLink as Link } from "@/components/ui/locale-link";
 import { SocialLinks } from "@/components/ui/social-links";
 import { franchiseModelPath, franchiseModels, getFranchise, type FranchiseModel } from "@/content/franchise";
@@ -16,20 +13,6 @@ import type { Locale } from "@/i18n/routing";
 import { breadcrumbJsonLd } from "@/lib/seo";
 
 const formAnchor = "cadastro";
-
-/**
- * Vídeo de fundo de cada modelo: public/media/franchise/<modelo>.mp4 (capa
- * opcional <modelo>-poster.jpg). Enquanto o arquivo não existe, usa a
- * paisagem da home.
- */
-function franchiseScene(model: FranchiseModel): { src?: string; poster?: string } {
-  const file = (name: string) => existsSync(join(process.cwd(), "public", "media", "franchise", name));
-  if (!file(`${model}.mp4`)) return {};
-  return {
-    src: `/media/franchise/${model}.mp4`,
-    poster: file(`${model}-poster.jpg`) ? `/media/franchise/${model}-poster.jpg` : undefined,
-  };
-}
 
 const offerIcons: Record<string, LucideIcon> = {
   method: Compass,
@@ -68,16 +51,8 @@ export function FranchiseModelPage({ locale, model }: { locale: Locale; model: F
         }}
       />
 
-      {/* Abertura igual ao hero da home (mesma estrutura, intro e cena). */}
-      <section aria-labelledby="franchise-heading" className="relative isolate overflow-clip bg-bg">
-        <HeroScene
-          softFadeOnMobile
-          className="absolute inset-x-0 bottom-0 -z-10 h-60 overflow-hidden md:h-[360px]"
-          // Degradê alto e com base sólida: a faixa curta não deixa ver onde o vídeo acaba.
-          bottomFadeClassName="h-3/4 from-25% md:h-3/4 md:from-25%"
-          {...franchiseScene(model)}
-        />
-
+      {/* Abertura na estrutura do hero da home (mesma intro), sem cena ao fundo. */}
+      <section aria-labelledby="franchise-heading" className="relative bg-bg pb-12 md:pb-16">
         <HeroIntro className="relative mx-auto flex max-w-4xl flex-col items-center px-6 pt-10 text-center md:pt-16">
           <HeroIntroItem>
             <p className="mb-3 flex items-center justify-center gap-2 text-[20px] font-semibold text-ink">
@@ -129,8 +104,6 @@ export function FranchiseModelPage({ locale, model }: { locale: Locale; model: F
           </HeroIntroItem>
         </HeroIntro>
 
-        {/* Respiro inferior quase da altura do vídeo: ele começa logo abaixo dos destaques. */}
-        <div aria-hidden className="h-48 md:h-72" />
       </section>
 
       {/* Como funciona */}
