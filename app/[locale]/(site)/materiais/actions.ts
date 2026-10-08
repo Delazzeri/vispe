@@ -1,14 +1,25 @@
 "use server";
 
-import { getMaterials } from "@/content/materials";
+import { getMaterial, getMaterialsUi } from "@/content/materials";
 import { resolveLocale } from "@/i18n/routing";
 
-export type MaterialField = "name" | "email" | "phone" | "company" | "material" | "consent";
+export type MaterialField =
+  | "name"
+  | "phone"
+  | "email"
+  | "company"
+  | "segment"
+  | "revenue"
+  | "role"
+  | "pain"
+  | "material"
+  | "consent";
 
 export type MaterialState =
   | { status: "idle" }
   | { status: "invalid"; errors: Partial<Record<MaterialField, string>> }
-  | { status: "success"; file: string };
+  | { status: "unavailable" }
+  | { status: "success" };
 
 function text(formData: FormData, key: string) {
   const value = formData.get(key);
@@ -16,31 +27,41 @@ function text(formData: FormData, key: string) {
 }
 
 export async function requestMaterial(_prev: MaterialState, formData: FormData): Promise<MaterialState> {
-  const { items, messages } = getMaterials(resolveLocale(text(formData, "locale")));
-  const msg = messages.errors;
-  const material = items.find((item) => item.slug === text(formData, "material"));
+  // Honeypot: campo invisível que só robôs preenchem — finge sucesso.
+  if (text(formData, "website")) return { status: "success" };
 
-  // Honeypot: robôs "recebem" o link sem gerar lead.
-  if (text(formData, "website") && material?.file) return { status: "success", file: material.file };
+  const { form, messages } = getMaterialsUi(resolveLocale(text(formData, "locale")));
+  const msg = messages.errors;
 
   const lead = {
+    material: text(formData, "material"),
     name: text(formData, "name"),
-    email: text(formData, "email"),
     phone: text(formData, "phone"),
+    email: text(formData, "email"),
     company: text(formData, "company"),
+    segment: text(formData, "segment"),
+    revenue: text(formData, "revenue"),
+    role: text(formData, "role"),
+    pain: text(formData, "pain"),
+    whatsappOptIn: formData.get("whatsapp") === "on",
   };
 
+  const oneOf = (options: readonly string[], value: string) => options.includes(value);
   const errors: Partial<Record<MaterialField, string>> = {};
-  if (!material?.file) errors.material = msg.material;
+  if (!getMaterial(lead.material)) errors.material = msg.material;
   if (lead.name.length < 3) errors.name = msg.required;
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(lead.email)) errors.email = msg.email;
   if (lead.phone.replace(/\D/g, "").length < 10) errors.phone = msg.phone;
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(lead.email)) errors.email = msg.email;
   if (!lead.company) errors.company = msg.required;
+  if (!oneOf(form.segmentOptions, lead.segment)) errors.segment = msg.option;
+  if (!oneOf(form.revenueOptions, lead.revenue)) errors.revenue = msg.option;
+  if (!oneOf(form.roleOptions, lead.role)) errors.role = msg.option;
+  if (!oneOf(form.painOptions, lead.pain)) errors.pain = msg.option;
   if (formData.get("consent") !== "on") errors.consent = msg.consent;
 
-  if (Object.keys(errors).length > 0 || !material?.file) return { status: "invalid", errors };
+  if (Object.keys(errors).length > 0) return { status: "invalid", errors };
 
-  // TODO(integration): salvar o lead (nome, contato e material baixado) no
-  // destino a definir. Até lá o download é liberado e o contato não é guardado.
-  return { status: "success", file: material.file };
+  // TODO(integration): salvar o lead e enviar o material por e-mail (como faz
+  // o site atual). Destino a definir; até lá, mostra "unavailable".
+  return { status: "unavailable" };
 }

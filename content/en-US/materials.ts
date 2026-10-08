@@ -1,92 +1,86 @@
 import type { Widen } from "../types";
-import type { materials as ptBR } from "../pt-BR/materials";
+import type { materialsUi as ptBR } from "../pt-BR/materials";
 
-// "Free materials" page. Files are shared with pt-BR (same slugs and `file`).
+// UI strings for the free materials. The material pages themselves are in Portuguese only.
 
-export const materials: Widen<typeof ptBR> = {
+export const materialsUi: Widen<typeof ptBR> = {
   hero: {
     eyebrow: "Free materials",
-    title: "Tools to organize your finances and grow your profit",
+    title: "Speed up your results with Vispe's free materials",
     description:
-      "Spreadsheets, checklists and practical guides made by the Vispe Capital team. Pick a material, leave your contact and download it right away.",
+      "Practical checklists, spreadsheets and e-books made by the Vispe Capital team for you to apply to your controllership and finances today.",
   },
 
-  categories: { organizacao: "Organization", margem: "Margin", crescimento: "Growth" },
+  card: { cta: "See material" },
 
-  items: [
-    {
-      slug: "planilha-fluxo-de-caixa",
-      type: "Spreadsheet",
-      category: "organizacao",
-      title: "Cash flow spreadsheet",
-      description: "Track inflows and outflows and project the next months' cash without a system.",
-      file: undefined,
-    },
-    {
-      slug: "modelo-dre-gerencial",
-      type: "Spreadsheet",
-      category: "margem",
-      title: "Management income statement template",
-      description: "See the month's revenue, costs and profit in a simple layout, ready for the results meeting.",
-      file: undefined,
-    },
-    {
-      slug: "checklist-due-diligence",
-      type: "Checklist",
-      category: "organizacao",
-      title: "Due diligence checklist",
-      description: "The documents and red flags a buyer or investor will ask about before closing a deal.",
-      file: undefined,
-    },
-    {
-      slug: "guia-regime-tributario",
-      type: "Guide",
-      category: "margem",
-      title: "Choosing your tax regime",
-      description: "Simples Nacional, Lucro Presumido or Lucro Real: what to compare before deciding.",
-      file: undefined,
-    },
-    {
-      slug: "guia-valuation-pmes",
-      type: "E-book",
-      category: "crescimento",
-      title: "Valuation for SMBs",
-      description: "Learn how the market values a company and what weighs most on the price.",
-      file: undefined,
-    },
-    {
-      slug: "roteiro-captacao-de-recursos",
-      type: "Guide",
-      category: "crescimento",
-      title: "Fundraising roadmap",
-      description: "From diagnosis to pitch: how to prepare to seek credit or investors.",
-      file: undefined,
-    },
-  ],
-
-  card: { download: "Free download", soon: "Coming soon" },
-  empty: "The first materials are coming soon. Follow Vispe to know when they're published.",
+  page: {
+    back: "Free materials",
+    cta: "Get the material",
+    featuresTitle: "What you'll find",
+    usageEyebrow: "How to use it",
+    faqTitle: "Questions",
+    moreTitle: "More free materials",
+    portugueseOnly: "This material is available in Portuguese only.",
+  },
 
   form: {
-    title: "Almost there",
-    description: "Leave your contact to unlock the material.",
-    fields: { name: "Name", email: "Email", phone: "WhatsApp", company: "Company" },
-    consent: "I agree that Vispe Capital may use this data to send content and contact me, under the LGPD.",
-    submit: "Unlock download",
-    sending: "Unlocking…",
-    close: "Close",
+    title: "Get the material for free",
+    fields: {
+      name: "Name",
+      phone: "WhatsApp",
+      email: "Email",
+      company: "Company",
+      segment: "Industry",
+      revenue: "Monthly revenue",
+      role: "What is your role?",
+      pain: "What is your main operational pain?",
+    },
+    placeholders: {
+      segment: "Select your industry",
+      revenue: "Select your monthly revenue",
+      role: "Select your role",
+      pain: "Select your main pain",
+    },
+    segmentOptions: [
+      "Legal",
+      "Agribusiness",
+      "Accounting",
+      "E-commerce",
+      "Manufacturing",
+      "Marketing",
+      "Healthcare",
+      "Software/IT",
+      "Telecom",
+      "Retail",
+      "Other",
+    ],
+    revenueOptions: [
+      "Up to R$ 100k",
+      "R$ 100k to R$ 200k",
+      "R$ 200k to R$ 300k",
+      "R$ 300k to R$ 400k",
+      "R$ 400k to R$ 500k",
+      "Over R$ 500k",
+    ],
+    roleOptions: ["Partner/Founder", "CEO"],
+    painOptions: ["Lack of profitability", "Strategic support for decisions", "Lack of tax planning", "Financial organization"],
+    whatsapp: "I agree to receive news and talk to Vispe's specialists via WhatsApp",
+    consent: "I agree that Vispe Capital may use this data to send the material and contact me, under the LGPD.",
+    submit: "Get material",
+    sending: "Sending…",
   },
 
   messages: {
     invalid: "Please review the highlighted fields.",
-    success: "Done! Your material is unlocked.",
-    downloadNow: "Download now",
+    success: "Done! We sent the material to your email.",
+    unavailable: "Sending through the site is still being set up. Meanwhile, reach us on Vispe's social channels.",
     errors: {
       required: "Please fill in this field.",
       email: "Enter a valid email.",
       phone: "Enter a WhatsApp number with area code.",
+      option: "Select an option.",
       material: "This material isn't available.",
-      consent: "You need to agree to unlock the download.",
+      consent: "You need to agree to get the material.",
     },
   },
 };

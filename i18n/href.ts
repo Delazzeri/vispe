@@ -12,8 +12,16 @@ export function localizePath(internalPath: string, locale: Locale): string {
 
   if (exact) {
     path = typeof exact === "string" ? exact : exact[locale];
-  } else if (internalPath.startsWith("/blog/")) {
-    path = internalPath; // slug idêntico nos dois idiomas
+  } else {
+    // Rotas dinâmicas ("/blog/[slug]", "/materiais/[slug]"): slug idêntico nos dois idiomas.
+    for (const [pattern, target] of Object.entries(routing.pathnames)) {
+      if (!pattern.endsWith("/[slug]")) continue;
+      const prefix = pattern.slice(0, -"[slug]".length);
+      if (!internalPath.startsWith(prefix)) continue;
+      const localized = typeof target === "string" ? target : target[locale];
+      path = localized.replace("[slug]", internalPath.slice(prefix.length));
+      break;
+    }
   }
 
   if (locale === defaultLocale) return path;
