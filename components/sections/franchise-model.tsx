@@ -73,6 +73,8 @@ export function FranchiseModelPage({ locale, model }: { locale: Locale; model: F
         <HeroScene
           softFadeOnMobile
           className="absolute inset-x-0 bottom-0 -z-10 h-60 overflow-hidden md:h-[360px]"
+          // Degradê alto e com base sólida: a faixa curta não deixa ver onde o vídeo acaba.
+          bottomFadeClassName="h-3/4 from-25% md:h-3/4 md:from-25%"
           {...franchiseScene(model)}
         />
 
