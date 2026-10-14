@@ -73,17 +73,21 @@ export function Hero({ id }: { id?: string }) {
       </HeroIntro>
 
       <HeroIntro className="relative flex w-full justify-center px-6 pb-12 md:pb-16">
-        <HeroIntroItem className="relative z-10 -mt-6 md:-mt-10">
-          <DashboardMockup />
-        </HeroIntroItem>
+        {/* As rochas se posicionam pela tela-mac (não pela janela): a sobreposição
+            fica igual em qualquer largura, sem elas se afastarem em telas largas. */}
+        <div className="relative w-full max-w-6xl">
+          <HeroIntroItem className="relative z-10 -mt-6 md:-mt-10">
+            <DashboardMockup />
+          </HeroIntroItem>
 
-        <HeroIntroItem className="pointer-events-auto absolute -left-12 top-2 z-20 w-34 md:left-[max(-40px,calc(50%-900px))] md:top-24 md:w-[360px] lg:w-[440px] xl:w-[480px]">
-          <HeroRock side="left" />
-        </HeroIntroItem>
+          <HeroIntroItem className="pointer-events-auto absolute -left-18 top-2 z-20 w-34 md:-left-16 md:top-24 md:w-[360px] lg:w-[440px] xl:-left-46 xl:w-[480px]">
+            <HeroRock side="left" />
+          </HeroIntroItem>
 
-        <HeroIntroItem className="pointer-events-auto absolute -right-12 top-2 z-20 w-34 md:right-[max(-40px,calc(50%-900px))] md:top-24 md:w-[360px] lg:w-[440px] xl:w-[480px]">
-          <HeroRock side="right" />
-        </HeroIntroItem>
+          <HeroIntroItem className="pointer-events-auto absolute -right-18 top-2 z-20 w-34 md:-right-16 md:top-24 md:w-[360px] lg:w-[440px] xl:-right-46 xl:w-[480px]">
+            <HeroRock side="right" />
+          </HeroIntroItem>
+        </div>
       </HeroIntro>
     </section>
   );
