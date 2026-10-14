@@ -488,7 +488,7 @@ export const site: SiteContent = {
         href: "/#servicos",
         labels: { ma: "Mergers & Acquisitions" },
       },
-      content: { title: "Content", postsLimit: 3, moreLabel: "See all articles", moreHref: "/#blog" },
+      content: { title: "Content", postsLimit: 3, moreLabel: "See all articles", moreHref: "/blog" },
       contact: {
         title: "Get in touch",
         links: [
@@ -567,6 +567,11 @@ export const site: SiteContent = {
     blogCategories: "Filter by category",
     blogAllCategories: "All",
     backToBlog: "Back to content",
+    blogFaqTitle: "Frequently asked questions",
+    blogLoading: "Loading article…",
+    blogEmpty: "No articles published yet.",
+    blogNotFoundTitle: "Article not found",
+    blogNotFoundText: "The link may have changed or the article was taken down. See the latest content.",
     portugueseOnly: "This article is available in Portuguese only.",
   },
 

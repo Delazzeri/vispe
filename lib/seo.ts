@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import type { BlogPost } from "@/content/blog";
+import type { Article } from "@/lib/blog/types";
 import { brand, getSite } from "@/content/site";
 import { localizePath } from "@/i18n/href";
 import { defaultLocale, locales, type Locale } from "@/i18n/routing";
@@ -17,7 +17,7 @@ type SeoInput = {
    * O canonical aponta para essa versão e não há alternates de idioma.
    */
   contentLocale?: Locale;
-  /** Sem imagem, usa a imagem padrão do idioma (app/og e app/og/en). */
+  /** Sem imagem, usa a imagem padrão do idioma (app/og.png e app/og-en.png). */
   image?: { url: string; alt: string };
   type?: "website" | "article";
   article?: { publishedTime: string; modifiedTime?: string; authors?: string[] };
@@ -42,7 +42,7 @@ export function buildMetadata({
         "x-default": urlFor(defaultLocale),
       };
   const ogImage = image ?? {
-    url: locale === defaultLocale ? "/og" : "/og/en",
+    url: locale === defaultLocale ? "/og.png" : "/og-en.png",
     alt: `${brand.name} — ${getSite(locale).tagline}`,
   };
   // Separador "|" no título da aba: "Página | Vispe Capital".
@@ -114,11 +114,11 @@ export function breadcrumbJsonLd(items: readonly { name: string; path: string }[
   };
 }
 
-export function articleJsonLd(post: BlogPost) {
-  const url = new URL(`/blog/${post.slug}`, brand.url).toString();
+export function articleJsonLd(post: Article) {
+  const url = new URL(localizePath(`/blog/${post.slug}`, defaultLocale), brand.url).toString();
   const image = post.cover
     ? new URL(post.cover.src, brand.url).toString()
-    : new URL(`/blog/${post.slug}/og`, brand.url).toString();
+    : new URL(`/blog/${post.slug}/og.png`, brand.url).toString();
 
   return {
     "@context": "https://schema.org",

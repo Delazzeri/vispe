@@ -502,7 +502,7 @@ export const site = {
         // Rótulo mais curto só no footer (o nome completo segue nas seções).
         labels: { ma: "Fusões e Aquisições" } as Record<string, string>,
       },
-      content: { title: "Conteúdo", postsLimit: 3, moreLabel: "Ver todos os artigos", moreHref: "/#blog" },
+      content: { title: "Conteúdo", postsLimit: 3, moreLabel: "Ver todos os artigos", moreHref: "/blog" },
       contact: {
         title: "Atendimento",
         links: [
@@ -583,6 +583,11 @@ export const site = {
     blogCategories: "Filtrar por categoria",
     blogAllCategories: "Tudo",
     backToBlog: "Voltar aos conteúdos",
+    blogFaqTitle: "Perguntas frequentes",
+    blogLoading: "Carregando artigo…",
+    blogEmpty: "Nenhum artigo publicado ainda.",
+    blogNotFoundTitle: "Artigo não encontrado",
+    blogNotFoundText: "O link pode ter mudado ou o artigo saiu do ar. Veja os conteúdos mais recentes.",
     // Aviso exibido nos artigos fora do português (o blog só existe em pt-BR).
     portugueseOnly: "",
   },

@@ -2,7 +2,7 @@ import { LocaleLink as Link } from "@/components/ui/locale-link";
 import Image from "next/image";
 import { HeroScene } from "@/components/sections/hero-scene";
 import { SocialLinks } from "@/components/ui/social-links";
-import { blogPosts } from "@/content/blog";
+import type { Article } from "@/lib/blog/types";
 import { brand, useSite } from "@/content/site";
 import { CookiePreferencesButton } from "@/components/ui/cookie-consent";
 import { MotionToggle } from "@/components/ui/motion-toggle";
@@ -56,7 +56,7 @@ function FooterSocial() {
   );
 }
 
-export function Footer() {
+export function Footer({ posts }: { posts: readonly Article[] }) {
   const site = useSite();
   const { footer } = site;
   const { company, services, content, contact } = footer.columns;
@@ -104,9 +104,8 @@ export function Footer() {
           <FooterColumn
             title={content.title}
             links={[
-              // Mais recentes primeiro; posts novos entram sozinhos.
-              ...[...blogPosts]
-                .sort((a, b) => b.publishedAt.localeCompare(a.publishedAt))
+              // Mais recentes primeiro (lista do build); posts novos entram no próximo build.
+              ...posts
                 .slice(0, content.postsLimit)
                 .map((post) => ({ label: post.title, href: `/blog/${post.slug}`, lang: "pt-BR", clamp: true })),
               { label: content.moreLabel, href: content.moreHref },

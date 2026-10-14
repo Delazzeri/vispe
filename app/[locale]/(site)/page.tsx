@@ -11,6 +11,7 @@ import { ServicePillars } from "@/components/sections/service-pillars";
 import { Blog } from "@/components/sections/blog";
 import { FAQ } from "@/components/sections/faq";
 import { LeadSection } from "@/components/sections/lead-section";
+import { listArticles } from "@/lib/blog/source";
 
 export default async function HomePage({ params }: PageProps<"/[locale]">) {
   const { locale } = await params;
@@ -26,7 +27,7 @@ export default async function HomePage({ params }: PageProps<"/[locale]">) {
       <Fin id="fin" />
       <ImageCarousel />
       <ServicePillars id="equity" />
-      <Blog id="blog" />
+      <Blog id="blog" posts={await listArticles()} />
       <FAQ id="faq" />
       {/* Destino de todos os CTAs de diagnóstico (#diagnostico). */}
       <LeadSection />

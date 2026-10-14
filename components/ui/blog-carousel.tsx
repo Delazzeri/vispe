@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useReducedMotion } from "motion/react";
 import { BlogCard } from "@/components/ui/blog-card";
 import { cn } from "@/lib/cn";
-import type { BlogPost } from "@/content/blog";
+import type { Article } from "@/lib/blog/types";
 import { useSite } from "@/content/site";
 import { format } from "@/content/types";
 
@@ -12,11 +12,11 @@ import { format } from "@/content/types";
 export type BlogGroup = { slug: string; label: string; tags: readonly string[] };
 
 type BlogCarouselProps = {
-  posts: readonly BlogPost[];
+  posts: readonly Article[];
   groups: readonly BlogGroup[];
 };
 
-const inGroup = (post: BlogPost, group: BlogGroup) => post.tags.some((tag) => group.tags.includes(tag));
+const inGroup = (post: Article, group: BlogGroup) => post.tags.some((tag) => group.tags.includes(tag));
 
 const GAP_PX = 24; // gap-6
 const DESKTOP_QUERY = "(min-width: 768px)";

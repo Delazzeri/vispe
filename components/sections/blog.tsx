@@ -1,9 +1,9 @@
 import { Reveal } from "@/components/motion/reveal";
 import { BlogCarousel } from "@/components/ui/blog-carousel";
-import { blogPosts } from "@/content/blog";
+import type { Article } from "@/lib/blog/types";
 import { getSite, useSite } from "@/content/site";
 
-export function Blog({ id }: { id?: string }) {
+export function Blog({ id, posts }: { id?: string; posts: readonly Article[] }) {
   const site = useSite();
   const { title, subtitle } = site.blog;
   // Filtros = pilares da seção Equity. As tags dos posts usam os nomes dos
@@ -31,7 +31,7 @@ export function Blog({ id }: { id?: string }) {
         </Reveal>
 
         <div className="mt-14">
-          <BlogCarousel posts={blogPosts} groups={groups} />
+          <BlogCarousel posts={posts} groups={groups} />
         </div>
       </div>
     </section>

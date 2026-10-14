@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { blogPosts } from "@/content/blog";
+import { listArticles } from "@/lib/blog/source";
 import { materials } from "@/content/materials";
 import { brand } from "@/content/brand";
 import { localizePath } from "@/i18n/href";
@@ -20,9 +20,12 @@ const pages: { path: string; changeFrequency: Frequency; priority: number }[] = 
   { path: "/franquia/comercial", changeFrequency: "monthly", priority: 0.6 },
   { path: "/franquia/financeira", changeFrequency: "monthly", priority: 0.6 },
   { path: "/materiais", changeFrequency: "weekly", priority: 0.7 },
+  { path: "/blog", changeFrequency: "weekly", priority: 0.7 },
 ];
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export const dynamic = "force-static";
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const localized: MetadataRoute.Sitemap = pages.flatMap(({ path, changeFrequency, priority }) => {
     const languages = Object.fromEntries(locales.map((l) => [l, url(localizePath(path, l))]));
     return locales.map((locale) => ({
@@ -34,16 +37,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
   });
 
   // Artigos existem só em português: entra apenas a URL canônica pt-BR.
-  const blogRoutes: MetadataRoute.Sitemap = blogPosts.map((post) => ({
-    url: url(`/blog/${post.slug}`),
-    lastModified: post.publishedAt,
+  const blogRoutes: MetadataRoute.Sitemap = (await listArticles()).map((post) => ({
+    url: url(localizePath(`/blog/${post.slug}`, defaultLocale)),
+    lastModified: post.updatedAt ?? post.publishedAt,
     changeFrequency: "monthly",
     priority: 0.5,
   }));
 
   // LPs dos materiais: conteúdo só em português, como os artigos.
   const materialRoutes: MetadataRoute.Sitemap = materials.map((material) => ({
-    url: url(`/materiais/${material.slug}`),
+    url: url(localizePath(`/materiais/${material.slug}`, defaultLocale)),
     changeFrequency: "monthly",
     priority: 0.6,
   }));

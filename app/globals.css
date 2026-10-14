@@ -97,3 +97,48 @@ body {
     transform: translateX(-100%);
   }
 }
+
+/*
+ * Corpo dos artigos do blog (Markdown renderizado em components/blog/article-view.tsx).
+ * Mesma tipografia da versão anterior, que montava cada bloco em JSX.
+ */
+@layer components {
+  .article-body > * + * {
+    @apply mt-4;
+  }
+  .article-body p,
+  .article-body li {
+    @apply max-w-[65ch] text-base leading-relaxed text-fg;
+  }
+  .article-body h2 {
+    @apply mt-10 text-2xl font-bold tracking-tight text-ink;
+  }
+  .article-body h3 {
+    @apply mt-6 text-xl font-bold tracking-tight text-ink;
+  }
+  .article-body strong {
+    @apply font-semibold text-ink;
+  }
+  .article-body a {
+    @apply rounded-sm font-medium text-ink underline decoration-brand-dark/50 underline-offset-4 transition-colors hover:text-brand-dark hover:decoration-brand-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-dark;
+  }
+  .article-body blockquote {
+    @apply max-w-[65ch] border-l-4 border-brand pl-5;
+  }
+  .article-body blockquote p {
+    @apply text-lg font-semibold text-ink;
+  }
+  .article-body ul,
+  .article-body ol {
+    @apply max-w-[65ch] space-y-2 pl-5 marker:text-brand-dark;
+  }
+  .article-body ul {
+    @apply list-disc;
+  }
+  .article-body ol {
+    @apply list-decimal marker:font-semibold;
+  }
+  .article-body img {
+    @apply rounded-3xl;
+  }
+}
