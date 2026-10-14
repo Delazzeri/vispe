@@ -2,11 +2,7 @@
 
 import { useState, useTransition, type FormEvent, type ReactNode } from "react";
 import { CircleAlert, CircleCheck, Download } from "lucide-react";
-import {
-  requestMaterial,
-  type MaterialField,
-  type MaterialState,
-} from "@/app/[locale]/(site)/materiais/actions";
+import { requestMaterial, type MaterialField, type MaterialState } from "@/lib/forms/material";
 import { ConsentField, Field, fieldA11y, Honeypot, inputClass } from "@/components/ui/form-field";
 import type { MaterialsUi } from "@/content/materials";
 import type { Locale } from "@/i18n/routing";
@@ -42,7 +38,7 @@ export function MaterialForm({ locale, material, copy, messages, fallback }: Mat
     const form = event.currentTarget;
     const formData = new FormData(form);
     startTransition(async () => {
-      const result = await requestMaterial(state, formData);
+      const result = await requestMaterial(formData);
       setState(result);
       if (result.status === "success") form.reset();
     });

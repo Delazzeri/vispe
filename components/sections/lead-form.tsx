@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useTransition, type FormEvent, type ReactNode } from "react";
 import { ArrowRight, CircleAlert, CircleCheck } from "lucide-react";
-import { submitLead, type LeadField, type LeadState } from "@/app/[locale]/(site)/contato/actions";
+import { submitLead, type LeadField, type LeadState } from "@/lib/forms/lead";
 import type { SiteContent } from "@/content/site";
 import type { Locale } from "@/i18n/routing";
 import { Field, inputClass } from "@/components/ui/form-field";
@@ -57,7 +57,7 @@ export function LeadForm({ locale, copy, messages, interests, fallback }: LeadFo
     const form = event.currentTarget;
     const formData = new FormData(form);
     startTransition(async () => {
-      const result = await submitLead(state, formData);
+      const result = await submitLead(formData);
       setState(result);
       if (result.status === "success") form.reset();
     });

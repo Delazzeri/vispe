@@ -2,11 +2,7 @@
 
 import { useState, useTransition, type FormEvent, type ReactNode } from "react";
 import { ArrowRight, CircleAlert, CircleCheck } from "lucide-react";
-import {
-  submitFranchise,
-  type FranchiseField,
-  type FranchiseState,
-} from "@/app/[locale]/(site)/franquia/actions";
+import { submitFranchise, type FranchiseField, type FranchiseState } from "@/lib/forms/franchise";
 import { ConsentField, Field, fieldA11y, Honeypot, inputClass } from "@/components/ui/form-field";
 import type { FranchiseContent, FranchiseModel } from "@/content/franchise";
 import type { Locale } from "@/i18n/routing";
@@ -35,7 +31,7 @@ export function FranchiseForm({ locale, model, copy, messages, fallback }: Franc
     const form = event.currentTarget;
     const formData = new FormData(form);
     startTransition(async () => {
-      const result = await submitFranchise(state, formData);
+      const result = await submitFranchise(formData);
       setState(result);
       if (result.status === "success") form.reset();
     });

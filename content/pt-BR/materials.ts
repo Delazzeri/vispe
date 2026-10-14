@@ -76,7 +76,7 @@ export const materialsUi = {
 
   messages: {
     invalid: "Revise os campos destacados.",
-    success: "Pronto! Enviamos o material para o seu e-mail.",
+    success: "Recebemos seu cadastro! O material vai chegar no seu e-mail.",
     unavailable:
       "O envio pelo site ainda está sendo configurado. Enquanto isso, fale com a gente pelas redes da Vispe.",
     errors: {

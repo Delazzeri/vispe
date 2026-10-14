@@ -2,11 +2,7 @@
 
 import { useRef, useState, useTransition, type DragEvent, type FormEvent, type ReactNode } from "react";
 import { Check, CircleAlert, CircleCheck, FileText, Mail, Upload } from "lucide-react";
-import {
-  submitApplication,
-  type ApplicationField,
-  type ApplicationState,
-} from "@/app/[locale]/(site)/trabalhe-conosco/actions";
+import { submitApplication, type ApplicationField, type ApplicationState } from "@/lib/forms/careers";
 import type { CareersContent } from "@/content/careers";
 import type { Locale } from "@/i18n/routing";
 import { cn } from "@/lib/cn";
@@ -124,7 +120,7 @@ export function CareersForm({ locale, copy, messages, hrEmail, maxBytes }: Caree
     const form = event.currentTarget;
     const formData = new FormData(form);
     startTransition(async () => {
-      const result = await submitApplication(state, formData);
+      const result = await submitApplication(formData);
       setState(result);
       if (result.status === "success") {
         form.reset();

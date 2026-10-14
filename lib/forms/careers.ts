@@ -1,7 +1,10 @@
-"use server";
-
 import { getCareers, resumeMaxBytes } from "@/content/careers";
 import { resolveLocale } from "@/i18n/routing";
+import { fileToBase64, formValues, submitToSheet } from "./submit";
+import { isEmail, isPhone, text } from "./validate";
+
+// Candidatura (/trabalhe-conosco) → aba "carreiras"; o PDF vai para uma pasta
+// do Drive e o link entra na planilha (ver integrations/google-sheets/Code.gs).
 
 export type ApplicationField =
   | "name"
@@ -20,21 +23,13 @@ export type ApplicationState =
   | { status: "unavailable" }
   | { status: "success" };
 
-function text(formData: FormData, key: string) {
-  const value = formData.get(key);
-  return typeof value === "string" ? value.trim() : "";
-}
-
 /** Confere a assinatura do arquivo (%PDF-), não só a extensão/MIME do navegador. */
 async function isPdf(file: File) {
   const head = new Uint8Array(await file.slice(0, 5).arrayBuffer());
   return String.fromCharCode(...head) === "%PDF-";
 }
 
-export async function submitApplication(
-  _prev: ApplicationState,
-  formData: FormData,
-): Promise<ApplicationState> {
+export async function submitApplication(formData: FormData): Promise<ApplicationState> {
   // Honeypot: campo invisível que só robôs preenchem — finge sucesso.
   if (text(formData, "company")) return { status: "success" };
 
@@ -42,19 +37,15 @@ export async function submitApplication(
   const careers = getCareers(resolveLocale(text(formData, "locale")));
   const msg = careers.messages.errors;
 
-  const name = text(formData, "name");
-  const email = text(formData, "email");
-  const phone = text(formData, "phone");
-  const city = text(formData, "city");
   const linkedin = text(formData, "linkedin");
   const area = text(formData, "area");
   const resume = formData.get("resume");
 
   const errors: Partial<Record<ApplicationField, string>> = {};
-  if (name.length < 3) errors.name = msg.required;
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) errors.email = msg.email;
-  if (phone.replace(/\D/g, "").length < 10) errors.phone = msg.phone;
-  if (!city) errors.city = msg.required;
+  if (text(formData, "name").length < 3) errors.name = msg.required;
+  if (!isEmail(text(formData, "email"))) errors.email = msg.email;
+  if (!isPhone(text(formData, "phone"))) errors.phone = msg.phone;
+  if (!text(formData, "city")) errors.city = msg.required;
   if (linkedin && !/^https?:\/\/([a-z]{2,3}\.)?linkedin\.com\/in\//i.test(linkedin)) {
     errors.linkedin = msg.linkedin;
   }
@@ -79,11 +70,10 @@ export async function submitApplication(
     errors.resume = msg.resumeType;
   }
 
-  if (Object.keys(errors).length > 0) return { status: "invalid", errors };
+  if (Object.keys(errors).length > 0 || !(resume instanceof File)) return { status: "invalid", errors };
 
-  // TODO(integration): enviar para o RH por e-mail (Resend, com o PDF anexado)
-  // e rodar a verificação/pontuação de ATS (lib/ats.ts) — aguardando aprovação
-  // das dependências `resend` e `unpdf` e da chave RESEND_API_KEY. Até lá, o
-  // candidato recebe o e-mail do RH como alternativa, sem perder a candidatura.
-  return { status: "unavailable" };
+  const values = formValues(formData, ["company", "resume"]);
+  values.message = (values.message ?? "").slice(0, 2000);
+  const file = { name: resume.name, type: "application/pdf", base64: await fileToBase64(resume) };
+  return (await submitToSheet("carreiras", values, file)) === "sent" ? { status: "success" } : { status: "unavailable" };
 }
