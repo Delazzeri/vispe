@@ -6,7 +6,10 @@ type Pathnames = typeof routing.pathnames;
  * Converte um caminho interno (pastas em português: "/sobre", "/blog/x")
  * para a URL pública do idioma: "/about" → com prefixo "/en" no inglês.
  */
-export function localizePath(internalPath: string, locale: Locale): string {
+export function localizePath(rawPath: string, locale: Locale): string {
+  // Aceita com ou sem a barra final; a saída sempre termina em "/" (trailingSlash
+  // do export estático), menos arquivos ("/blog/x/og.png").
+  const internalPath = rawPath.length > 1 ? rawPath.replace(/\/+$/, "") : rawPath;
   let path = internalPath;
   const exact = routing.pathnames[internalPath as keyof Pathnames];
 
@@ -24,9 +27,16 @@ export function localizePath(internalPath: string, locale: Locale): string {
     }
   }
 
-  if (locale === defaultLocale) return path;
-  const prefix = localePrefixes[locale] ?? `/${locale}`;
-  return path === "/" ? prefix : `${prefix}${path}`;
+  if (locale !== defaultLocale) {
+    const prefix = localePrefixes[locale] ?? `/${locale}`;
+    path = path === "/" ? prefix : `${prefix}${path}`;
+  }
+  return withTrailingSlash(path);
+}
+
+function withTrailingSlash(path: string): string {
+  const last = path.slice(path.lastIndexOf("/") + 1);
+  return path.endsWith("/") || last.includes(".") ? path : `${path}/`;
 }
 
 /**

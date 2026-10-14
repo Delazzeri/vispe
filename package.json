@@ -4,10 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
+    "build": "node scripts/image-manifest.mjs && next build && node --no-warnings scripts/generate-htaccess.mjs",
+    "preview": "node scripts/serve-out.mjs",
     "lint": "eslint",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "blog:seed": "node --no-warnings scripts/blog-to-sql.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",

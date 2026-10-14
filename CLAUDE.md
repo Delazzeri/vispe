@@ -23,7 +23,8 @@
 - Ícones: `lucide-react`
 - Conteúdo das LPs: arquivos tipados em `content/` (TS ou MDX) — sem CMS por enquanto
 - {{i18n: next-intl, se bilíngue}}
-- Deploy: Vercel
+- Deploy: Hostinger, plano Single (só arquivos estáticos, Apache/LiteSpeed, sem Node) — export estático; regras na seção 12
+- Blog e admin: Supabase (Auth, Postgres com RLS, Storage) via supabase-js no navegador; formulários: Google Sheets via Apps Script
 - Gerenciador: pnpm
 
 ## 3. Comandos
@@ -33,6 +34,8 @@ pnpm dev          # desenvolvimento
 pnpm build        # build de produção — deve passar sem warnings
 pnpm lint         # ESLint
 pnpm typecheck    # tsc --noEmit
+pnpm preview      # serve out/ aplicando as regras do out/.htaccess (teste local do deploy)
+pnpm blog:seed    # regenera supabase/migrations/0005_seed_articles.sql a partir de content/blog.ts
 ```
 
 Antes de declarar qualquer tarefa concluída: `pnpm typecheck && pnpm lint && pnpm build`.
@@ -121,3 +124,15 @@ docs/                      # documentação de referência (importada acima)
 - Não adicionar bibliotecas de animação além de Motion sem aprovação (GSAP só se um caso concreto exigir).
 - Não criar páginas sem metadata.
 - Não usar `"use client"` em layouts ou páginas inteiras.
+## 12. Hospedagem estática (Hostinger Single) — regras do projeto
+
+O site é gerado com `output: 'export'` em `out/` e sobe no `public_html`. Não há servidor Node em produção.
+
+- `next.config.ts`: `output: 'export'`, `trailingSlash: true`, imagens com o loader de `lib/image-loader.ts` (escolhe a versão por largura já gerada em `public/`, ver `scripts/image-manifest.mjs`). Imagem nova grande → gerar as larguras com sharp, nomes `-<largura>`.
+- **Proibido:** Server Actions, proxy/middleware, `rewrites`/`redirects` do next.config, intercepting routes, ISR/`revalidate`, `cookies()`/`headers()`, rota dinâmica sem `generateStaticParams` (+ `dynamicParams = false`).
+- Route Handlers só `GET` com `export const dynamic = "force-static"` (imagens OG, sitemap, robots). Arquivos gerados por rota levam extensão no nome da pasta (`og.png/route.tsx`).
+- Idiomas e URLs públicas ficam no `out/.htaccess`, gerado no build por `scripts/generate-htaccess.mjs` a partir de `i18n/routing.ts` (pt na raiz, inglês em `/en` com caminhos traduzidos, redirecionamento pelo idioma do navegador, cookie `vispe_lang` do seletor vence). Página nova: só registrar em `routing.pathnames`.
+- Dados: tudo pelo navegador. Blog/admin via supabase-js com a chave publicável; **a segurança real é a RLS** (`supabase/migrations`), nunca só o front. Formulários: `lib/forms/*` validam no navegador e enviam para o Apps Script (`integrations/google-sheets/Code.gs`), que valida de novo.
+- Blog híbrido: `lib/blog/source.ts` lê os publicados no build (páginas estáticas com SEO completo); post publicado depois do build abre por `/blog/post/` (o `.htaccess` manda para lá) até o próximo build. Slug `post` é reservado.
+- Admin em `/admin` (fora de `[locale]`, root layout próprio, `noindex`): rotas estáticas, ids por query string (`/admin/editor/?id=`).
+- Antes de subir: `pnpm build` (gera `out/` + `.htaccess`) e `pnpm preview` para conferir.

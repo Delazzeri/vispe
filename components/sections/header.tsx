@@ -14,8 +14,8 @@ export function Header() {
           <Image
             src="/media/brand/logo-vispe-preto-2204.png"
             alt={brand.name}
-            width={2204}
-            height={434}
+            width={122}
+            height={24}
             priority
             className="h-6 w-auto"
           />

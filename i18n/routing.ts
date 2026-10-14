@@ -28,9 +28,18 @@ export const routing = defineRouting({
     "/franquia/financeira": { "pt-BR": "/franquia/financeira", "en-US": "/franchise/financial" },
     "/materiais": { "pt-BR": "/materiais", "en-US": "/free-materials" },
     "/materiais/[slug]": { "pt-BR": "/materiais/[slug]", "en-US": "/free-materials/[slug]" },
+    "/blog": "/blog",
+    // Página única dos posts publicados depois do último build (lê o slug da URL).
+    "/blog/post": "/blog/post",
     "/blog/[slug]": "/blog/[slug]",
   },
 });
+
+/**
+ * Cookie gravado pelo seletor de idioma: com ele, o .htaccess não manda mais o
+ * visitante para /en pelo idioma do navegador (a escolha manual vence).
+ */
+export const localeCookie = "vispe_lang";
 
 export function isLocale(value: string): value is Locale {
   return (locales as readonly string[]).includes(value);

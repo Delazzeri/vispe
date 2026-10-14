@@ -5,6 +5,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { useTransition } from "react";
 import { usePathname, useRouter } from "@/i18n/navigation";
 import { locales, type Locale } from "@/i18n/routing";
+import { rememberLocale } from "@/lib/locale-preference";
 import { cn } from "@/lib/cn";
 
 // Bandeiras em SVG próprio: emoji de bandeira não renderiza no Windows.
@@ -47,6 +48,8 @@ export function LanguageSwitcher({ className }: { className?: string }) {
   const [pending, startTransition] = useTransition();
 
   function switchTo(locale: Locale) {
+    // Escolha manual vence o idioma do navegador (o .htaccess lê este cookie).
+    rememberLocale(locale);
     startTransition(() => {
       // pathname é a rota interna (ex.: "/blog/[slug]"); params traz o slug.
       router.replace(
