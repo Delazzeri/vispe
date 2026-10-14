@@ -10,9 +10,10 @@ navegador, com a chave publicável. Quem protege os dados é a RLS destas migrat
 ## Configurar (uma vez)
 
 1. **Criar o projeto** em supabase.com (região São Paulo).
-2. **Rodar as migrations, em ordem**, no SQL Editor (ou `supabase db push` com a CLI):
-   `0001_init.sql` → `0002_storage.sql` → `0003_private_is_staff.sql` →
-   `0004_articles_blog_fields.sql` → `0005_seed_articles.sql` (os 6 artigos atuais).
+2. **Criar o banco:** SQL Editor → New query → cole todo o `supabase/setup-completo.sql`
+   → Run (uma vez só). Ele junta as migrations em ordem: `0001_init` → `0002_storage` →
+   `0003_private_is_staff` → `0004_articles_blog_fields` → `0005_seed_articles` (os 6
+   artigos atuais). Mudou alguma migration? `pnpm supabase:setup` gera o arquivo de novo.
 3. **Desligar o cadastro público:** Authentication → Sign In / Providers → desmarque
    "Allow new users to sign up". O admin não tem tela de cadastro.
 4. **Criar o usuário do admin:** Authentication → Users → Add user → e-mail e senha
