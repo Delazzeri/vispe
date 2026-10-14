@@ -12,6 +12,7 @@ import type { ArticleRecord, ArticleStatus, Database, Json } from "@/lib/supabas
 import { adminInput, adminPrimary, adminSecondary } from "./admin-shell";
 import { statusLabel } from "./article-list";
 import { RichTextEditor, type RichTextValue } from "./rich-text-editor";
+import { SeoAssistant, type SeoPatch } from "./seo-assistant";
 
 type FaqDraft = { question: string; answer: string };
 
@@ -157,6 +158,8 @@ export function ArticleEditor() {
   const [savedAt, setSavedAt] = useState<Date>();
   const [dirty, setDirty] = useState(false);
   const [preview, setPreview] = useState(false);
+  // Muda quando o conteúdo é trocado de fora (assistente de SEO): recria o editor com o novo texto.
+  const [editorVersion, setEditorVersion] = useState(0);
   const pillars = getSite("pt-BR").servicePillars;
   const categories = [...new Set(pillars.flatMap((pillar) => pillar.includes))];
 
@@ -198,6 +201,17 @@ export function ArticleEditor() {
       return next;
     });
   };
+
+  function applySeo(patch: SeoPatch) {
+    const { markdown, slug, ...fields } = patch;
+    update({
+      ...fields,
+      ...(slug !== undefined ? { slug, slugTouched: true } : {}),
+      // Sem o JSON antigo: o editor reabre a partir do Markdown novo.
+      ...(markdown !== undefined ? { markdown, json: null } : {}),
+    });
+    if (markdown !== undefined) setEditorVersion((version) => version + 1);
+  }
 
   async function uploadCover(file: File) {
     const supabase = getSupabase();
@@ -316,11 +330,21 @@ export function ArticleEditor() {
             <Field label="Resumo" hint="Uma ou duas frases: aparece no card do blog, abaixo do título e no Google.">
               <textarea value={draft.excerpt} onChange={(e) => update({ excerpt: e.target.value })} rows={3} className={adminInput} />
             </Field>
+            <SeoAssistant
+              title={draft.title}
+              excerpt={draft.excerpt}
+              markdown={draft.markdown}
+              category={draft.category}
+              tags={draft.tags}
+              published={Boolean(draft.id) && draft.status !== "draft"}
+              current={{ metaTitle: draft.metaTitle, metaDescription: draft.metaDescription, slug: draft.slug }}
+              onApply={applySeo}
+            />
             <div>
               <p className="text-sm font-medium text-fg">Conteúdo</p>
               <div className="mt-1.5">
                 <RichTextEditor
-                  key={draft.id ?? "novo"}
+                  key={`${draft.id ?? "novo"}-${editorVersion}`}
                   initialJson={draft.json}
                   initialMarkdown={draft.markdown}
                   onChange={(value: RichTextValue) => update({ markdown: value.markdown, json: value.json })}

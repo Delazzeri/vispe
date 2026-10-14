@@ -30,6 +30,24 @@ navegador, com a chave publicável. Quem protege os dados é a RLS destas migrat
 7. **Tipos (opcional):** `supabase gen types typescript --project-id <ref> > lib/supabase/types.ts`
    substitui os tipos escritos à mão.
 
+## Assistente de SEO do admin (Gemini)
+
+O botão "Otimizar SEO com IA" do editor chama a Edge Function `seo-assistant`
+(`supabase/functions/seo-assistant/index.ts`). Ela roda no servidor do Supabase para a
+chave do Gemini nunca ir para o site, e só atende quem está logado e é staff.
+
+1. **Chave do Gemini:** em aistudio.google.com/apikey → Create API key (de preferência
+   numa conta Google da empresa). Guarde a chave.
+2. **Segredo no Supabase:** Edge Functions → Secrets → Add new secret:
+   nome `GEMINI_API_KEY`, valor = a chave. Opcional: `GEMINI_MODEL` para trocar o modelo
+   (padrão `gemini-3.8-flash`; o mais barato é `gemini-3.5-flash-lite`).
+3. **Publicar a função:** Edge Functions → Deploy a new function → Via Editor →
+   nome **`seo-assistant`** (exatamente assim) → apague o exemplo, cole todo o
+   `supabase/functions/seo-assistant/index.ts` → Deploy function.
+   Deixe ligada a opção de exigir JWT (Verify JWT / Enforce JWT), que é o padrão.
+4. Pronto: no admin, abra um artigo com título e texto e clique em "Otimizar SEO com IA".
+   Erros da função aparecem em Edge Functions → seo-assistant → Logs.
+
 ## No dia a dia
 
 - Publicar no admin já mostra o post no site (página única `/blog/post/`, lida no navegador).

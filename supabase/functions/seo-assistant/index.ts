@@ -1,0 +1,135 @@
+// Supabase Edge Function "seo-assistant" (Deno): sugere título para o Google,
+// descrição, resumo, slug e uma diagramação do artigo com foco em SEO, usando o
+// Gemini. Roda no servidor do Supabase para a chave do Gemini nunca ir para o
+// site (que é estático); só atende quem está logado no admin E é staff.
+//
+// Publicar (painel do Supabase, sem CLI): Edge Functions → Deploy a new function
+// → Via Editor → nome "seo-assistant" → cole este arquivo → Deploy.
+// Segredos (Edge Functions → Secrets): GEMINI_API_KEY (obrigatório) e, opcional,
+// GEMINI_MODEL (padrão: gemini-3.8-flash). Ver supabase/README.md.
+
+import { createClient } from "jsr:@supabase/supabase-js@2";
+
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Methods": "POST, OPTIONS",
+};
+
+const json = (body: unknown, status = 200) =>
+  new Response(JSON.stringify(body), { status, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+
+const MAX_CONTENT = 60_000;
+
+const SYSTEM = `Você é editor de SEO do blog da Vispe Capital, consultoria financeira para pequenas e médias empresas no Brasil (controladoria, BPO financeiro, planejamento tributário, valuation, M&A, captação de recursos). Escreve em português do Brasil, tom profissional e direto.
+
+Regras inegociáveis:
+- Nunca invente fatos, números, clientes, cases ou dados que não estejam no texto original.
+- Preserve o sentido, os argumentos e TODOS os links existentes no formato [texto](endereço), sem alterar os endereços.
+- Não use H1 (o título do artigo já é o H1). Use "## " para seções e "### " para subseções, sem pular níveis.
+
+O que entregar:
+- focusKeyword: a palavra-chave principal que o artigo realmente trata (2 a 4 palavras).
+- metaTitle: até 60 caracteres, com a palavra-chave no início quando natural, sem o nome da empresa.
+- metaDescription: entre 140 e 155 caracteres, com a palavra-chave e um benefício claro para o leitor.
+- excerpt: resumo de 1 ou 2 frases (até 200 caracteres) para o card do blog.
+- slug: minúsculas, sem acentos, palavras separadas por hífen, até 60 caracteres, sem palavras vazias (de, da, o, a, para…).
+- contentMarkdown: o mesmo conteúdo, rediagramado para leitura e SEO: abertura que apresenta o tema e a palavra-chave nas primeiras linhas; seções com subtítulos descritivos (## / ###) que usem variações da palavra-chave; parágrafos curtos (até 3–4 frases); listas (- ou 1.) quando houver enumerações; **negrito** só em termos-chave (com moderação); frase de destaque com "> " quando houver uma ideia central. Sem tabelas, imagens ou HTML.
+- notes: de 2 a 5 observações curtas sobre o que foi melhorado ou o que o autor pode acrescentar (ex.: falta um link interno para um serviço).`;
+
+const schema = {
+  type: "OBJECT",
+  properties: {
+    focusKeyword: { type: "STRING" },
+    metaTitle: { type: "STRING" },
+    metaDescription: { type: "STRING" },
+    excerpt: { type: "STRING" },
+    slug: { type: "STRING" },
+    contentMarkdown: { type: "STRING" },
+    notes: { type: "ARRAY", items: { type: "STRING" } },
+  },
+  required: ["focusKeyword", "metaTitle", "metaDescription", "excerpt", "slug", "contentMarkdown", "notes"],
+};
+
+const slugify = (text: string) =>
+  text
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 60)
+    .replace(/-+$/, "");
+
+const text = (value: unknown) => (typeof value === "string" ? value.trim() : "");
+
+Deno.serve(async (req) => {
+  if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
+  if (req.method !== "POST") return json({ error: "Método não permitido." }, 405);
+
+  try {
+    // Quem chama: usuário logado no admin e com linha em profiles (mesma regra da RLS).
+    const supabase = createClient(
+      Deno.env.get("SUPABASE_URL") ?? "",
+      Deno.env.get("SUPABASE_ANON_KEY") ?? Deno.env.get("SUPABASE_PUBLISHABLE_KEY") ?? "",
+      { global: { headers: { Authorization: req.headers.get("Authorization") ?? "" } } },
+    );
+    const { data: auth } = await supabase.auth.getUser();
+    if (!auth.user) return json({ error: "Entre no admin para usar o assistente." }, 401);
+    const { data: profile } = await supabase.from("profiles").select("id").eq("id", auth.user.id).maybeSingle();
+    if (!profile) return json({ error: "Sua conta não está liberada para publicar." }, 403);
+
+    const apiKey = Deno.env.get("GEMINI_API_KEY");
+    if (!apiKey) return json({ error: "Assistente não configurado: falta o segredo GEMINI_API_KEY no Supabase." }, 500);
+    const model = Deno.env.get("GEMINI_MODEL") ?? "gemini-3.8-flash";
+
+    const body = await req.json();
+    const title = text(body.title);
+    const content = text(body.content);
+    if (!title || content.length < 200) return json({ error: "Escreva o título e ao menos alguns parágrafos antes de otimizar." }, 400);
+    if (content.length > MAX_CONTENT) return json({ error: "Artigo longo demais para o assistente (máx. ~60 mil caracteres)." }, 400);
+
+    const prompt = [
+      `Título do artigo: ${title}`,
+      `Categoria: ${text(body.category) || "(não informada)"}`,
+      `Serviços relacionados: ${Array.isArray(body.tags) && body.tags.length ? body.tags.join(", ") : "(nenhum)"}`,
+      `Resumo atual: ${text(body.excerpt) || "(vazio)"}`,
+      "",
+      "Conteúdo atual (Markdown):",
+      content,
+    ].join("\n");
+
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey },
+      body: JSON.stringify({
+        systemInstruction: { parts: [{ text: SYSTEM }] },
+        contents: [{ role: "user", parts: [{ text: prompt }] }],
+        generationConfig: { responseMimeType: "application/json", responseSchema: schema, temperature: 0.4 },
+      }),
+    });
+    if (!response.ok) {
+      console.error("Gemini", response.status, await response.text());
+      return json({ error: `O Gemini não respondeu (erro ${response.status}). Tente de novo em instantes.` }, 502);
+    }
+
+    const result = await response.json();
+    const raw = (result.candidates?.[0]?.content?.parts ?? [])
+      .map((part: { text?: string }) => part.text ?? "")
+      .join("");
+    const data = JSON.parse(raw);
+
+    return json({
+      focusKeyword: text(data.focusKeyword),
+      metaTitle: text(data.metaTitle).slice(0, 70),
+      metaDescription: text(data.metaDescription).slice(0, 200),
+      excerpt: text(data.excerpt).slice(0, 300),
+      slug: slugify(text(data.slug)) || slugify(title),
+      contentMarkdown: text(data.contentMarkdown),
+      notes: Array.isArray(data.notes) ? data.notes.map(text).filter(Boolean).slice(0, 6) : [],
+    });
+  } catch (error) {
+    console.error(error);
+    return json({ error: "Não foi possível gerar as sugestões agora." }, 500);
+  }
+});
