@@ -31,7 +31,7 @@ export function SocialLogo({ network, tone }: { network: SocialNetwork; tone: To
         className={cn("h-6 w-6", tone === "dark" ? "opacity-70 invert" : "opacity-60")}
       />
       <Image
-        src={`/media/social/${network}.png`}
+        src={`/media/social/${network}-192.png`}
         alt=""
         width={24}
         height={24}

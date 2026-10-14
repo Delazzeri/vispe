@@ -25,10 +25,9 @@ async function load(): Promise<readonly Article[]> {
     if (error) throw error;
     return data.map(rowToArticle);
   } catch (error) {
-    console.warn(
-      "[blog] Supabase indisponível no build; usando content/blog.ts.",
-      error instanceof Error ? error.message : error,
-    );
+    const message =
+      error && typeof error === "object" && "message" in error ? String(error.message) : String(error);
+    console.warn(`[blog] Supabase indisponível no build (${message.split("\n")[0]}); usando content/blog.ts.`);
     return local;
   }
 }

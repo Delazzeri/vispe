@@ -41,12 +41,9 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# Originais brutos de mídia (o site usa as versões otimizadas com a largura no nome)
-/public/media/blog/Art *.jpg
-/public/media/clients/*_*.png
-/public/media/clients/aonet.png
-/public/media/clients/cyber.png
-/public/media/clients/glp.png
-/public/media/clients/virtex.png
-/public/media/episodes/0*.*
-/public/media/hero/Tela-mac-us.png
+# Originais de mídia (fotos e artes em alta, vídeos e ícones grandes): ficam fora de public/
+# para não irem no build. O site usa as versões otimizadas em public/media.
+/originais/
+
+# Pacote gerado por pnpm release para subir na Hostinger
+/release/

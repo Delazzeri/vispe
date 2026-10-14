@@ -8,7 +8,8 @@
     "preview": "node scripts/serve-out.mjs",
     "lint": "eslint",
     "typecheck": "tsc --noEmit",
-    "blog:seed": "node --no-warnings scripts/blog-to-sql.mjs"
+    "blog:seed": "node --no-warnings scripts/blog-to-sql.mjs",
+    "release": "node scripts/release.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",

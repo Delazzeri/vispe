@@ -36,6 +36,7 @@ pnpm lint         # ESLint
 pnpm typecheck    # tsc --noEmit
 pnpm preview      # serve out/ aplicando as regras do out/.htaccess (teste local do deploy)
 pnpm blog:seed    # regenera supabase/migrations/0005_seed_articles.sql a partir de content/blog.ts
+pnpm release      # confere .env.local, gera o build e release/vispe-site-<data>.zip para a Hostinger
 ```
 
 Antes de declarar qualquer tarefa concluída: `pnpm typecheck && pnpm lint && pnpm build`.
@@ -135,4 +136,4 @@ O site é gerado com `output: 'export'` em `out/` e sobe no `public_html`. Não 
 - Dados: tudo pelo navegador. Blog/admin via supabase-js com a chave publicável; **a segurança real é a RLS** (`supabase/migrations`), nunca só o front. Formulários: `lib/forms/*` validam no navegador e enviam para o Apps Script (`integrations/google-sheets/Code.gs`), que valida de novo.
 - Blog híbrido: `lib/blog/source.ts` lê os publicados no build (páginas estáticas com SEO completo); post publicado depois do build abre por `/blog/post/` (o `.htaccess` manda para lá) até o próximo build. Slug `post` é reservado.
 - Admin em `/admin` (fora de `[locale]`, root layout próprio, `noindex`): rotas estáticas, ids por query string (`/admin/editor/?id=`).
-- Antes de subir: `pnpm build` (gera `out/` + `.htaccess`) e `pnpm preview` para conferir.
+- Publicar: `pnpm release` (confere a configuração, gera `out/` + `.htaccess` e o .zip); conferir com `pnpm preview`. Originais de mídia ficam em `originais/` (fora de `public/` e do Git).

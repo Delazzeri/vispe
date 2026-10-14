@@ -1,7 +1,14 @@
 // Dados da marca que não mudam com o idioma.
+
+/**
+ * Domínio oficial (canonical, sitemap, Open Graph, JSON-LD). Vem de
+ * NEXT_PUBLIC_SITE_URL no build, para trocar de domínio sem mexer no código.
+ */
+const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.vispe.com.br").replace(/\/+$/, "");
+
 export const brand = {
   name: "Vispe Capital",
-  url: "https://www.vispe.com.br",
+  url: siteUrl,
   social: {
     instagram: "https://www.instagram.com/vispecapital",
     facebook: "https://www.facebook.com/vispecapital/",

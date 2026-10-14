@@ -13,6 +13,7 @@ pnpm preview      # serve out/ com as regras do .htaccess em http://localhost:41
 pnpm lint         # ESLint
 pnpm typecheck    # tsc --noEmit
 pnpm blog:seed    # regenera o seed dos artigos (supabase/migrations/0005)
+pnpm release      # confere a configuração, gera o build e o .zip para a Hostinger
 ```
 
 Antes de declarar qualquer tarefa concluída: `pnpm typecheck && pnpm lint && pnpm build`.
@@ -23,11 +24,19 @@ Copie `.env.example` para `.env.local` e preencha. São lidas **no build** (o si
 
 ## Publicar na Hostinger (plano Single)
 
-1. `pnpm build`
-2. No Gerenciador de Arquivos (ou FTP), apague o conteúdo antigo de `public_html` e envie **todo o conteúdo de `out/`**, inclusive o arquivo oculto `.htaccess`.
-3. Ative o SSL do domínio no painel da Hostinger.
+A Hostinger não roda o projeto: ela só serve o site já gerado. Quem sobe é o **pacote** criado por `pnpm release`, não o repositório.
 
-Posts publicados no admin aparecem no site na hora. Para que virem página estática (prévia própria no WhatsApp/LinkedIn e indexação mais rápida), gere o build e suba de novo.
+1. `pnpm release`: confere o `.env.local` (domínio, Supabase, formulários), gera o build e cria `release/vispe-site-<data>.zip`, já com o `.htaccess`.
+2. hPanel → Arquivos → Gerenciador de Arquivos → `public_html`: apague o conteúdo antigo, envie o .zip e use **Extrair** ali mesmo. Depois apague o .zip do servidor.
+3. Na primeira vez: ative o SSL do domínio no hPanel.
+
+Para conferir antes de subir: `pnpm preview` serve `out/` com as mesmas regras do `.htaccess`.
+
+Posts publicados no admin aparecem no site na hora. Para que virem página estática (prévia própria no WhatsApp/LinkedIn e indexação mais rápida), rode `pnpm release` e suba o pacote de novo.
+
+## Originais de mídia
+
+Fotos e artes em alta, vídeos e ícones grandes ficam em `originais/` (fora do Git e fora de `public/`, para não irem no build). O site usa só as versões otimizadas de `public/media`.
 
 ## Serviços externos
 
