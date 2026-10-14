@@ -11,7 +11,7 @@
 // As rotas vêm de i18n/routing.ts (mesma fonte do site), então uma página nova
 // entra aqui sozinha. Uso: node --no-warnings scripts/generate-htaccess.mjs
 
-import { writeFileSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { localeCookie, localePrefixes, routing } from "../i18n/routing.ts";
 
 const enPrefix = localePrefixes["en-US"].replace(/^\//, ""); // "en"
@@ -50,6 +50,26 @@ add(
   "<IfModule mod_rewrite.c>",
   "RewriteEngine On",
   "RewriteBase /",
+);
+
+// Domínio oficial (NEXT_PUBLIC_SITE_URL, o mesmo do canonical): a outra forma
+// (com ou sem www) redireciona para ele, para o Google ver um endereço só.
+function siteHost() {
+  let url = process.env.NEXT_PUBLIC_SITE_URL;
+  for (const file of [".env.production.local", ".env.local", ".env.production", ".env"]) {
+    if (url || !existsSync(file)) continue;
+    url = readFileSync(file, "utf8").match(/^\s*NEXT_PUBLIC_SITE_URL\s*=\s*(\S+)/m)?.[1];
+  }
+  return new URL(url ?? "https://vispecapital.com").host;
+}
+const host = siteHost();
+const bareHost = host.replace(/^www\./, "");
+add(
+  `# Domínio oficial: ${host}.`,
+  host.startsWith("www.")
+    ? `RewriteCond %{HTTP_HOST} ^${re(bareHost)}$ [NC]`
+    : `RewriteCond %{HTTP_HOST} ^www\\.${re(bareHost)}$ [NC]`,
+  `RewriteRule ^ https://${host}%{REQUEST_URI} [L,R=301]`,
 );
 
 add(

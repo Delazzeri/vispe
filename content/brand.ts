@@ -4,7 +4,7 @@
  * Domínio oficial (canonical, sitemap, Open Graph, JSON-LD). Vem de
  * NEXT_PUBLIC_SITE_URL no build, para trocar de domínio sem mexer no código.
  */
-const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.vispe.com.br").replace(/\/+$/, "");
+const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://vispecapital.com").replace(/\/+$/, "");
 
 export const brand = {
   name: "Vispe Capital",

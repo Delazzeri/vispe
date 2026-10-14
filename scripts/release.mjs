@@ -32,7 +32,7 @@ console.log("\n1. Configuração (.env.local)");
 const env = readEnv();
 
 if (env.NEXT_PUBLIC_SITE_URL) ok(`Domínio: ${env.NEXT_PUBLIC_SITE_URL}`);
-else warn("NEXT_PUBLIC_SITE_URL vazio: canonical e sitemap vão usar https://www.vispe.com.br.");
+else warn("NEXT_PUBLIC_SITE_URL vazio: canonical e sitemap vão usar o padrão do código (https://vispecapital.com).");
 
 if (env.NEXT_PUBLIC_FORMS_ENDPOINT) ok("Formulários: endpoint do Google Sheets configurado.");
 else warn("NEXT_PUBLIC_FORMS_ENDPOINT vazio: os formulários vão mostrar 'envio sendo configurado'.");
