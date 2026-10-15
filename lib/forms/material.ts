@@ -1,4 +1,4 @@
-import { getMaterial, getMaterialsUi } from "@/content/materials";
+import { getMaterialsUi } from "@/content/materials";
 import { resolveLocale } from "@/i18n/routing";
 import { formValues, submitToSheet } from "./submit";
 import { isEmail, isPhone, text } from "./validate";
@@ -32,7 +32,8 @@ export async function requestMaterial(formData: FormData): Promise<MaterialState
   const oneOf = (options: readonly string[], key: string) => options.includes(text(formData, key));
 
   const errors: Partial<Record<MaterialField, string>> = {};
-  if (!getMaterial(text(formData, "material"))) errors.material = msg.material;
+  // A existência do material é conferida no Apps Script (busca no Supabase ao enviar o link).
+  if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(text(formData, "material"))) errors.material = msg.material;
   if (text(formData, "name").length < 3) errors.name = msg.required;
   if (!isPhone(text(formData, "phone"))) errors.phone = msg.phone;
   if (!isEmail(text(formData, "email"))) errors.email = msg.email;
@@ -45,8 +46,6 @@ export async function requestMaterial(formData: FormData): Promise<MaterialState
 
   if (Object.keys(errors).length > 0) return { status: "invalid", errors };
 
-  // TODO(integration): enviar o material por e-mail (como o site atual) — o
-  // Apps Script pode mandar o link do arquivo quando os PDFs estiverem no Drive.
   const values = formValues(formData, ["website"]);
   values.whatsapp = formData.get("whatsapp") === "on" ? "sim" : "não";
   return (await submitToSheet("materiais", values)) === "sent" ? { status: "success" } : { status: "unavailable" };

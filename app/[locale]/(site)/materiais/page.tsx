@@ -1,7 +1,8 @@
 import { setRequestLocale } from "next-intl/server";
 import { resolveLocale } from "@/i18n/routing";
-import { MaterialCard } from "@/components/ui/material-card";
-import { getMaterialsUi, materials } from "@/content/materials";
+import { MaterialList } from "@/components/materials/material-list";
+import { getMaterialsUi } from "@/content/materials";
+import { listMaterials } from "@/lib/materials/source";
 import { getSite } from "@/content/site";
 import { localizePath } from "@/i18n/href";
 import { breadcrumbJsonLd, buildMetadata } from "@/lib/seo";
@@ -16,11 +17,11 @@ export async function generateMetadata({ params }: PageProps<"/[locale]/materiai
   });
 }
 
-/** Catálogo de materiais gratuitos: cada card leva à LP do material, com o formulário. */
+/** Catálogo de materiais gratuitos (build + atualização no navegador): cada card leva à página do material. */
 export default async function MateriaisPage({ params }: PageProps<"/[locale]/materiais">) {
   const locale = resolveLocale((await params).locale);
   setRequestLocale(locale);
-  const { hero, card } = getMaterialsUi(locale);
+  const { hero, card, page } = getMaterialsUi(locale);
   const { ui } = getSite(locale);
 
   return (
@@ -48,13 +49,9 @@ export default async function MateriaisPage({ params }: PageProps<"/[locale]/mat
         <p className="mt-6 text-balance text-base leading-7 text-fg-muted md:text-lg">{hero.description}</p>
       </div>
 
-      <ul className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-        {materials.map((material) => (
-          <li key={material.slug}>
-            <MaterialCard material={material} cta={card.cta} />
-          </li>
-        ))}
-      </ul>
+      <div className="mt-14">
+        <MaterialList initial={await listMaterials()} cta={card.cta} emptyLabel={page.empty} />
+      </div>
     </section>
   );
 }

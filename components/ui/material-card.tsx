@@ -1,11 +1,11 @@
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import { LocaleLink as Link } from "@/components/ui/locale-link";
-import type { Material } from "@/content/materials";
+import type { MaterialItem } from "@/lib/materials/types";
 import { cn } from "@/lib/cn";
 
 type MaterialCardProps = {
-  material: Material;
+  material: MaterialItem;
   cta: string;
   /** Nível do título (h2 no catálogo, h3 em "Outros materiais"). */
   headingLevel?: "h2" | "h3";
@@ -23,14 +23,20 @@ export function MaterialCard({ material, cta, headingLevel = "h2", className }: 
         className,
       )}
     >
-      <Image
-        src={material.cover.src}
-        alt=""
-        width={material.cover.width}
-        height={material.cover.height}
-        sizes="(min-width: 1024px) 360px, (min-width: 640px) 50vw, 100vw"
-        className="h-auto w-full"
-      />
+      {material.cover ? (
+        <div className="relative aspect-[842/595] overflow-hidden">
+          <Image
+            src={material.cover.src}
+            alt={material.cover.alt}
+            fill
+            sizes="(min-width: 1024px) 360px, (min-width: 640px) 50vw, 100vw"
+            className="object-cover"
+          />
+        </div>
+      ) : (
+        // Sem capa no admin: degradê da marca.
+        <div aria-hidden className="aspect-[842/595] bg-gradient-to-br from-accent-soft to-brand" />
+      )}
       <div className="flex flex-1 flex-col p-6">
         <span className="self-start rounded-md bg-ink px-2 py-1 text-xs font-semibold text-paper">{material.type}</span>
         <Heading className="mt-4 text-lg font-semibold leading-snug text-fg">{material.title}</Heading>

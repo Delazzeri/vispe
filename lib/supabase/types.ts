@@ -1,4 +1,4 @@
-// Tipos do banco escritos à mão a partir de supabase/migrations (0001–0004).
+// Tipos do banco escritos à mão a partir de supabase/migrations (0001–0006).
 // Depois de criar o projeto, regenerar com:
 //   supabase gen types typescript --project-id <ref> > lib/supabase/types.ts
 
@@ -27,6 +27,34 @@ type ArticleRow = {
   updated_at: string;
 };
 
+export type MaterialStatus = "draft" | "published";
+
+type MaterialRow = {
+  id: string;
+  slug: string;
+  type: string;
+  title: string;
+  tagline: string;
+  headline: string | null;
+  description_md: string;
+  description_json: Json | null;
+  cover_image_url: string | null;
+  cover_image_alt: string | null;
+  image_url: string | null;
+  /** Caminho no bucket privado material-files (só staff e a Edge Function leem). */
+  file_path: string | null;
+  file_name: string | null;
+  file_size: number | null;
+  meta_title: string | null;
+  meta_description: string | null;
+  faq: Json | null;
+  status: MaterialStatus;
+  sort_order: number;
+  published_at: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
 type ProfileRow = {
   id: string;
   full_name: string | null;
@@ -41,6 +69,12 @@ export type Database = {
         Row: ArticleRow;
         Insert: Partial<Omit<ArticleRow, "slug" | "title">> & Pick<ArticleRow, "slug" | "title">;
         Update: Partial<ArticleRow>;
+        Relationships: [];
+      };
+      materials: {
+        Row: MaterialRow;
+        Insert: Partial<Omit<MaterialRow, "slug" | "title">> & Pick<MaterialRow, "slug" | "title">;
+        Update: Partial<MaterialRow>;
         Relationships: [];
       };
       profiles: {
@@ -58,3 +92,4 @@ export type Database = {
 };
 
 export type ArticleRecord = ArticleRow;
+export type MaterialRecord = MaterialRow;

@@ -6,6 +6,7 @@
 //   /sobre/            → out/pt-BR/sobre/index.html  (pt na raiz)
 //   /en/about/         → out/en-US/sobre/index.html  (inglês em /en, caminhos traduzidos)
 //   /blog/<novo>/      → out/pt-BR/blog/post/index.html (post publicado depois do build)
+//   /materiais/<novo>/ → out/pt-BR/materiais/item/index.html (idem para materiais)
 // e manda para /en quem chega com o navegador em outro idioma.
 //
 // As rotas vêm de i18n/routing.ts (mesma fonte do site), então uma página nova
@@ -143,6 +144,13 @@ add(
   `RewriteRule ^(.+)$ /${enPrefix}/$1 [L,R=302]`,
 );
 
+// Seções publicadas pelo admin: item novo (sem HTML do build) abre pela página única,
+// que busca no Supabase pelo navegador. `page` é o slug reservado dessa página.
+const liveSections = [
+  { internal: "blog", page: "post", label: "posts do blog" },
+  { internal: "materiais", page: "item", label: "materiais gratuitos" },
+];
+
 for (const [prefix, folder, label] of [
   [`${enPrefix}/`, "en-US", "Inglês"],
   ["", "pt-BR", "Português (raiz)"],
@@ -153,11 +161,17 @@ for (const [prefix, folder, label] of [
         [...new Set(translated.map(({ internal, en }) => `RewriteRule ^${enPrefix}/${re(en)}(/.*)?$ en-US/${internal}$1 [L]`))]
       : [];
   add(
-    `# ${label}: posts do blog — HTML do build se existir; senão, a página única que busca no Supabase.`,
-    `RewriteCond %{DOCUMENT_ROOT}/${folder}/blog/$1/index.html -f`,
-    `RewriteRule ^${prefix}blog/([^/]+)/$ ${folder}/blog/$1/index.html [L]`,
-    `RewriteCond %{DOCUMENT_ROOT}/${folder}/blog/$1/index.html !-f`,
-    `RewriteRule ^${prefix}blog/(?!post/)([^/]+)/$ ${folder}/blog/post/index.html [L]`,
+    ...liveSections.flatMap(({ internal, page, label: what }) => {
+      const target = routing.pathnames[`/${internal}`];
+      const path = strip(folder === "en-US" && typeof target !== "string" ? target["en-US"] : `/${internal}`);
+      return [
+        `# ${label}: ${what} — HTML do build se existir; senão, a página única que busca no Supabase.`,
+        `RewriteCond %{DOCUMENT_ROOT}/${folder}/${internal}/$1/index.html -f`,
+        `RewriteRule ^${prefix}${re(path)}/([^/]+)/$ ${folder}/${internal}/$1/index.html [L]`,
+        `RewriteCond %{DOCUMENT_ROOT}/${folder}/${internal}/$1/index.html !-f`,
+        `RewriteRule ^${prefix}${re(path)}/(?!${page}/)([^/]+)/$ ${folder}/${internal}/${page}/index.html [L]`,
+      ];
+    }),
     ...(routes.length ? [`# ${label}: caminhos traduzidos → pastas internas.`, ...routes] : []),
     `# ${label}: demais caminhos (iguais nos dois idiomas, inclusive os payloads da navegação).`,
     folder === "en-US" ? `RewriteRule ^${enPrefix}/?$ en-US/ [L]` : "RewriteRule ^$ pt-BR/ [L]",

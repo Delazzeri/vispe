@@ -13,16 +13,19 @@ export const materialsUi = {
   page: {
     back: "Materiais gratuitos",
     cta: "Quero receber o material",
-    featuresTitle: "O que você vai encontrar",
-    usageEyebrow: "Como usar",
     faqTitle: "Dúvidas",
     moreTitle: "Outros materiais gratuitos",
+    loading: "Carregando material…",
+    notFoundTitle: "Material não encontrado",
+    notFoundText: "O link pode ter mudado ou o material saiu do ar. Veja os outros materiais gratuitos.",
+    empty: "Nenhum material publicado ainda.",
     // Exibido nas versões em outro idioma (o conteúdo das LPs é só em português).
     portugueseOnly: "",
   },
 
   form: {
     title: "Receba o material gratuitamente",
+    call: "Preencha o formulário e receba o material no seu e-mail.",
     fields: {
       name: "Nome",
       phone: "WhatsApp",

@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 import { listArticles } from "@/lib/blog/source";
-import { materials } from "@/content/materials";
+import { listMaterials } from "@/lib/materials/source";
 import { brand } from "@/content/brand";
 import { localizePath } from "@/i18n/href";
 import { defaultLocale, locales } from "@/i18n/routing";
@@ -45,7 +45,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }));
 
   // LPs dos materiais: conteúdo só em português, como os artigos.
-  const materialRoutes: MetadataRoute.Sitemap = materials.map((material) => ({
+  const materialRoutes: MetadataRoute.Sitemap = (await listMaterials()).map((material) => ({
     url: url(localizePath(`/materiais/${material.slug}`, defaultLocale)),
     changeFrequency: "monthly",
     priority: 0.6,

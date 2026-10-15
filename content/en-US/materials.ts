@@ -16,15 +16,18 @@ export const materialsUi: Widen<typeof ptBR> = {
   page: {
     back: "Free materials",
     cta: "Get the material",
-    featuresTitle: "What you'll find",
-    usageEyebrow: "How to use it",
     faqTitle: "Questions",
     moreTitle: "More free materials",
+    loading: "Loading material…",
+    notFoundTitle: "Material not found",
+    notFoundText: "The link may have changed or the material was taken down. See the other free materials.",
+    empty: "No materials published yet.",
     portugueseOnly: "This material is available in Portuguese only.",
   },
 
   form: {
     title: "Get the material for free",
+    call: "Fill in the form and get the material in your email.",
     fields: {
       name: "Name",
       phone: "WhatsApp",

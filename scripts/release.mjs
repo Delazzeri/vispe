@@ -49,6 +49,12 @@ if (!supabaseUrl || !supabaseKey) {
     });
     if (response.ok) ok("Supabase: conectado, tabela articles acessível.");
     else warn(`Supabase respondeu ${response.status}: rode as migrations (supabase/README.md). O build usará os artigos locais.`);
+    const materials = await fetch(`${supabaseUrl}/rest/v1/materials?select=slug&limit=1`, {
+      headers: { apikey: supabaseKey, Authorization: `Bearer ${supabaseKey}` },
+      signal: AbortSignal.timeout(10_000),
+    });
+    if (materials.ok) ok("Supabase: tabela materials acessível.");
+    else warn("Tabela materials ainda não existe: rode 0006 e 0007 (supabase/README.md). Os materiais virão de content/materials-legacy.ts.");
   } catch {
     warn("Supabase não responde (projeto inexistente ou pausado?): o build usará os artigos de content/blog.ts.");
   }
