@@ -1,6 +1,7 @@
 // Supabase Edge Function "seo-assistant" (Deno): sugere título para o Google,
 // descrição, resumo, slug e uma diagramação do artigo com foco em SEO, usando o
-// Gemini. Roda no servidor do Supabase para a chave do Gemini nunca ir para o
+// Gemini; com { task: "faq" }, gera as perguntas frequentes do artigo.
+// Roda no servidor do Supabase para a chave do Gemini nunca ir para o
 // site (que é estático); só atende quem está logado no admin E é staff.
 //
 // Publicar (painel do Supabase, sem CLI): Edge Functions → Deploy a new function
@@ -51,6 +52,30 @@ const schema = {
   required: ["focusKeyword", "metaTitle", "metaDescription", "excerpt", "slug", "contentMarkdown", "notes"],
 };
 
+const FAQ_SYSTEM = `Você é editor de SEO do blog da Vispe Capital (consultoria financeira para PMEs no Brasil). Com base SOMENTE no artigo enviado, escreva perguntas frequentes para o fim do artigo, que também viram dados estruturados FAQPage para o Google.
+
+Regras:
+- De 4 a 6 perguntas que um empresário faria sobre o tema, em português do Brasil, como as do "As pessoas também perguntam" do Google.
+- Cada resposta com 2 a 4 frases, direta, respondendo logo na primeira frase.
+- Use apenas informações que estão no artigo; nunca invente números, prazos, leis, clientes ou dados.
+- Não repita a mesma pergunta com outras palavras; cubra pontos diferentes do texto.
+- Sem Markdown, links ou HTML nas respostas.`;
+
+const faqSchema = {
+  type: "OBJECT",
+  properties: {
+    faq: {
+      type: "ARRAY",
+      items: {
+        type: "OBJECT",
+        properties: { question: { type: "STRING" }, answer: { type: "STRING" } },
+        required: ["question", "answer"],
+      },
+    },
+  },
+  required: ["faq"],
+};
+
 const slugify = (text: string) =>
   text
     .normalize("NFD")
@@ -86,10 +111,10 @@ Deno.serve(async (req) => {
     const body = await req.json();
     const title = text(body.title);
     const content = text(body.content);
-    if (!title || content.length < 200) return json({ error: "Escreva o título e ao menos alguns parágrafos antes de otimizar." }, 400);
+    if (!title || content.length < 200) return json({ error: "Escreva o título e ao menos alguns parágrafos antes de usar o assistente." }, 400);
     if (content.length > MAX_CONTENT) return json({ error: "Artigo longo demais para o assistente (máx. ~60 mil caracteres)." }, 400);
 
-    const prompt = [
+    const articleContext = [
       `Título do artigo: ${title}`,
       `Categoria: ${text(body.category) || "(não informada)"}`,
       `Serviços relacionados: ${Array.isArray(body.tags) && body.tags.length ? body.tags.join(", ") : "(nenhum)"}`,
@@ -99,13 +124,19 @@ Deno.serve(async (req) => {
       content,
     ].join("\n");
 
+    // Tarefa "faq": só as perguntas frequentes; padrão: sugestões de SEO completas.
+    const task = body.task === "faq" ? "faq" : "seo";
     const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
       method: "POST",
       headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey },
       body: JSON.stringify({
-        systemInstruction: { parts: [{ text: SYSTEM }] },
-        contents: [{ role: "user", parts: [{ text: prompt }] }],
-        generationConfig: { responseMimeType: "application/json", responseSchema: schema, temperature: 0.4 },
+        systemInstruction: { parts: [{ text: task === "faq" ? FAQ_SYSTEM : SYSTEM }] },
+        contents: [{ role: "user", parts: [{ text: articleContext }] }],
+        generationConfig: {
+          responseMimeType: "application/json",
+          responseSchema: task === "faq" ? faqSchema : schema,
+          temperature: 0.4,
+        },
       }),
     });
     if (!response.ok) {
@@ -118,6 +149,16 @@ Deno.serve(async (req) => {
       .map((part: { text?: string }) => part.text ?? "")
       .join("");
     const data = JSON.parse(raw);
+
+    if (task === "faq") {
+      const faq = Array.isArray(data.faq)
+        ? data.faq
+            .map((item: { question?: unknown; answer?: unknown }) => ({ question: text(item.question), answer: text(item.answer) }))
+            .filter((item: { question: string; answer: string }) => item.question && item.answer)
+            .slice(0, 8)
+        : [];
+      return json({ faq });
+    }
 
     return json({
       focusKeyword: text(data.focusKeyword),

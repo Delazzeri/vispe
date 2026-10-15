@@ -77,7 +77,7 @@ export function ArticleView({ article, locale, preview }: ArticleViewProps) {
 
       <div className="article-body mt-12" dangerouslySetInnerHTML={{ __html: renderMarkdown(article.bodyMd, locale) }} />
 
-      {article.faq && (
+      {article.faq && article.faq.length > 0 && (
         <section aria-labelledby="post-faq-heading" className="mt-10">
           <h2 id="post-faq-heading" className="text-2xl font-bold tracking-tight text-ink">
             {ui.blogFaqTitle}

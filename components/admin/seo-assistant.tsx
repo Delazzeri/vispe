@@ -32,11 +32,15 @@ type SeoAssistantProps = {
   onApply: (patch: SeoPatch) => void;
 };
 
-async function requestSuggestion(input: Omit<SeoAssistantProps, "published" | "current" | "onApply">) {
+/** Dados do artigo enviados ao assistente (Edge Function seo-assistant). */
+export type ArticleInput = { title: string; excerpt: string; markdown: string; category: string; tags: readonly string[] };
+
+/** Chama a Edge Function seo-assistant e traduz os erros para mensagens do admin. */
+async function invokeAssistant<T>(input: ArticleInput, task?: "faq"): Promise<T> {
   const supabase = getSupabase();
   if (!supabase) throw new Error("Supabase não configurado.");
-  const { data, error } = await supabase.functions.invoke<SeoSuggestion>("seo-assistant", {
-    body: { title: input.title, excerpt: input.excerpt, content: input.markdown, category: input.category, tags: input.tags },
+  const { data, error } = await supabase.functions.invoke<T>("seo-assistant", {
+    body: { task, title: input.title, excerpt: input.excerpt, content: input.markdown, category: input.category, tags: input.tags },
   });
   if (error) {
     if (error instanceof FunctionsHttpError) {
@@ -50,6 +54,15 @@ async function requestSuggestion(input: Omit<SeoAssistantProps, "published" | "c
   }
   if (!data) throw new Error("O assistente não devolveu sugestões.");
   return data;
+}
+
+const requestSuggestion = (input: ArticleInput) => invokeAssistant<SeoSuggestion>(input);
+
+/** Perguntas frequentes geradas a partir do conteúdo do artigo (Gemini, tarefa "faq"). */
+export async function generateFaq(input: ArticleInput): Promise<{ question: string; answer: string }[]> {
+  const { faq } = await invokeAssistant<{ faq: { question: string; answer: string }[] }>(input, "faq");
+  if (!faq.length) throw new Error("O assistente não conseguiu gerar perguntas para este texto.");
+  return faq;
 }
 
 function Row({

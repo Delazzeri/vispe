@@ -22,10 +22,13 @@ export function FaqEditor({
   items,
   onChange,
   description,
+  actions,
 }: {
   items: readonly FaqDraft[];
   onChange: (items: FaqDraft[]) => void;
   description: string;
+  /** Ações extras no topo da lista (ex.: gerar com IA). */
+  actions?: ReactNode;
 }) {
   const edit = (index: number, patch: Partial<FaqDraft>) =>
     onChange(items.map((item, i) => (i === index ? { ...item, ...patch } : item)));
@@ -34,6 +37,7 @@ export function FaqEditor({
     <fieldset className="rounded-2xl border border-border bg-surface p-5">
       <legend className="px-1 text-sm font-semibold text-fg">Perguntas frequentes (opcional)</legend>
       <p className="text-xs text-fg-muted">{description}</p>
+      {actions && <div className="mt-4 flex flex-wrap items-center gap-3">{actions}</div>}
       <div className="mt-4 space-y-4">
         {items.map((item, i) => (
           <div key={i} className="rounded-xl border border-border p-4">

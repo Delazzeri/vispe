@@ -14,7 +14,7 @@ import { adminInput, adminPrimary, adminSecondary } from "./admin-shell";
 import { statusLabel } from "./article-list";
 import { FaqEditor, Field, filledFaq, type FaqDraft } from "./form-parts";
 import { RichTextEditor, type RichTextValue } from "./rich-text-editor";
-import { SeoAssistant, type SeoPatch } from "./seo-assistant";
+import { generateFaq, SeoAssistant, type SeoPatch } from "./seo-assistant";
 
 type Draft = {
   id?: string;
@@ -34,6 +34,8 @@ type Draft = {
   /** datetime-local (horário de Brasília do navegador). */
   publishedAt: string;
   faq: FaqDraft[];
+  /** FAQ no fim do artigo (e JSON-LD FAQPage). Desligado, nada é salvo nem publicado. */
+  faqEnabled: boolean;
   markdown: string;
   json: JSONContent | null;
 };
@@ -53,6 +55,7 @@ const emptyDraft: Draft = {
   status: "draft",
   publishedAt: "",
   faq: [],
+  faqEnabled: false,
   markdown: "",
   json: null,
 };
@@ -91,6 +94,7 @@ function rowToDraft(row: ArticleRecord): Draft {
     status: row.status,
     publishedAt: toLocalInput(row.published_at),
     faq,
+    faqEnabled: faq.length > 0,
     markdown: row.content_md,
     json: (row.content_json as JSONContent | null) ?? null,
   };
@@ -107,7 +111,7 @@ function draftToArticle(draft: Draft): Article {
     author: draft.author && draft.author !== "Vispe Capital" ? draft.author : undefined,
     cover: draft.coverUrl ? { src: draft.coverUrl, alt: draft.coverAlt || draft.title } : undefined,
     bodyMd: draft.markdown,
-    faq: filledFaq(draft.faq),
+    faq: draft.faqEnabled ? filledFaq(draft.faq) : undefined,
   };
 }
 
@@ -137,6 +141,8 @@ export function ArticleEditor() {
   const [savedAt, setSavedAt] = useState<Date>();
   const [dirty, setDirty] = useState(false);
   const [preview, setPreview] = useState(false);
+  const [generatingFaq, setGeneratingFaq] = useState(false);
+  const [faqError, setFaqError] = useState<string>();
   // Muda quando o conteúdo é trocado de fora (assistente de SEO): recria o editor com o novo texto.
   const [editorVersion, setEditorVersion] = useState(0);
   const pillars = getSite("pt-BR").servicePillars;
@@ -192,6 +198,27 @@ export function ArticleEditor() {
     if (markdown !== undefined) setEditorVersion((version) => version + 1);
   }
 
+  async function fillFaqWithAi() {
+    if (!draft) return;
+    if (filledFaq(draft.faq).length && !window.confirm("Substituir as perguntas atuais pelas geradas?")) return;
+    setGeneratingFaq(true);
+    setFaqError(undefined);
+    try {
+      const faq = await generateFaq({
+        title: draft.title,
+        excerpt: draft.excerpt,
+        markdown: draft.markdown,
+        category: draft.category,
+        tags: draft.tags,
+      });
+      update({ faq });
+    } catch (problem) {
+      setFaqError(problem instanceof Error ? problem.message : String(problem));
+    } finally {
+      setGeneratingFaq(false);
+    }
+  }
+
   async function uploadCover(file: File) {
     const supabase = getSupabase();
     if (!supabase || !draft) return;
@@ -217,7 +244,7 @@ export function ArticleEditor() {
     // Publicado sem data: agora. Rascunho guarda a data escolhida (ou nenhuma).
     const publishedAt =
       draft.publishedAt ? new Date(draft.publishedAt).toISOString() : draft.status === "published" ? new Date().toISOString() : null;
-    const faq = filledFaq(draft.faq);
+    const faq = draft.faqEnabled ? filledFaq(draft.faq) : [];
     const record: Database["public"]["Tables"]["articles"]["Update"] = {
       title: draft.title.trim(),
       slug: draft.slug,
@@ -331,11 +358,41 @@ export function ArticleEditor() {
               </div>
             </div>
 
-            <FaqEditor
-              items={draft.faq}
-              onChange={(faq) => update({ faq })}
-              description="Aparecem no fim do artigo e no Google (FAQ)."
-            />
+            <div className="space-y-3">
+              <label className="flex cursor-pointer items-start gap-3 rounded-2xl border border-border bg-surface p-4">
+                <input
+                  type="checkbox"
+                  checked={draft.faqEnabled}
+                  onChange={(e) => update({ faqEnabled: e.target.checked })}
+                  className="mt-0.5 h-4 w-4 accent-ink"
+                />
+                <span>
+                  <span className="block text-sm font-semibold text-fg">Incluir perguntas frequentes neste artigo</span>
+                  <span className="block text-xs text-fg-muted">
+                    Aparecem no fim do artigo e no Google (FAQ). Desligado, nada é publicado (as perguntas digitadas ficam só aqui).
+                  </span>
+                </span>
+              </label>
+              {draft.faqEnabled && (
+                <FaqEditor
+                  items={draft.faq}
+                  onChange={(faq) => update({ faq })}
+                  description="Escreva à mão ou gere a partir do texto do artigo e revise."
+                  actions={
+                    <>
+                      <button type="button" onClick={fillFaqWithAi} disabled={generatingFaq} className={adminPrimary}>
+                        {generatingFaq ? "Gerando perguntas…" : "Gerar perguntas com IA"}
+                      </button>
+                      {faqError && (
+                        <span role="alert" className="text-sm font-medium text-brand-dark">
+                          {faqError}
+                        </span>
+                      )}
+                    </>
+                  }
+                />
+              )}
+            </div>
           </div>
 
           <aside className="space-y-5 lg:col-span-4">
