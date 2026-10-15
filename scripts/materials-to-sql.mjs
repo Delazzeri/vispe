@@ -16,6 +16,9 @@ const text = (value) => {
   return `${tag}${s}${tag}`;
 };
 
+// Colunas obrigatórias (not null): texto vazio em vez de null.
+const required = (value) => (value ? text(value) : "''");
+
 const rows = legacyMaterials.map((legacy, index) => {
   const item = legacyToItem(legacy);
   const faq = item.faq ? `${text(JSON.stringify(item.faq))}::jsonb` : "null";
@@ -23,9 +26,9 @@ const rows = legacyMaterials.map((legacy, index) => {
   ${text(item.slug)},
   ${text(item.type)},
   ${text(item.title)},
-  ${text(item.tagline)},
+  ${required(item.tagline)},
   ${text(item.headline)},
-  ${text(item.descriptionMd)},
+  ${required(item.descriptionMd)},
   ${text(item.cover?.src)},
   ${text(`Capa: ${item.title}`)},
   ${text(item.image?.src)},
