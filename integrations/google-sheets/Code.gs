@@ -1,33 +1,37 @@
 /**
  * Recebe os formulários do site da Vispe Capital e grava numa planilha Google,
- * uma aba por formulário (o site envia de lib/forms/submit.ts).
+ * uma aba por formulário (o site envia de lib/forms/submit.ts). No formulário
+ * de material gratuito, também envia por e-mail um link de download que expira
+ * (gerado pela Edge Function material-link do Supabase).
  *
  * Instalação (uma vez):
  *  1. Crie a planilha. As abas "diagnostico", "franquia", "materiais" e
  *     "carreiras" são criadas sozinhas, com cabeçalho, no primeiro envio.
  *  2. Extensões → Apps Script → cole este arquivo inteiro em Code.gs.
- *  3. Para os currículos: crie uma pasta no Drive (só a Vispe com acesso) e
- *     cole o ID dela (o trecho da URL depois de /folders/) em RESUME_FOLDER_ID.
+ *  3. Configurações do projeto (engrenagem) → Propriedades do script → adicione:
+ *       RESUME_FOLDER_ID      ID da pasta do Drive dos currículos (trecho da URL
+ *                             depois de /folders/; só a Vispe com acesso)
+ *       MATERIAL_LINK_URL     https://<projeto>.supabase.co/functions/v1/material-link
+ *       MATERIAL_LINK_SECRET  o mesmo segredo cadastrado na função, no Supabase
+ *     Sem as duas últimas, o material só é registrado na planilha (sem e-mail).
  *  4. Implantar → Nova implantação → Tipo: App da Web.
  *       Executar como: Eu · Quem pode acessar: Qualquer pessoa.
- *     Autorize o acesso pedido (planilha, Drive e e-mail).
+ *     Autorize o acesso pedido (planilha, Drive, e-mail e conexões externas).
  *  5. Copie a URL do App da Web (termina em /exec) para NEXT_PUBLIC_FORMS_ENDPOINT
  *     no .env.local e gere o build do site de novo.
  * Mudou este código? Implantar → Gerenciar implantações → editar → Nova versão
  * (a URL continua a mesma).
  */
 
-/** ID da pasta do Drive onde os currículos em PDF são salvos. */
-const RESUME_FOLDER_ID = "1MosWWTHX7vJPmOYfZ-e3dzOM9VxjWKH0";
-
-/**
- * Opcional: link de cada material gratuito (slug → URL do arquivo no Drive, com
- * acesso "qualquer pessoa com o link"). Com o link, quem preenche recebe o
- * material por e-mail na hora; sem ele, só a linha na planilha.
- */
-const MATERIAL_LINKS = {
-  // "checklist-reforma-tributaria": "https://drive.google.com/file/d/.../view",
-};
+/** Configuração nas propriedades do script (fora do código: nada de IDs/segredos no Git). */
+function config() {
+  const props = PropertiesService.getScriptProperties();
+  return {
+    resumeFolderId: props.getProperty("RESUME_FOLDER_ID") || "",
+    materialLinkUrl: props.getProperty("MATERIAL_LINK_URL") || "",
+    materialLinkSecret: props.getProperty("MATERIAL_LINK_SECRET") || "",
+  };
+}
 
 /** Colunas de cada aba: [campo enviado pelo site, título da coluna]. */
 const SHEETS = {
@@ -87,24 +91,29 @@ function doPost(e) {
     const values = body.values || {};
     if (values.consent !== "on") return json({ ok: false, error: "sem consentimento" });
 
+    // Material: gera o link e manda o e-mail antes de gravar, para a linha já
+    // registrar o título e o resultado do envio.
+    const delivery = body.sheet === "materiais" ? sendMaterial(values) : null;
+
     const lock = LockService.getScriptLock();
     lock.waitLock(20000);
     try {
       const sheet = sheetFor(body.sheet, columns);
       const extra = [];
       if (body.sheet === "carreiras") extra.push(saveResume(body.file, values.name));
+      const after = delivery ? [clean(delivery.title), clean(delivery.status)] : [];
       sheet.appendRow([
         new Date(),
         ...columns.map(([key]) => clean(values[key])),
         ...extra,
         clean(values.locale),
         clean(body.page),
+        ...after,
       ]);
     } finally {
       lock.releaseLock();
     }
 
-    if (body.sheet === "materiais") sendMaterial(values);
     return json({ ok: true });
   } catch (error) {
     console.error(error);
@@ -112,18 +121,18 @@ function doPost(e) {
   }
 }
 
-/** Aba do formulário; cria com cabeçalho na primeira vez. */
+/** Aba do formulário, com o cabeçalho atualizado (colunas novas entram no fim). */
 function sheetFor(name, columns) {
   const book = SpreadsheetApp.getActiveSpreadsheet();
-  let sheet = book.getSheetByName(name);
-  if (!sheet) {
-    sheet = book.insertSheet(name);
-    const header = ["Recebido em", ...columns.map(([, title]) => title)];
-    if (name === "carreiras") header.push("Currículo");
-    header.push("Idioma", "Página");
-    sheet.appendRow(header);
+  const sheet = book.getSheetByName(name) || book.insertSheet(name);
+  const header = ["Recebido em", ...columns.map(([, title]) => title)];
+  if (name === "carreiras") header.push("Currículo");
+  header.push("Idioma", "Página");
+  if (name === "materiais") header.push("Título do material", "Envio do link");
+  const current = sheet.getLastColumn() ? sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0] : [];
+  if (current.join("|") !== header.join("|")) {
+    sheet.getRange(1, 1, 1, header.length).setValues([header]).setFontWeight("bold");
     sheet.setFrozenRows(1);
-    sheet.getRange(1, 1, 1, header.length).setFontWeight("bold");
   }
   return sheet;
 }
@@ -139,7 +148,8 @@ function clean(value) {
 
 /** Salva o PDF do candidato no Drive e devolve o link (só a Vispe acessa a pasta). */
 function saveResume(file, name) {
-  if (!file || !file.base64 || !RESUME_FOLDER_ID) return "";
+  const folderId = config().resumeFolderId;
+  if (!file || !file.base64 || !folderId) return "";
   const bytes = Utilities.base64Decode(file.base64);
   if (bytes.length > MAX_RESUME_BYTES) throw new Error("currículo acima de 4 MB");
   // Assinatura de PDF (%PDF-), não só a extensão.
@@ -149,22 +159,48 @@ function saveResume(file, name) {
   const stamp = Utilities.formatDate(new Date(), "America/Sao_Paulo", "yyyy-MM-dd HHmm");
   const safeName = String(name || "candidato").replace(/[^\p{L}\p{N} -]/gu, "").slice(0, 60);
   const blob = Utilities.newBlob(bytes, "application/pdf", `${stamp} - ${safeName}.pdf`);
-  return DriveApp.getFolderById(RESUME_FOLDER_ID).createFile(blob).getUrl();
+  return DriveApp.getFolderById(folderId).createFile(blob).getUrl();
 }
 
-/** Envia o link do material por e-mail, se configurado em MATERIAL_LINKS. */
+/**
+ * Pede à Edge Function material-link um link de download que expira e envia por
+ * e-mail. Devolve o título do material e o resultado, que vão para a planilha.
+ */
 function sendMaterial(values) {
-  const link = MATERIAL_LINKS[values.material];
-  if (!link || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email || "")) return;
-  MailApp.sendEmail({
-    to: values.email,
-    subject: "Seu material gratuito da Vispe Capital",
-    htmlBody:
-      `<p>Olá, ${clean(values.name).replace(/[<>&]/g, "")}!</p>` +
-      `<p>Obrigado pelo interesse. Seu material está aqui: <a href="${link}">baixar o material</a>.</p>` +
-      "<p>Equipe Vispe Capital</p>",
-    name: "Vispe Capital",
-  });
+  const { materialLinkUrl, materialLinkSecret } = config();
+  if (!materialLinkUrl || !materialLinkSecret) return { title: "", status: "não configurado (propriedades do script)" };
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email || "")) return { title: "", status: "e-mail inválido" };
+
+  try {
+    const response = UrlFetchApp.fetch(materialLinkUrl, {
+      method: "post",
+      contentType: "application/json",
+      headers: { "x-material-secret": materialLinkSecret },
+      payload: JSON.stringify({ slug: values.material }),
+      muteHttpExceptions: true,
+    });
+    const data = JSON.parse(response.getContentText() || "{}");
+    if (response.getResponseCode() !== 200) return { title: "", status: "erro: " + (data.error || response.getResponseCode()) };
+    if (!data.url) return { title: data.title, status: "sem arquivo no admin — enviar manualmente" };
+
+    const name = clean(values.name).replace(/[<>&"]/g, "");
+    const title = String(data.title).replace(/[<>&"]/g, "");
+    MailApp.sendEmail({
+      to: values.email,
+      subject: "Seu material gratuito: " + data.title,
+      name: "Vispe Capital",
+      htmlBody:
+        "<p>Olá, " + name + "!</p>" +
+        "<p>Obrigado pelo interesse. Seu material <strong>" + title + "</strong> está pronto para baixar:</p>" +
+        '<p><a href="' + data.url + '" style="display:inline-block;padding:12px 20px;background:#000;color:#fff;border-radius:10px;text-decoration:none;font-weight:600">Baixar o material</a></p>' +
+        '<p style="color:#595959;font-size:13px">O link vale por ' + data.expiresInDays + " dias. Depois disso, é só pedir de novo no site.</p>" +
+        "<p>Equipe Vispe Capital</p>",
+    });
+    return { title: data.title, status: "link enviado (" + data.expiresInDays + " dias)" };
+  } catch (error) {
+    console.error(error);
+    return { title: "", status: "erro: " + String(error).slice(0, 120) };
+  }
 }
 
 function json(payload) {

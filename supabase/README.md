@@ -48,6 +48,40 @@ chave do Gemini nunca ir para o site, e só atende quem está logado e é staff.
 4. Pronto: no admin, abra um artigo com título e texto e clique em "Otimizar SEO com IA".
    Erros da função aparecem em Edge Functions → seo-assistant → Logs.
 
+## Materiais gratuitos no admin (arquivo privado + link que expira)
+
+A área **Materiais** do admin publica os materiais de `/materiais` (capa, título,
+resumo, descrição, arquivo). O arquivo fica num bucket **privado**; quem preenche o
+formulário recebe por e-mail um link assinado que expira, gerado pela Edge Function
+`material-link` e enviado pelo Apps Script da planilha.
+
+Projeto que já tem o banco (0001–0005) — uma vez:
+
+1. **Banco:** SQL Editor → New query → cole `supabase/migrations/0006_materials.sql` → Run.
+   Depois, nova query com `supabase/migrations/0007_seed_materials.sql` → Run (os 8
+   materiais atuais, publicados e sem arquivo). Projeto novo: o `setup-completo.sql`
+   já inclui os dois.
+2. **Segredo compartilhado:** gere uma senha longa e aleatória (ex.: no gerenciador de
+   senhas, 40+ caracteres, só letras e números). Ela vai em dois lugares iguais:
+   - Supabase → Edge Functions → Secrets → `MATERIAL_LINK_SECRET` = a senha.
+     Opcional: `MATERIAL_LINK_DAYS` = validade do link em dias (padrão 7, máx. 30).
+   - Apps Script (passo 4).
+3. **Publicar a função:** Edge Functions → Deploy a new function → Via Editor → nome
+   **`material-link`** → cole todo o `supabase/functions/material-link/index.ts` →
+   **desligue "Verify JWT"** (quem chama é o Apps Script, sem login; a proteção é o
+   segredo) → Deploy.
+4. **Apps Script:** cole a versão nova de `integrations/google-sheets/Code.gs` e, em
+   Configurações do projeto → Propriedades do script, adicione:
+   `RESUME_FOLDER_ID` (o ID da pasta dos currículos, que antes ficava no código),
+   `MATERIAL_LINK_URL` = `https://<projeto>.supabase.co/functions/v1/material-link` e
+   `MATERIAL_LINK_SECRET` = a mesma senha do passo 2. Depois: Implantar → Gerenciar
+   implantações → editar → **Nova versão** (autorize "conectar a serviço externo").
+5. **Arquivos:** no admin → Materiais → cada material → "Enviar arquivo". Sem arquivo,
+   o pedido fica na planilha com "sem arquivo no admin — enviar manualmente".
+
+A aba `materiais` da planilha ganha as colunas "Título do material" e "Envio do link"
+(link enviado, sem arquivo ou o erro), para acompanhar cada pedido.
+
 ## No dia a dia
 
 - Publicar no admin já mostra o post no site (página única `/blog/post/`, lida no navegador).

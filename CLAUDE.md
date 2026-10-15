@@ -36,6 +36,8 @@ pnpm lint         # ESLint
 pnpm typecheck    # tsc --noEmit
 pnpm preview      # serve out/ aplicando as regras do out/.htaccess (teste local do deploy)
 pnpm blog:seed    # regenera supabase/migrations/0005_seed_articles.sql a partir de content/blog.ts
+pnpm materials:seed  # regenera supabase/migrations/0007_seed_materials.sql a partir de content/materials-legacy.ts
+pnpm supabase:setup  # junta as migrations em supabase/setup-completo.sql (projeto novo)
 pnpm release      # confere .env.local, gera o build e release/vispe-site-<data>.zip para a Hostinger
 ```
 
@@ -135,5 +137,6 @@ O site é gerado com `output: 'export'` em `out/` e sobe no `public_html`. Não 
 - Idiomas e URLs públicas ficam no `out/.htaccess`, gerado no build por `scripts/generate-htaccess.mjs` a partir de `i18n/routing.ts` (pt na raiz, inglês em `/en` com caminhos traduzidos, redirecionamento pelo idioma do navegador, cookie `vispe_lang` do seletor vence). Página nova: só registrar em `routing.pathnames`.
 - Dados: tudo pelo navegador. Blog/admin via supabase-js com a chave publicável; **a segurança real é a RLS** (`supabase/migrations`), nunca só o front. Formulários: `lib/forms/*` validam no navegador e enviam para o Apps Script (`integrations/google-sheets/Code.gs`), que valida de novo.
 - Blog híbrido: `lib/blog/source.ts` lê os publicados no build (páginas estáticas com SEO completo); post publicado depois do build abre por `/blog/post/` (o `.htaccess` manda para lá) até o próximo build. Slug `post` é reservado.
+- Materiais gratuitos seguem o mesmo modelo: `lib/materials/source.ts` no build, `/materiais/item/` para os publicados depois (slug `item` reservado). O arquivo fica no bucket privado `material-files`; o download só sai por e-mail, com link que expira gerado pela Edge Function `material-link` (chamada pelo Apps Script com segredo compartilhado). O público não tem permissão na coluna `file_path`.
 - Admin em `/admin` (fora de `[locale]`, root layout próprio, `noindex`): rotas estáticas, ids por query string (`/admin/editor/?id=`).
 - Publicar: `pnpm release` (confere a configuração, gera `out/` + `.htaccess` e o .zip); conferir com `pnpm preview`. Originais de mídia ficam em `originais/` (fora de `public/` e do Git).
