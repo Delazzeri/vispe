@@ -83,6 +83,7 @@ export const materialsUi = {
     successHelp: "Não encontrou? Confira também a caixa de spam ou lixo eletrônico. Se não receber,",
     contactWhatsapp: "fale com a gente pelo WhatsApp",
     contactFallback: "fale com a gente",
+    whatsappMessage: 'Olá! Pedi o material "{title}" no site e não recebi o e-mail.',
     unavailable:
       "O envio pelo site ainda está sendo configurado. Enquanto isso, fale com a gente pelas redes da Vispe.",
     errors: {

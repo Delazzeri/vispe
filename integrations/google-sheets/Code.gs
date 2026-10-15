@@ -83,6 +83,26 @@ const SHEETS = {
   ],
 };
 
+/** Textos do e-mail do material, no idioma da página onde a pessoa pediu. */
+const MATERIAL_EMAIL = {
+  "pt-BR": {
+    subject: "Seu material gratuito: ",
+    greeting: "Olá, {name}!",
+    intro: "Obrigado pelo interesse. Seu material <strong>{title}</strong> está pronto para baixar:",
+    button: "Baixar o material",
+    expiry: "O link vale por {days} dias. Depois disso, é só pedir de novo no site.",
+    signature: "Equipe Vispe Capital",
+  },
+  "en-US": {
+    subject: "Your free material: ",
+    greeting: "Hi, {name}!",
+    intro: "Thanks for your interest. Your material <strong>{title}</strong> is ready to download:",
+    button: "Download the material",
+    expiry: "The link is valid for {days} days. After that, just request it again on the website.",
+    signature: "The Vispe Capital team",
+  },
+};
+
 const MAX_FIELD = 2000;
 const MAX_RESUME_BYTES = 4 * 1024 * 1024;
 
@@ -186,18 +206,22 @@ function sendMaterial(values) {
     if (response.getResponseCode() !== 200) return { title: "", status: "erro: " + (data.error || response.getResponseCode()) };
     if (!data.url) return { title: data.title, status: "sem arquivo no admin — enviar manualmente" };
 
-    const name = clean(values.name).replace(/[<>&"]/g, "");
-    const title = String(data.title).replace(/[<>&"]/g, "");
+    const text = MATERIAL_EMAIL[values.locale] || MATERIAL_EMAIL["pt-BR"];
+    const fill = (template) =>
+      template
+        .replace("{name}", clean(values.name).replace(/[<>&"]/g, ""))
+        .replace("{title}", String(data.title).replace(/[<>&"]/g, ""))
+        .replace("{days}", String(data.expiresInDays));
     MailApp.sendEmail({
       to: values.email,
-      subject: "Seu material gratuito: " + data.title,
+      subject: text.subject + data.title,
       name: "Vispe Capital",
       htmlBody:
-        "<p>Olá, " + name + "!</p>" +
-        "<p>Obrigado pelo interesse. Seu material <strong>" + title + "</strong> está pronto para baixar:</p>" +
-        '<p><a href="' + data.url + '" style="display:inline-block;padding:12px 20px;background:#000;color:#fff;border-radius:10px;text-decoration:none;font-weight:600">Baixar o material</a></p>' +
-        '<p style="color:#595959;font-size:13px">O link vale por ' + data.expiresInDays + " dias. Depois disso, é só pedir de novo no site.</p>" +
-        "<p>Equipe Vispe Capital</p>",
+        "<p>" + fill(text.greeting) + "</p>" +
+        "<p>" + fill(text.intro) + "</p>" +
+        '<p><a href="' + data.url + '" style="display:inline-block;padding:12px 20px;background:#000;color:#fff;border-radius:10px;text-decoration:none;font-weight:600">' + text.button + "</a></p>" +
+        '<p style="color:#595959;font-size:13px">' + fill(text.expiry) + "</p>" +
+        "<p>" + text.signature + "</p>",
     });
     return { title: data.title, status: "link enviado (" + data.expiresInDays + " dias)" };
   } catch (error) {

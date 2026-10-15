@@ -6,6 +6,7 @@ import { MaterialCard } from "@/components/ui/material-card";
 import { SocialLinks } from "@/components/ui/social-links";
 import { brand, whatsappLink } from "@/content/brand";
 import { getMaterialsUi } from "@/content/materials";
+import { format } from "@/content/types";
 import { localizeHref } from "@/i18n/href";
 import type { Locale } from "@/i18n/routing";
 import { renderMarkdown } from "@/lib/blog/markdown";
@@ -103,7 +104,7 @@ export function MaterialView({ material, locale, others = [] }: MaterialViewProp
                   contact={
                     brand.social.whatsapp
                       ? {
-                          href: whatsappLink(`Olá! Pedi o material "${material.title}" no site e não recebi o e-mail.`) ?? brand.social.whatsapp,
+                          href: whatsappLink(format(messages.whatsappMessage, { title: material.title })) ?? brand.social.whatsapp,
                           label: messages.contactWhatsapp,
                           external: true,
                         }

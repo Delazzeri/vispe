@@ -79,6 +79,7 @@ export const materialsUi: Widen<typeof ptBR> = {
     successHelp: "Can't find it? Check your spam or junk folder too. If it doesn't arrive,",
     contactWhatsapp: "talk to us on WhatsApp",
     contactFallback: "talk to us",
+    whatsappMessage: 'Hi! I requested the material "{title}" on the website and didn\'t get the email.',
     unavailable: "Sending through the site is still being set up. Meanwhile, reach us on Vispe's social channels.",
     errors: {
       required: "Please fill in this field.",
