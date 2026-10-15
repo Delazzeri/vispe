@@ -87,7 +87,22 @@ export function organizationJsonLd(locale: Locale) {
     url: brand.url,
     description: getSite(locale).tagline,
     // Perfis oficiais: ajudam o Google a associar as redes à marca.
-    sameAs: Object.values(brand.social).filter((url): url is string => Boolean(url)),
+    sameAs: Object.entries(brand.social)
+      .filter(([network]) => network !== "whatsapp")
+      .map(([, url]) => url)
+      .filter((url): url is string => Boolean(url)),
+    // WhatsApp é canal de atendimento, não perfil: entra como contactPoint.
+    ...(brand.social.whatsapp
+      ? {
+          contactPoint: {
+            "@type": "ContactPoint",
+            telephone: "+55-51-9368-2004",
+            contactType: "customer service",
+            availableLanguage: ["Portuguese"],
+            url: brand.social.whatsapp,
+          },
+        }
+      : {}),
   };
 }
 

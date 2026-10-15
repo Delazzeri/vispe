@@ -16,6 +16,7 @@
   --color-paper: #ffffff;
 
   /* Fin 24/7 (produto da Vispe): cores medidas no portal do produto. */
+  --color-whatsapp: #25d366; /* verde oficial do WhatsApp: só no botão flutuante */
   --color-fin: #22c58e; /* verde principal: botões e destaques */
   --color-fin-light: #33d39b; /* início do gradiente do logo */
   --color-fin-fg: #0c1310; /* texto sobre o verde (contraste ~9:1) */

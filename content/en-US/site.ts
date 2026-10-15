@@ -527,6 +527,10 @@ export const site: SiteContent = {
     followText: "More on equity, management and growth on Instagram, LinkedIn, Facebook, YouTube and the Equity Talks podcast on Spotify.",
     widgetAdjust: "Drag sideways to adjust",
     widgetCycle: "Tap to switch",
+    whatsappFloat: {
+      label: "Talk to Vispe on WhatsApp",
+      message: "Hi! I found you on the Vispe Capital website and would like more information.",
+    },
     cookies: {
       title: "We value your privacy",
       description:

@@ -16,7 +16,12 @@ export const brand = {
     // Link do programa sem os parâmetros de rastreio do compartilhamento.
     spotify: "https://open.spotify.com/show/09f6Lx4ckx7sltGudSAu92",
     youtube: "https://www.youtube.com/@vispecapital",
-    // TODO(content): número oficial. Enquanto for undefined, não aparece.
-    whatsapp: undefined as string | undefined,
+    // Número oficial (51) 9368-2004 com o código do Brasil (55), formato do wa.me.
+    whatsapp: "https://wa.me/555193682004" as string | undefined,
   },
 } as const;
+
+/** Link do WhatsApp oficial com uma mensagem já escrita (o visitante só envia). */
+export function whatsappLink(message: string): string | undefined {
+  return brand.social.whatsapp ? `${brand.social.whatsapp}?text=${encodeURIComponent(message)}` : undefined;
+}

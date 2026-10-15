@@ -10,6 +10,7 @@ import { Header } from "@/components/sections/header";
 import { Footer } from "@/components/sections/footer";
 import { listArticles } from "@/lib/blog/source";
 import { CookieConsent } from "@/components/ui/cookie-consent";
+import { WhatsAppButton } from "@/components/ui/whatsapp-button";
 import { LanguageSwitcher } from "@/components/ui/language-switcher";
 import { brand, getSite } from "@/content/site";
 import "../globals.css";
@@ -68,6 +69,7 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
             {children}
           </main>
           <Footer posts={await listArticles()} />
+          <WhatsAppButton labels={getSite(locale).ui.whatsappFloat} />
           <CookieConsent labels={getSite(locale).ui.cookies} />
         </NextIntlClientProvider>
       </body>
