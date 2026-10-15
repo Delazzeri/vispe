@@ -48,16 +48,18 @@ export function LanguageTabs({
   );
 }
 
-/** Selo de idiomas das listas do admin: o português sempre existe; o inglês só com tradução salva. */
-export function LanguageStatus({ translated }: { translated: boolean }) {
+/** Selo de idiomas das listas do admin: PT, EN ou PT/EN; faltando um idioma, fica destacado. */
+export function LanguageStatus({ pt, en }: { pt: boolean; en: boolean }) {
+  const label = pt && en ? "PT/EN" : en ? "EN" : "PT";
   return (
     <span
+      title={pt && en ? "Português e inglês" : en ? "Só inglês" : "Só português (sem tradução)"}
       className={cn(
         "whitespace-nowrap rounded-md px-2 py-1 text-xs font-semibold",
-        translated ? "bg-accent-soft/60 text-fg" : "bg-bg text-brand-dark",
+        pt && en ? "bg-accent-soft/60 text-fg" : "bg-bg text-brand-dark",
       )}
     >
-      {translated ? "PT + EN" : "Só PT"}
+      {label}
     </span>
   );
 }

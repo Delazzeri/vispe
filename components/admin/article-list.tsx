@@ -130,7 +130,7 @@ export function ArticleList() {
                     </span>
                   </td>
                   <td className="px-5 py-4">
-                    <LanguageStatus translated={Boolean(row.en_title)} />
+                    <LanguageStatus pt={Boolean(row.title.trim())} en={Boolean(row.en_title)} />
                   </td>
                   <td className="px-5 py-4 text-fg-muted">
                     {row.published_at ? dateTime.format(new Date(row.published_at)) : "—"}

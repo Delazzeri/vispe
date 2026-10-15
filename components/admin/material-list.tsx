@@ -129,7 +129,7 @@ export function MaterialList() {
                     </span>
                   </td>
                   <td className="px-5 py-4">
-                    <LanguageStatus translated={Boolean(row.en_title)} />
+                    <LanguageStatus pt={Boolean(row.title.trim())} en={Boolean(row.en_title)} />
                   </td>
                   <td className="px-5 py-4 text-fg-muted">
                     {row.file_name ?? <span className="font-medium text-brand-dark">Sem arquivo</span>}
