@@ -3,18 +3,18 @@
 import type { JSONContent } from "@tiptap/react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useState, type FormEvent, type ReactNode } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { ArticleView } from "@/components/blog/article-view";
 import { getSite } from "@/content/site";
 import type { Article } from "@/lib/blog/types";
+import { slugify } from "@/lib/slugify";
 import { getSupabase } from "@/lib/supabase/client";
 import type { ArticleRecord, ArticleStatus, Database, Json } from "@/lib/supabase/types";
 import { adminInput, adminPrimary, adminSecondary } from "./admin-shell";
 import { statusLabel } from "./article-list";
+import { FaqEditor, Field, filledFaq, type FaqDraft } from "./form-parts";
 import { RichTextEditor, type RichTextValue } from "./rich-text-editor";
 import { SeoAssistant, type SeoPatch } from "./seo-assistant";
-
-type FaqDraft = { question: string; answer: string };
 
 type Draft = {
   id?: string;
@@ -59,17 +59,6 @@ const emptyDraft: Draft = {
 
 const coverMaxBytes = 3 * 1024 * 1024; // mesmo limite do bucket (0002_storage.sql)
 const slugPattern = /^[a-z0-9]+(-[a-z0-9]+)*$/;
-
-export function slugify(text: string): string {
-  return text
-    .normalize("NFD")
-    .replace(/[̀-ͯ]/g, "")
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "")
-    .slice(0, 90)
-    .replace(/-+$/, "");
-}
 
 const toLocalInput = (iso: string | null) => {
   if (!iso) return "";
@@ -118,7 +107,7 @@ function draftToArticle(draft: Draft): Article {
     author: draft.author && draft.author !== "Vispe Capital" ? draft.author : undefined,
     cover: draft.coverUrl ? { src: draft.coverUrl, alt: draft.coverAlt || draft.title } : undefined,
     bodyMd: draft.markdown,
-    faq: draft.faq.filter((item) => item.question.trim() && item.answer.trim()),
+    faq: filledFaq(draft.faq),
   };
 }
 
@@ -135,16 +124,6 @@ function validate(draft: Draft): string[] {
   if (draft.status === "scheduled" && (!draft.publishedAt || new Date(draft.publishedAt) <= new Date()))
     errors.push("Agendado precisa de uma data de publicação no futuro.");
   return errors;
-}
-
-function Field({ label, hint, children }: { label: string; hint?: string; children: ReactNode }) {
-  return (
-    <label className="block text-sm font-medium text-fg">
-      {label}
-      {children}
-      {hint && <span className="mt-1 block text-xs font-normal text-fg-muted">{hint}</span>}
-    </label>
-  );
 }
 
 /** Criar e editar artigos: /admin/editor/ (novo) ou /admin/editor/?id=<uuid>. */
@@ -238,7 +217,7 @@ export function ArticleEditor() {
     // Publicado sem data: agora. Rascunho guarda a data escolhida (ou nenhuma).
     const publishedAt =
       draft.publishedAt ? new Date(draft.publishedAt).toISOString() : draft.status === "published" ? new Date().toISOString() : null;
-    const faq = draft.faq.filter((item) => item.question.trim() && item.answer.trim());
+    const faq = filledFaq(draft.faq);
     const record: Database["public"]["Tables"]["articles"]["Update"] = {
       title: draft.title.trim(),
       slug: draft.slug,
@@ -352,43 +331,11 @@ export function ArticleEditor() {
               </div>
             </div>
 
-            <fieldset className="rounded-2xl border border-border bg-surface p-5">
-              <legend className="px-1 text-sm font-semibold text-fg">Perguntas frequentes (opcional)</legend>
-              <p className="text-xs text-fg-muted">Aparecem no fim do artigo e no Google (FAQ).</p>
-              <div className="mt-4 space-y-4">
-                {draft.faq.map((item, i) => (
-                  <div key={i} className="rounded-xl border border-border p-4">
-                    <Field label={`Pergunta ${i + 1}`}>
-                      <input
-                        value={item.question}
-                        onChange={(e) => update({ faq: draft.faq.map((f, j) => (j === i ? { ...f, question: e.target.value } : f)) })}
-                        className={adminInput}
-                      />
-                    </Field>
-                    <div className="mt-3">
-                      <Field label="Resposta">
-                        <textarea
-                          value={item.answer}
-                          rows={3}
-                          onChange={(e) => update({ faq: draft.faq.map((f, j) => (j === i ? { ...f, answer: e.target.value } : f)) })}
-                          className={adminInput}
-                        />
-                      </Field>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => update({ faq: draft.faq.filter((_, j) => j !== i) })}
-                      className={`${adminSecondary} mt-3`}
-                    >
-                      Remover pergunta
-                    </button>
-                  </div>
-                ))}
-              </div>
-              <button type="button" onClick={() => update({ faq: [...draft.faq, { question: "", answer: "" }] })} className={`${adminSecondary} mt-4`}>
-                Adicionar pergunta
-              </button>
-            </fieldset>
+            <FaqEditor
+              items={draft.faq}
+              onChange={(faq) => update({ faq })}
+              description="Aparecem no fim do artigo e no Google (FAQ)."
+            />
           </div>
 
           <aside className="space-y-5 lg:col-span-4">

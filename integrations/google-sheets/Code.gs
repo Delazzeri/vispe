@@ -18,7 +18,7 @@
  */
 
 /** ID da pasta do Drive onde os currículos em PDF são salvos. */
-const RESUME_FOLDER_ID = "";
+const RESUME_FOLDER_ID = "1MosWWTHX7vJPmOYfZ-e3dzOM9VxjWKH0";
 
 /**
  * Opcional: link de cada material gratuito (slug → URL do arquivo no Drive, com
