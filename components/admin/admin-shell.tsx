@@ -21,11 +21,14 @@ export function AdminShell({ email, children }: { email?: string; children: Reac
           <div className="flex items-center gap-6">
             <Link href="/admin/" className="flex items-center gap-2 rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-dark">
               <Image src="/media/brand/simbolo-vispe-preto-326.png" alt="" width={28} height={28} className="h-7 w-7" />
-              <span className="text-sm font-bold text-ink">Admin do blog</span>
+              <span className="text-sm font-bold text-ink">Admin do site</span>
             </Link>
             <nav className="flex gap-4 text-sm font-medium text-fg-muted">
               <Link href="/admin/" className="hover:text-fg">
                 Artigos
+              </Link>
+              <Link href="/admin/materiais/" className="hover:text-fg">
+                Materiais
               </Link>
               <a href="/blog/" target="_blank" rel="noopener" className="hover:text-fg">
                 Ver blog
