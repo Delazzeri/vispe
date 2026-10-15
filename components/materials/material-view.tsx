@@ -4,7 +4,9 @@ import { MaterialForm } from "@/components/sections/material-form";
 import { LocaleLink as Link } from "@/components/ui/locale-link";
 import { MaterialCard } from "@/components/ui/material-card";
 import { SocialLinks } from "@/components/ui/social-links";
+import { brand } from "@/content/brand";
 import { getMaterialsUi } from "@/content/materials";
+import { localizeHref } from "@/i18n/href";
 import type { Locale } from "@/i18n/routing";
 import { renderMarkdown } from "@/lib/blog/markdown";
 import type { MaterialItem } from "@/lib/materials/types";
@@ -98,6 +100,11 @@ export function MaterialView({ material, locale, others = [] }: MaterialViewProp
                   copy={form}
                   messages={messages}
                   fallback={<SocialLinks />}
+                  contact={
+                    brand.social.whatsapp
+                      ? { href: brand.social.whatsapp, label: messages.contactWhatsapp, external: true }
+                      : { href: localizeHref("/contato", locale), label: messages.contactFallback, external: false }
+                  }
                 />
               </div>
             </div>

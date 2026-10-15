@@ -75,7 +75,10 @@ export const materialsUi: Widen<typeof ptBR> = {
 
   messages: {
     invalid: "Please review the highlighted fields.",
-    success: "We got your details! The material will arrive in your email.",
+    success: "We got your details! The material will arrive in your email in a few minutes.",
+    successHelp: "Can't find it? Check your spam or junk folder too. If it doesn't arrive,",
+    contactWhatsapp: "talk to us on WhatsApp",
+    contactFallback: "talk to us",
     unavailable: "Sending through the site is still being set up. Meanwhile, reach us on Vispe's social channels.",
     errors: {
       required: "Please fill in this field.",

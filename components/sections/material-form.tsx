@@ -14,12 +14,14 @@ type MaterialFormProps = {
   messages: MaterialsUi["messages"];
   /** Exibido quando o envio pelo site ainda não está disponível (ex.: redes da Vispe). */
   fallback: ReactNode;
+  /** Contato para quem não recebeu o e-mail: WhatsApp oficial ou, sem ele, a página de contato. */
+  contact: { href: string; label: string; external: boolean };
 };
 
 type SelectField = "segment" | "revenue" | "role" | "pain";
 
 /** Formulário de captura dos materiais (mesmos campos das LPs atuais da Vispe). */
-export function MaterialForm({ locale, material, copy, messages, fallback }: MaterialFormProps) {
+export function MaterialForm({ locale, material, copy, messages, fallback, contact }: MaterialFormProps) {
   const [state, setState] = useState<MaterialState>({ status: "idle" });
   const [pending, startTransition] = useTransition();
   const { fields, placeholders } = copy;
@@ -48,7 +50,20 @@ export function MaterialForm({ locale, material, copy, messages, fallback }: Mat
     return (
       <div role="status" className="flex items-start gap-3 rounded-2xl bg-accent-soft/40 p-6">
         <CircleCheck className="mt-0.5 h-6 w-6 shrink-0 text-brand-dark" aria-hidden />
-        <p className="text-base text-fg">{messages.success}</p>
+        <div className="space-y-2">
+          <p className="text-base font-medium text-fg">{messages.success}</p>
+          <p className="text-sm leading-6 text-fg-muted">
+            {messages.successHelp}{" "}
+            <a
+              href={contact.href}
+              {...(contact.external ? { target: "_blank", rel: "noopener" } : {})}
+              className="rounded-sm font-semibold text-ink underline decoration-brand-dark/50 underline-offset-4 hover:text-brand-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-dark"
+            >
+              {contact.label}
+            </a>
+            .
+          </p>
+        </div>
       </div>
     );
   }

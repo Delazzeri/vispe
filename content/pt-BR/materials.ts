@@ -79,7 +79,11 @@ export const materialsUi = {
 
   messages: {
     invalid: "Revise os campos destacados.",
-    success: "Recebemos seu cadastro! O material vai chegar no seu e-mail.",
+    success: "Recebemos seu cadastro! O material vai chegar no seu e-mail em alguns minutos.",
+    successHelp: "Não encontrou? Confira também a caixa de spam ou lixo eletrônico. Se não receber,",
+    // TODO(content): com o número oficial em brand.social.whatsapp, o link vai para o WhatsApp; até lá, para /contato.
+    contactWhatsapp: "fale com a gente pelo WhatsApp",
+    contactFallback: "fale com a gente",
     unavailable:
       "O envio pelo site ainda está sendo configurado. Enquanto isso, fale com a gente pelas redes da Vispe.",
     errors: {
