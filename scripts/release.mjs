@@ -55,6 +55,12 @@ if (!supabaseUrl || !supabaseKey) {
     });
     if (materials.ok) ok("Supabase: tabela materials acessível.");
     else warn("Tabela materials ainda não existe: rode 0006 e 0007 (supabase/README.md). Os materiais virão de content/materials-legacy.ts.");
+    const translations = await fetch(`${supabaseUrl}/rest/v1/articles?select=en&limit=1`, {
+      headers: { apikey: supabaseKey, Authorization: `Bearer ${supabaseKey}` },
+      signal: AbortSignal.timeout(10_000),
+    });
+    if (translations.ok) ok("Supabase: traduções (coluna en) disponíveis.");
+    else warn("Rode a migration 0008_translations.sql antes de publicar: sem ela o build não lê os artigos/materiais do banco.");
   } catch {
     warn("Supabase não responde (projeto inexistente ou pausado?): o build usará os artigos de content/blog.ts.");
   }

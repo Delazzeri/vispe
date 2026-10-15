@@ -207,14 +207,16 @@ function sendMaterial(values) {
     if (!data.url) return { title: data.title, status: "sem arquivo no admin — enviar manualmente" };
 
     const text = MATERIAL_EMAIL[values.locale] || MATERIAL_EMAIL["pt-BR"];
+    // Pedido pela versão em inglês: usa o título traduzido no admin, se houver.
+    const displayTitle = String((values.locale === "en-US" && data.titleEn) || data.title);
     const fill = (template) =>
       template
         .replace("{name}", clean(values.name).replace(/[<>&"]/g, ""))
-        .replace("{title}", String(data.title).replace(/[<>&"]/g, ""))
+        .replace("{title}", displayTitle.replace(/[<>&"]/g, ""))
         .replace("{days}", String(data.expiresInDays));
     MailApp.sendEmail({
       to: values.email,
-      subject: text.subject + data.title,
+      subject: text.subject + displayTitle,
       name: "Vispe Capital",
       htmlBody:
         "<p>" + fill(text.greeting) + "</p>" +

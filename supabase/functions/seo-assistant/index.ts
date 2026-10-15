@@ -1,6 +1,7 @@
 // Supabase Edge Function "seo-assistant" (Deno): sugere título para o Google,
 // descrição, resumo, slug e uma diagramação do artigo com foco em SEO, usando o
-// Gemini; com { task: "faq" }, gera as perguntas frequentes do artigo.
+// Gemini; com { task: "faq" }, gera as perguntas frequentes do artigo; com
+// { task: "translate" }, traduz um artigo ou material para o inglês (site /en).
 // Roda no servidor do Supabase para a chave do Gemini nunca ir para o
 // site (que é estático); só atende quem está logado no admin E é staff.
 //
@@ -76,6 +77,77 @@ const faqSchema = {
   required: ["faq"],
 };
 
+const TRANSLATE_SYSTEM = `Você traduz conteúdo do site da Vispe Capital (consultoria financeira para PMEs no Brasil) do português do Brasil para o inglês dos Estados Unidos, para a versão em inglês do site.
+
+Regras:
+- Tradução fiel e natural, tom profissional de negócios; não resuma, não acrescente e não omita nada.
+- Preserve exatamente a estrutura Markdown: "## " e "### ", listas ("- " e "1. "), **negrito**, "> " de destaque e as quebras de linha/parágrafos.
+- Links [texto](endereço): traduza só o texto; o endereço fica idêntico.
+- Não traduza nomes próprios e marcas: Vispe Capital, Fin 24/7, Equity Talks, nomes de pessoas e empresas.
+- Mantenha números, datas e valores como estão (ex.: R$ 1,5 milhão → R$ 1.5 million é permitido só na forma de escrita; nunca mude o valor).
+- Termos técnicos com equivalente consagrado em inglês: use o termo em inglês (DRE → income statement, fluxo de caixa → cash flow, BPO Financeiro → financial BPO).
+- metaTitle até 60 caracteres e metaDescription até 155, se vierem.
+- Devolva somente as chaves que vieram na entrada, com os mesmos nomes.`;
+
+const translateSchema = {
+  type: "OBJECT",
+  properties: {
+    type: { type: "STRING" },
+    title: { type: "STRING" },
+    excerpt: { type: "STRING" },
+    tagline: { type: "STRING" },
+    headline: { type: "STRING" },
+    category: { type: "STRING" },
+    bodyMd: { type: "STRING" },
+    descriptionMd: { type: "STRING" },
+    metaTitle: { type: "STRING" },
+    metaDescription: { type: "STRING" },
+    coverAlt: { type: "STRING" },
+    faq: {
+      type: "ARRAY",
+      items: {
+        type: "OBJECT",
+        properties: { question: { type: "STRING" }, answer: { type: "STRING" } },
+        required: ["question", "answer"],
+      },
+    },
+  },
+};
+
+const TRANSLATABLE = [
+  "type",
+  "title",
+  "excerpt",
+  "tagline",
+  "headline",
+  "category",
+  "bodyMd",
+  "descriptionMd",
+  "metaTitle",
+  "metaDescription",
+  "coverAlt",
+] as const;
+
+/** Chama o Gemini pedindo JSON no formato do schema e devolve o objeto. */
+async function askGemini(apiKey: string, model: string, system: string, userText: string, responseSchema: unknown) {
+  const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey },
+    body: JSON.stringify({
+      systemInstruction: { parts: [{ text: system }] },
+      contents: [{ role: "user", parts: [{ text: userText }] }],
+      generationConfig: { responseMimeType: "application/json", responseSchema, temperature: 0.2 },
+    }),
+  });
+  if (!response.ok) {
+    console.error("Gemini", response.status, await response.text());
+    throw new Error(`gemini ${response.status}`);
+  }
+  const result = await response.json();
+  const raw = (result.candidates?.[0]?.content?.parts ?? []).map((part: { text?: string }) => part.text ?? "").join("");
+  return JSON.parse(raw);
+}
+
 const slugify = (text: string) =>
   text
     .normalize("NFD")
@@ -109,6 +181,28 @@ Deno.serve(async (req) => {
     const model = Deno.env.get("GEMINI_MODEL") ?? "gemini-3.8-flash";
 
     const body = await req.json();
+
+    if (body.task === "translate") {
+      const input = body.fields && typeof body.fields === "object" ? body.fields : {};
+      const fields: Record<string, unknown> = {};
+      for (const key of TRANSLATABLE) if (text(input[key])) fields[key] = text(input[key]);
+      if (Array.isArray(input.faq) && input.faq.length) fields.faq = input.faq;
+      if (!fields.title) return json({ error: "Preencha o título em português antes de traduzir." }, 400);
+      if (JSON.stringify(fields).length > 90_000) return json({ error: "Conteúdo longo demais para traduzir de uma vez." }, 400);
+      try {
+        const data = await askGemini(apiKey, model, TRANSLATE_SYSTEM, JSON.stringify(fields), translateSchema);
+        const translated: Record<string, unknown> = {};
+        for (const key of TRANSLATABLE) if (fields[key] && text(data[key])) translated[key] = text(data[key]);
+        if (fields.faq && Array.isArray(data.faq)) {
+          translated.faq = data.faq
+            .map((item: { question?: unknown; answer?: unknown }) => ({ question: text(item.question), answer: text(item.answer) }))
+            .filter((item: { question: string; answer: string }) => item.question && item.answer);
+        }
+        return json(translated);
+      } catch (error) {
+        return json({ error: `O Gemini não respondeu (${error instanceof Error ? error.message : "erro"}). Tente de novo em instantes.` }, 502);
+      }
+    }
     const title = text(body.title);
     const content = text(body.content);
     if (!title || content.length < 200) return json({ error: "Escreva o título e ao menos alguns parágrafos antes de usar o assistente." }, 400);

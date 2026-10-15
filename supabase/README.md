@@ -82,6 +82,25 @@ Projeto que já tem o banco (0001–0005) — uma vez:
 A aba `materiais` da planilha ganha as colunas "Título do material" e "Envio do link"
 (link enviado, sem arquivo ou o erro), para acompanhar cada pedido.
 
+## Versão em inglês (artigos e materiais)
+
+Cada artigo e material pode ter uma versão em inglês para o site em `/en` (coluna `en`).
+No admin, aba **Inglês** do editor → "Traduzir com IA" (Gemini, pela função
+`seo-assistant`) → revisar → Salvar. Sem tradução, a página em inglês mostra o português
+com o aviso "disponível só em português" e o canonical aponta para o pt.
+
+Projeto que já tem o banco (0001–0007) — uma vez:
+
+1. SQL Editor → `supabase/migrations/0008_translations.sql` → Run.
+2. Edge Functions → `seo-assistant` → Code → cole o `supabase/functions/seo-assistant/index.ts`
+   atual → Deploy (traz o modo de tradução e o de FAQ).
+3. Edge Functions → `material-link` → Code → cole o `supabase/functions/material-link/index.ts`
+   atual → Deploy (manda o título em inglês para o e-mail de quem pediu pela /en).
+4. Apps Script: cole o `integrations/google-sheets/Code.gs` atual → Nova versão.
+
+Depois de traduzir, rode `pnpm release` e suba o pacote: a página em inglês vira HTML
+estático com SEO próprio (canonical e hreflang nas duas versões).
+
 ## No dia a dia
 
 - Publicar no admin já mostra o post no site (página única `/blog/post/`, lida no navegador).

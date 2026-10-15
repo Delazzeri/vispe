@@ -47,14 +47,17 @@ Deno.serve(async (req) => {
     );
     const { data: material, error } = await admin
       .from("materials")
-      .select("title, file_path, file_name")
+      // "*": funciona antes e depois da migration 0008 (coluna en); a chave de serviço lê tudo.
+      .select("*")
       .eq("slug", slug)
       .eq("status", "published")
       .maybeSingle();
     if (error) throw error;
     if (!material) return json({ error: "Material não encontrado ou não publicado." }, 404);
+    // Título em inglês (tradução do admin), para o e-mail de quem pediu pela /en.
+    const titleEn = typeof material.en?.title === "string" && material.en.title.trim() ? material.en.title : null;
     // Publicado sem arquivo: a planilha registra e o time envia manualmente.
-    if (!material.file_path) return json({ title: material.title, url: null });
+    if (!material.file_path) return json({ title: material.title, titleEn, url: null });
 
     const days = Math.min(Math.max(Number(Deno.env.get("MATERIAL_LINK_DAYS") ?? 7) || 7, 1), 30);
     const { data: signed, error: signError } = await admin.storage
@@ -62,7 +65,7 @@ Deno.serve(async (req) => {
       .createSignedUrl(material.file_path, days * 24 * 60 * 60, { download: material.file_name ?? true });
     if (signError) throw signError;
 
-    return json({ title: material.title, url: signed.signedUrl, expiresInDays: days });
+    return json({ title: material.title, titleEn, url: signed.signedUrl, expiresInDays: days });
   } catch (error) {
     console.error(error);
     return json({ error: "Não foi possível gerar o link agora." }, 500);
