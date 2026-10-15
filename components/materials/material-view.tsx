@@ -10,15 +10,16 @@ import { format } from "@/content/types";
 import { localizeHref } from "@/i18n/href";
 import type { Locale } from "@/i18n/routing";
 import { renderMarkdown } from "@/lib/blog/markdown";
-import type { MaterialItem } from "@/lib/materials/types";
+import type { LocalizedMaterial } from "@/lib/materials/localize";
 
 const formAnchor = "receber";
 
 type MaterialViewProps = {
-  material: MaterialItem;
+  /** Já no idioma da página (localizeMaterial). */
+  material: LocalizedMaterial;
   locale: Locale;
   /** "Outros materiais" no fim da página (vazio: a seção não aparece). */
-  others?: readonly MaterialItem[];
+  others?: readonly LocalizedMaterial[];
 };
 
 /**
@@ -43,13 +44,13 @@ export function MaterialView({ material, locale, others = [] }: MaterialViewProp
               <ArrowLeft className="h-4 w-4" aria-hidden />
               {page.back}
             </Link>
-            {page.portugueseOnly && (
+            {page.portugueseOnly && material.contentLocale !== locale && (
               <p lang={locale} className="mt-4 rounded-xl bg-accent-soft/40 px-4 py-2 text-sm text-fg">
                 {page.portugueseOnly}
               </p>
             )}
 
-            <div lang="pt-BR">
+            <div lang={material.contentLocale}>
               <p className="mt-8 text-sm font-semibold text-fg-muted">{material.type}</p>
               <h1
                 id="material-heading"
@@ -118,7 +119,7 @@ export function MaterialView({ material, locale, others = [] }: MaterialViewProp
       </section>
 
       {material.faq && (
-        <section aria-labelledby="material-faq" lang="pt-BR" className="mx-auto max-w-5xl px-6 pt-24 md:pt-32">
+        <section aria-labelledby="material-faq" lang={material.contentLocale} className="mx-auto max-w-5xl px-6 pt-24 md:pt-32">
           <h2
             id="material-faq"
             className="text-balance text-center text-3xl font-bold tracking-tight text-ink md:text-[48px] md:leading-[48px]"

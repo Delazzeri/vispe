@@ -7,11 +7,11 @@ import { brand } from "@/content/brand";
 import { getMaterialsUi } from "@/content/materials";
 import { localizePath } from "@/i18n/href";
 import type { Locale } from "@/i18n/routing";
+import { localizeMaterial, type LocalizedMaterial } from "@/lib/materials/localize";
 import { publicMaterialColumns, rowToMaterial } from "@/lib/materials/rows";
-import type { MaterialItem } from "@/lib/materials/types";
 import { getSupabase } from "@/lib/supabase/client";
 
-type LoadState = { status: "loading" } | { status: "missing" } | { status: "ready"; material: MaterialItem };
+type LoadState = { status: "loading" } | { status: "missing" } | { status: "ready"; material: LocalizedMaterial };
 
 /** Slug da URL atual: /materiais/<slug>/ ou /en/free-materials/<slug>/. */
 function slugFromLocation(): string | undefined {
@@ -20,7 +20,7 @@ function slugFromLocation(): string | undefined {
   return slug && slug !== "item" ? slug : undefined;
 }
 
-async function loadMaterial(): Promise<LoadState> {
+async function loadMaterial(locale: Locale): Promise<LoadState> {
   const slug = slugFromLocation();
   const supabase = getSupabase();
   if (!slug || !supabase) return { status: "missing" };
@@ -30,11 +30,11 @@ async function loadMaterial(): Promise<LoadState> {
     .eq("slug", slug)
     .eq("status", "published")
     .maybeSingle();
-  return data ? { status: "ready", material: rowToMaterial(data) } : { status: "missing" };
+  return data ? { status: "ready", material: localizeMaterial(rowToMaterial(data), locale) } : { status: "missing" };
 }
 
 /** Título, descrição e canonical do material (o HTML estático é o da página única). */
-function applyHead(material: MaterialItem) {
+function applyHead(material: LocalizedMaterial) {
   document.title = `${material.seoTitle ?? material.title} | ${brand.name}`;
   let description = document.head.querySelector<HTMLMetaElement>('meta[name="description"]');
   if (!description) {
@@ -49,7 +49,7 @@ function applyHead(material: MaterialItem) {
     canonical.rel = "canonical";
     document.head.append(canonical);
   }
-  canonical.href = new URL(localizePath(`/materiais/${material.slug}`, "pt-BR"), brand.url).toString();
+  canonical.href = new URL(localizePath(`/materiais/${material.slug}`, material.contentLocale), brand.url).toString();
 }
 
 /**
@@ -63,7 +63,7 @@ export function MaterialLoader({ locale }: { locale: Locale }) {
 
   useEffect(() => {
     let active = true;
-    loadMaterial().then((next) => {
+    loadMaterial(locale).then((next) => {
       if (!active) return;
       if (next.status === "ready") applyHead(next.material);
       setState(next);
@@ -71,7 +71,7 @@ export function MaterialLoader({ locale }: { locale: Locale }) {
     return () => {
       active = false;
     };
-  }, []);
+  }, [locale]);
 
   if (state.status === "ready") return <MaterialView material={state.material} locale={locale} />;
 

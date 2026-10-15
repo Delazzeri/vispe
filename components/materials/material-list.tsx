@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { MaterialCard } from "@/components/ui/material-card";
+import type { Locale } from "@/i18n/routing";
+import { localizeMaterial, type LocalizedMaterial } from "@/lib/materials/localize";
 import { publicMaterialColumns, rowToMaterial } from "@/lib/materials/rows";
-import type { MaterialItem } from "@/lib/materials/types";
 import { getSupabase } from "@/lib/supabase/client";
 
 /**
@@ -11,7 +12,17 @@ import { getSupabase } from "@/lib/supabase/client";
  * Google) e, depois do mount, troca pela lista atual do Supabase — assim um
  * material publicado no admin depois do build já aparece.
  */
-export function MaterialList({ initial, cta, emptyLabel }: { initial: readonly MaterialItem[]; cta: string; emptyLabel: string }) {
+export function MaterialList({
+  initial,
+  cta,
+  emptyLabel,
+  locale,
+}: {
+  initial: readonly LocalizedMaterial[];
+  cta: string;
+  emptyLabel: string;
+  locale: Locale;
+}) {
   const [materials, setMaterials] = useState(initial);
 
   useEffect(() => {
@@ -25,12 +36,12 @@ export function MaterialList({ initial, cta, emptyLabel }: { initial: readonly M
       .order("sort_order", { ascending: true })
       .order("published_at", { ascending: false })
       .then(({ data, error }) => {
-        if (active && !error && data) setMaterials(data.map(rowToMaterial));
+        if (active && !error && data) setMaterials(data.map((row) => localizeMaterial(rowToMaterial(row), locale)));
       });
     return () => {
       active = false;
     };
-  }, []);
+  }, [locale]);
 
   if (materials.length === 0) return <p className="text-center text-base text-fg-muted">{emptyLabel}</p>;
 

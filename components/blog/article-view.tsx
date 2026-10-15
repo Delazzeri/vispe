@@ -7,9 +7,11 @@ import { format } from "@/content/types";
 import type { Locale } from "@/i18n/routing";
 import { formatArticleDate, readingMinutes, renderInlineMarkdown, renderMarkdown } from "@/lib/blog/markdown";
 import type { Article } from "@/lib/blog/types";
+import type { Locale as ContentLocale } from "@/i18n/routing";
 
 type ArticleViewProps = {
-  article: Article;
+  /** Já no idioma da página (localizeArticle); `contentLocale` diz em que idioma o texto está. */
+  article: Article & { contentLocale?: ContentLocale };
   locale: Locale;
   /** Na prévia do admin, sem o link de voltar nem o bloco de redes. */
   preview?: boolean;
@@ -24,7 +26,7 @@ export function ArticleView({ article, locale, preview }: ArticleViewProps) {
   const { ui } = getSite(locale);
 
   return (
-    <article lang="pt-BR" aria-labelledby="post-heading" className="mx-auto max-w-3xl px-6 py-24 md:py-32">
+    <article lang={article.contentLocale ?? "pt-BR"} aria-labelledby="post-heading" className="mx-auto max-w-3xl px-6 py-24 md:py-32">
       {!preview && (
         <Link
           href="/blog"
@@ -36,7 +38,7 @@ export function ArticleView({ article, locale, preview }: ArticleViewProps) {
         </Link>
       )}
 
-      {!preview && ui.portugueseOnly && (
+      {!preview && ui.portugueseOnly && (article.contentLocale ?? "pt-BR") !== locale && (
         <p lang={locale} className="mt-6 rounded-xl bg-accent-soft/40 px-4 py-3 text-sm text-fg">
           {ui.portugueseOnly}
         </p>

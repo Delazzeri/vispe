@@ -3,6 +3,7 @@ import { BlogList } from "@/components/blog/blog-list";
 import { getSite } from "@/content/site";
 import { localizePath } from "@/i18n/href";
 import { resolveLocale } from "@/i18n/routing";
+import { localizeArticle } from "@/lib/blog/localize";
 import { listArticles } from "@/lib/blog/source";
 import { breadcrumbJsonLd, buildMetadata } from "@/lib/seo";
 
@@ -44,7 +45,11 @@ export default async function BlogIndexPage({ params }: PageProps) {
         <p className="mt-6 text-balance text-base leading-7 text-fg-muted md:text-lg">{blog.subtitle}</p>
       </div>
       <div className="mt-14">
-        <BlogList initial={await listArticles()} emptyLabel={ui.blogEmpty} />
+        <BlogList
+          initial={(await listArticles()).map((article) => localizeArticle(article, locale))}
+          emptyLabel={ui.blogEmpty}
+          locale={locale}
+        />
       </div>
     </section>
   );

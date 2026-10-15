@@ -8,7 +8,8 @@ import { useSite } from "@/content/site";
 import { format } from "@/content/types";
 
 type BlogCardProps = {
-  post: Article;
+  /** Já no idioma da página (localizeArticle). */
+  post: Article & { contentLocale?: string };
 };
 
 export function BlogCard({ post }: BlogCardProps) {
@@ -16,7 +17,7 @@ export function BlogCard({ post }: BlogCardProps) {
   const { ui } = useSite();
   return (
     // Artigos existem só em português; a data e o tempo de leitura seguem a interface.
-    <article lang="pt-BR" className="group relative flex h-full flex-col overflow-hidden rounded-3xl bg-surface shadow-[0_1px_2px_rgba(38,38,38,0.04),0_4px_12px_-4px_rgba(38,38,38,0.1)]">
+    <article lang={post.contentLocale ?? "pt-BR"} className="group relative flex h-full flex-col overflow-hidden rounded-3xl bg-surface shadow-[0_1px_2px_rgba(38,38,38,0.04),0_4px_12px_-4px_rgba(38,38,38,0.1)]">
       {post.cover ? (
         <div className="relative aspect-video overflow-hidden">
           <Image

@@ -129,8 +129,8 @@ export function breadcrumbJsonLd(items: readonly { name: string; path: string }[
   };
 }
 
-export function articleJsonLd(post: Article) {
-  const url = new URL(localizePath(`/blog/${post.slug}`, defaultLocale), brand.url).toString();
+export function articleJsonLd(post: Article, contentLocale: Locale = defaultLocale) {
+  const url = new URL(localizePath(`/blog/${post.slug}`, contentLocale), brand.url).toString();
   const image = post.cover
     ? new URL(post.cover.src, brand.url).toString()
     : new URL(`/blog/${post.slug}/og.png`, brand.url).toString();
@@ -143,7 +143,7 @@ export function articleJsonLd(post: Article) {
     image: [image],
     datePublished: post.publishedAt,
     dateModified: post.updatedAt ?? post.publishedAt,
-    inLanguage: "pt-BR", // artigos existem só em português
+    inLanguage: contentLocale,
     mainEntityOfPage: url,
     author: post.author
       ? { "@type": "Person", name: post.author }

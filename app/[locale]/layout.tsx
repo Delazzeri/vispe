@@ -8,6 +8,7 @@ import { buildMetadata, organizationJsonLd, websiteJsonLd } from "@/lib/seo";
 import { motionInitScript } from "@/lib/motion-preference";
 import { Header } from "@/components/sections/header";
 import { Footer } from "@/components/sections/footer";
+import { localizeArticle } from "@/lib/blog/localize";
 import { listArticles } from "@/lib/blog/source";
 import { CookieConsent } from "@/components/ui/cookie-consent";
 import { WhatsAppButton } from "@/components/ui/whatsapp-button";
@@ -68,7 +69,7 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
           <main id="main-content" className="flex-1">
             {children}
           </main>
-          <Footer posts={await listArticles()} />
+          <Footer posts={(await listArticles()).map((article) => localizeArticle(article, locale))} />
           <WhatsAppButton labels={getSite(locale).ui.whatsappFloat} />
           <CookieConsent labels={getSite(locale).ui.cookies} />
         </NextIntlClientProvider>

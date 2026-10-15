@@ -11,6 +11,19 @@ export type MaterialImage = {
 
 export type MaterialFaqItem = { question: string; answer: string };
 
+/** Versão em inglês do material (coluna materials.en), preenchida no admin. */
+export type MaterialTranslation = {
+  type?: string;
+  title: string;
+  tagline: string;
+  headline?: string;
+  descriptionMd: string;
+  metaTitle?: string;
+  metaDescription?: string;
+  coverAlt?: string;
+  faq?: readonly MaterialFaqItem[];
+};
+
 export type MaterialItem = {
   slug: string;
   /** Formato exibido no card e no topo da página (E-book, Planilha, Checklist…). */
@@ -29,4 +42,6 @@ export type MaterialItem = {
   faq?: readonly MaterialFaqItem[];
   seoTitle?: string;
   seoDescription?: string;
+  /** Tradução para o inglês; sem ela, /en mostra o português com aviso. */
+  en?: MaterialTranslation;
 };

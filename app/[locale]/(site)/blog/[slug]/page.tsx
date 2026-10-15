@@ -5,6 +5,7 @@ import { brand, getSite } from "@/content/site";
 import { localizePath } from "@/i18n/href";
 import { locales, resolveLocale } from "@/i18n/routing";
 import { markdownToText } from "@/lib/blog/markdown";
+import { localizeArticle } from "@/lib/blog/localize";
 import { getArticle, listArticles } from "@/lib/blog/source";
 import { articleJsonLd, breadcrumbJsonLd, buildMetadata } from "@/lib/seo";
 
@@ -22,15 +23,17 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: PageProps) {
-  const { locale, slug } = await params;
-  const article = await getArticle(slug);
-  if (!article) return {};
+  const { locale: raw, slug } = await params;
+  const locale = resolveLocale(raw);
+  const found = await getArticle(slug);
+  if (!found) return {};
+  const article = localizeArticle(found, locale);
   return buildMetadata({
     title: article.seoTitle ?? article.title,
     description: article.seoDescription ?? article.description,
-    locale: resolveLocale(locale),
-    // Artigos existem só em português: o canonical aponta para a versão pt-BR.
-    contentLocale: "pt-BR",
+    locale,
+    // Sem tradução, o canonical aponta para a versão pt-BR (a /en mostra o português).
+    contentLocale: found.en ? undefined : "pt-BR",
     path: `/blog/${article.slug}`,
     type: "article",
     article: {
@@ -48,13 +51,14 @@ export default async function BlogPostPage({ params }: PageProps) {
   const { locale: requested, slug } = await params;
   const locale = resolveLocale(requested);
   setRequestLocale(locale);
-  const article = await getArticle(slug);
-  if (!article) notFound();
+  const found = await getArticle(slug);
+  if (!found) notFound();
+  const article = localizeArticle(found, locale);
   const { ui } = getSite(locale);
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd(article)) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd(article, article.contentLocale)) }} />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -62,7 +66,7 @@ export default async function BlogPostPage({ params }: PageProps) {
             breadcrumbJsonLd([
               { name: ui.home, path: localizePath("/", locale) },
               { name: getSite(locale).blog.title, path: localizePath("/blog", locale) },
-              { name: article.title, path: localizePath(`/blog/${article.slug}`, "pt-BR") },
+              { name: article.title, path: localizePath(`/blog/${article.slug}`, article.contentLocale) },
             ]),
           ),
         }}

@@ -1,7 +1,7 @@
 -- Configuração completa do banco do site da Vispe Capital (gerado por
 -- scripts/supabase-setup-sql.mjs — não editar à mão).
 -- Uso: projeto NOVO → SQL Editor → New query → colar tudo → Run. Rodar uma vez só.
--- Contém, em ordem: 0001_init.sql, 0002_storage.sql, 0003_private_is_staff.sql, 0004_articles_blog_fields.sql, 0005_seed_articles.sql, 0006_materials.sql, 0007_seed_materials.sql.
+-- Contém, em ordem: 0001_init.sql, 0002_storage.sql, 0003_private_is_staff.sql, 0004_articles_blog_fields.sql, 0005_seed_articles.sql, 0006_materials.sql, 0007_seed_materials.sql, 0008_translations.sql.
 
 -- ═══ 0001_init.sql ═══
 
@@ -856,3 +856,28 @@ O checklist foi desenhado para ser executado em etapas estratégicas antes do pr
   now()
 )
 on conflict (slug) do nothing;
+
+-- ═══ 0008_translations.sql ═══
+
+-- Versão em inglês dos artigos e dos materiais (site em /en).
+-- Uma coluna "en" (jsonb) por tabela guarda os textos traduzidos, preenchidos no
+-- admin (aba "Inglês", com tradução por IA e revisão). Sem tradução (null), a
+-- página em inglês mostra o conteúdo em português com o aviso, como antes.
+--
+-- articles.en:  { title, excerpt, bodyMd, bodyJson, metaTitle, metaDescription, coverAlt, faq }
+-- materials.en: { type, title, tagline, headline, descriptionMd, descriptionJson,
+--                 metaTitle, metaDescription, coverAlt, faq }
+
+alter table public.articles add column en jsonb;
+alter table public.materials add column en jsonb;
+
+comment on column public.articles.en is 'Tradução para o inglês (null: sem tradução, /en mostra o português).';
+comment on column public.materials.en is 'Tradução para o inglês (null: sem tradução, /en mostra o português).';
+
+alter table public.articles
+  add constraint articles_en_is_object check (en is null or jsonb_typeof(en) = 'object');
+alter table public.materials
+  add constraint materials_en_is_object check (en is null or jsonb_typeof(en) = 'object');
+
+-- O público lê materiais por coluna (0006): libera a nova.
+grant select (en) on public.materials to anon;

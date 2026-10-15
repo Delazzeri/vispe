@@ -6,12 +6,12 @@ import { LocaleLink as Link } from "@/components/ui/locale-link";
 import { getSite } from "@/content/site";
 import { localizePath } from "@/i18n/href";
 import type { Locale } from "@/i18n/routing";
+import { localizeArticle, type LocalizedArticle } from "@/lib/blog/localize";
 import { publicArticleColumns, publicStatuses, rowToArticle } from "@/lib/blog/rows";
-import type { Article } from "@/lib/blog/types";
 import { brand } from "@/content/brand";
 import { getSupabase } from "@/lib/supabase/client";
 
-type LoadState = { status: "loading" } | { status: "missing" } | { status: "ready"; article: Article };
+type LoadState = { status: "loading" } | { status: "missing" } | { status: "ready"; article: LocalizedArticle };
 
 /** Slug da URL atual: /blog/<slug>/ ou /en/blog/<slug>/. */
 function slugFromLocation(): string | undefined {
@@ -31,7 +31,7 @@ function setMeta(selector: string, attr: "name" | "property", key: string, conte
 }
 
 /** Título, descrição e canonical do post (o HTML estático é o da página única). */
-function applyHead(article: Article) {
+function applyHead(article: LocalizedArticle) {
   const title = `${article.seoTitle ?? article.title} | ${brand.name}`;
   const description = article.seoDescription ?? article.description;
   document.title = title;
@@ -44,10 +44,10 @@ function applyHead(article: Article) {
     canonical.rel = "canonical";
     document.head.append(canonical);
   }
-  canonical.href = new URL(localizePath(`/blog/${article.slug}`, "pt-BR"), brand.url).toString();
+  canonical.href = new URL(localizePath(`/blog/${article.slug}`, article.contentLocale), brand.url).toString();
 }
 
-async function loadArticle(): Promise<LoadState> {
+async function loadArticle(locale: Locale): Promise<LoadState> {
   const slug = slugFromLocation();
   const supabase = getSupabase();
   if (!slug || !supabase) return { status: "missing" };
@@ -58,7 +58,7 @@ async function loadArticle(): Promise<LoadState> {
     .in("status", publicStatuses)
     .lte("published_at", new Date().toISOString())
     .maybeSingle();
-  return data ? { status: "ready", article: rowToArticle(data) } : { status: "missing" };
+  return data ? { status: "ready", article: localizeArticle(rowToArticle(data), locale) } : { status: "missing" };
 }
 
 /**
@@ -72,7 +72,7 @@ export function ArticleLoader({ locale }: { locale: Locale }) {
 
   useEffect(() => {
     let active = true;
-    loadArticle().then((next) => {
+    loadArticle(locale).then((next) => {
       if (!active) return;
       if (next.status === "ready") applyHead(next.article);
       setState(next);
@@ -80,7 +80,7 @@ export function ArticleLoader({ locale }: { locale: Locale }) {
     return () => {
       active = false;
     };
-  }, []);
+  }, [locale]);
 
   if (state.status === "ready") return <ArticleView article={state.article} locale={locale} />;
 

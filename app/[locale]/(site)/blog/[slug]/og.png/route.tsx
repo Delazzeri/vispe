@@ -1,5 +1,6 @@
 import { getSite } from "@/content/site";
-import { locales } from "@/i18n/routing";
+import { locales, resolveLocale } from "@/i18n/routing";
+import { localizeArticle } from "@/lib/blog/localize";
 import { getArticle, listArticles } from "@/lib/blog/source";
 import { renderOgImage } from "@/lib/og-image";
 
@@ -17,8 +18,9 @@ export async function generateStaticParams() {
 
 // Imagem OG do post em URL estável (/blog/<slug>/og.png), usada quando o post não tem capa.
 export async function GET(_request: Request, { params }: RouteContext) {
-  const { slug } = await params;
-  const article = await getArticle(slug);
+  const { locale, slug } = await params;
+  const found = await getArticle(slug);
+  const article = found && localizeArticle(found, resolveLocale(locale));
   return renderOgImage({
     title: article?.title ?? getSite("pt-BR").blog.title,
     eyebrow: article?.category ?? "Blog",

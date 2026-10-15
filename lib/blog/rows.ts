@@ -1,11 +1,12 @@
 import type { ArticleRecord } from "@/lib/supabase/types";
-import type { Article, ArticleFaqItem } from "./types";
+import { asObject, faqList, str } from "@/lib/translation-json";
+import type { Article, ArticleFaqItem, ArticleTranslation } from "./types";
 
 // Linha da tabela articles → Article (mesmo formato usado no build e no navegador).
 
 /** Colunas lidas pelo site público (o admin lê tudo). */
 export const publicArticleColumns =
-  "slug,title,excerpt,content_md,cover_image_url,cover_image_alt,category,author,meta_title,meta_description,published_at,updated_at,tags,faq";
+  "slug,title,excerpt,content_md,cover_image_url,cover_image_alt,category,author,meta_title,meta_description,published_at,updated_at,tags,faq,en";
 
 export type PublicArticleRow = Pick<
   ArticleRecord,
@@ -23,6 +24,7 @@ export type PublicArticleRow = Pick<
   | "updated_at"
   | "tags"
   | "faq"
+  | "en"
 >;
 
 function faqFromJson(value: ArticleRecord["faq"]): ArticleFaqItem[] | undefined {
@@ -33,6 +35,23 @@ function faqFromJson(value: ArticleRecord["faq"]): ArticleFaqItem[] | undefined 
       : [],
   );
   return items.length ? items : undefined;
+}
+
+function translationFromJson(value: ArticleRecord["en"]): ArticleTranslation | undefined {
+  const en = asObject(value);
+  const title = en && str(en, "title");
+  const bodyMd = en && str(en, "bodyMd");
+  if (!en || !title || !bodyMd) return undefined;
+  return {
+    title,
+    bodyMd,
+    excerpt: str(en, "excerpt") ?? "",
+    category: str(en, "category"),
+    metaTitle: str(en, "metaTitle"),
+    metaDescription: str(en, "metaDescription"),
+    coverAlt: str(en, "coverAlt"),
+    faq: faqList(en.faq),
+  };
 }
 
 export function rowToArticle(row: PublicArticleRow): Article {
@@ -51,6 +70,7 @@ export function rowToArticle(row: PublicArticleRow): Article {
     cover: row.cover_image_url ? { src: row.cover_image_url, alt: row.cover_image_alt ?? row.title } : undefined,
     bodyMd: row.content_md,
     faq: faqFromJson(row.faq),
+    en: translationFromJson(row.en),
   };
 }
 

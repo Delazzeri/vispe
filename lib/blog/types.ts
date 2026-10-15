@@ -11,6 +11,18 @@ export type ArticleCover = {
 
 export type ArticleFaqItem = { question: string; answer: string };
 
+/** Versão em inglês do artigo (coluna articles.en), preenchida no admin. */
+export type ArticleTranslation = {
+  title: string;
+  excerpt: string;
+  bodyMd: string;
+  category?: string;
+  metaTitle?: string;
+  metaDescription?: string;
+  coverAlt?: string;
+  faq?: readonly ArticleFaqItem[];
+};
+
 export type Article = {
   slug: string;
   title: string;
@@ -31,4 +43,6 @@ export type Article = {
   /** Corpo em Markdown: links [texto](href), **negrito**, ## / ###, listas e > destaque. */
   bodyMd: string;
   faq?: readonly ArticleFaqItem[];
+  /** Tradução para o inglês; sem ela, /en mostra o português com aviso. */
+  en?: ArticleTranslation;
 };

@@ -36,20 +36,35 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }));
   });
 
-  // Artigos existem só em português: entra apenas a URL canônica pt-BR.
-  const blogRoutes: MetadataRoute.Sitemap = (await listArticles()).map((post) => ({
-    url: url(localizePath(`/blog/${post.slug}`, defaultLocale)),
-    lastModified: post.updatedAt ?? post.publishedAt,
-    changeFrequency: "monthly",
-    priority: 0.5,
-  }));
+  /**
+   * Conteúdo do admin (artigos e materiais): sem tradução, só a URL pt-BR (a /en
+   * aponta o canonical para ela); traduzido, as duas URLs com alternates.
+   */
+  const contentRoutes = (
+    path: string,
+    translated: boolean,
+    extra: Omit<MetadataRoute.Sitemap[number], "url">,
+  ): MetadataRoute.Sitemap => {
+    if (!translated) return [{ url: url(localizePath(path, defaultLocale)), ...extra }];
+    const languages = Object.fromEntries(locales.map((l) => [l, url(localizePath(path, l))]));
+    return locales.map((locale) => ({
+      url: url(localizePath(path, locale)),
+      ...extra,
+      alternates: { languages: { ...languages, "x-default": url(localizePath(path, defaultLocale)) } },
+    }));
+  };
 
-  // LPs dos materiais: conteúdo só em português, como os artigos.
-  const materialRoutes: MetadataRoute.Sitemap = (await listMaterials()).map((material) => ({
-    url: url(localizePath(`/materiais/${material.slug}`, defaultLocale)),
-    changeFrequency: "monthly",
-    priority: 0.6,
-  }));
+  const blogRoutes: MetadataRoute.Sitemap = (await listArticles()).flatMap((post) =>
+    contentRoutes(`/blog/${post.slug}`, Boolean(post.en), {
+      lastModified: post.updatedAt ?? post.publishedAt,
+      changeFrequency: "monthly",
+      priority: 0.5,
+    }),
+  );
+
+  const materialRoutes: MetadataRoute.Sitemap = (await listMaterials()).flatMap((material) =>
+    contentRoutes(`/materiais/${material.slug}`, Boolean(material.en), { changeFrequency: "monthly", priority: 0.6 }),
+  );
 
   return [...localized, ...blogRoutes, ...materialRoutes];
 }

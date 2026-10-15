@@ -2,8 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { BlogCard } from "@/components/ui/blog-card";
+import type { Locale } from "@/i18n/routing";
+import { localizeArticle, type LocalizedArticle } from "@/lib/blog/localize";
 import { publicArticleColumns, publicStatuses, rowToArticle } from "@/lib/blog/rows";
-import type { Article } from "@/lib/blog/types";
 import { getSupabase } from "@/lib/supabase/client";
 
 /**
@@ -11,7 +12,15 @@ import { getSupabase } from "@/lib/supabase/client";
  * depois do mount, troca pela lista atual do Supabase — assim um post publicado
  * depois do build já aparece.
  */
-export function BlogList({ initial, emptyLabel }: { initial: readonly Article[]; emptyLabel: string }) {
+export function BlogList({
+  initial,
+  emptyLabel,
+  locale,
+}: {
+  initial: readonly LocalizedArticle[];
+  emptyLabel: string;
+  locale: Locale;
+}) {
   const [articles, setArticles] = useState(initial);
 
   useEffect(() => {
@@ -25,12 +34,12 @@ export function BlogList({ initial, emptyLabel }: { initial: readonly Article[];
       .lte("published_at", new Date().toISOString())
       .order("published_at", { ascending: false })
       .then(({ data, error }) => {
-        if (active && !error && data) setArticles(data.map(rowToArticle));
+        if (active && !error && data) setArticles(data.map((row) => localizeArticle(rowToArticle(row), locale)));
       });
     return () => {
       active = false;
     };
-  }, []);
+  }, [locale]);
 
   if (articles.length === 0) return <p className="text-center text-base text-fg-muted">{emptyLabel}</p>;
 

@@ -1,4 +1,4 @@
-// Tipos do banco escritos à mão a partir de supabase/migrations (0001–0006).
+// Tipos do banco escritos à mão a partir de supabase/migrations (0001–0008).
 // Depois de criar o projeto, regenerar com:
 //   supabase gen types typescript --project-id <ref> > lib/supabase/types.ts
 
@@ -23,6 +23,8 @@ type ArticleRow = {
   published_at: string | null;
   tags: string[];
   faq: Json | null;
+  /** Tradução para o inglês (0008); ver lib/blog/localize.ts. */
+  en: Json | null;
   created_at: string;
   updated_at: string;
 };
@@ -51,6 +53,8 @@ type MaterialRow = {
   status: MaterialStatus;
   sort_order: number;
   published_at: string | null;
+  /** Tradução para o inglês (0008); ver lib/materials/localize.ts. */
+  en: Json | null;
   created_at: string;
   updated_at: string;
 };

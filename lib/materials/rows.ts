@@ -1,6 +1,7 @@
 import { markdownToText } from "@/lib/blog/markdown";
 import type { MaterialRecord } from "@/lib/supabase/types";
-import type { MaterialFaqItem, MaterialItem } from "./types";
+import { asObject, faqList, str } from "@/lib/translation-json";
+import type { MaterialFaqItem, MaterialItem, MaterialTranslation } from "./types";
 
 // Linha da tabela materials → MaterialItem (mesmo formato no build e no navegador).
 
@@ -10,7 +11,7 @@ import type { MaterialFaqItem, MaterialItem } from "./types";
  * download só sai por e-mail, gerado pela Edge Function material-link.
  */
 export const publicMaterialColumns =
-  "slug,type,title,tagline,headline,description_md,cover_image_url,cover_image_alt,image_url,faq,meta_title,meta_description,sort_order,published_at";
+  "slug,type,title,tagline,headline,description_md,cover_image_url,cover_image_alt,image_url,faq,meta_title,meta_description,sort_order,published_at,en";
 
 export type PublicMaterialRow = Pick<
   MaterialRecord,
@@ -28,6 +29,7 @@ export type PublicMaterialRow = Pick<
   | "meta_description"
   | "sort_order"
   | "published_at"
+  | "en"
 >;
 
 function faqFromJson(value: MaterialRecord["faq"]): MaterialFaqItem[] | undefined {
@@ -42,6 +44,23 @@ function faqFromJson(value: MaterialRecord["faq"]): MaterialFaqItem[] | undefine
 
 /** Capa local (seed) com a largura no nome: dimensões da arte 842×595. */
 const localCover = (src: string) => (/-842\.webp$/.test(src) ? { width: 842, height: 595 } : {});
+
+function translationFromJson(value: MaterialRecord["en"]): MaterialTranslation | undefined {
+  const en = asObject(value);
+  const title = en && str(en, "title");
+  if (!en || !title) return undefined;
+  return {
+    title,
+    type: str(en, "type"),
+    tagline: str(en, "tagline") ?? "",
+    headline: str(en, "headline"),
+    descriptionMd: str(en, "descriptionMd") ?? "",
+    metaTitle: str(en, "metaTitle"),
+    metaDescription: str(en, "metaDescription"),
+    coverAlt: str(en, "coverAlt"),
+    faq: faqList(en.faq),
+  };
+}
 
 export function rowToMaterial(row: PublicMaterialRow): MaterialItem {
   return {
@@ -58,6 +77,7 @@ export function rowToMaterial(row: PublicMaterialRow): MaterialItem {
     faq: faqFromJson(row.faq),
     seoTitle: row.meta_title ?? undefined,
     seoDescription: row.meta_description ?? undefined,
+    en: translationFromJson(row.en),
   };
 }
 

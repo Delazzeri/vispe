@@ -2,6 +2,7 @@ import { setRequestLocale } from "next-intl/server";
 import { resolveLocale } from "@/i18n/routing";
 import { MaterialList } from "@/components/materials/material-list";
 import { getMaterialsUi } from "@/content/materials";
+import { localizeMaterial } from "@/lib/materials/localize";
 import { listMaterials } from "@/lib/materials/source";
 import { getSite } from "@/content/site";
 import { localizePath } from "@/i18n/href";
@@ -50,7 +51,12 @@ export default async function MateriaisPage({ params }: PageProps<"/[locale]/mat
       </div>
 
       <div className="mt-14">
-        <MaterialList initial={await listMaterials()} cta={card.cta} emptyLabel={page.empty} />
+        <MaterialList
+          initial={(await listMaterials()).map((material) => localizeMaterial(material, locale))}
+          cta={card.cta}
+          emptyLabel={page.empty}
+          locale={locale}
+        />
       </div>
     </section>
   );

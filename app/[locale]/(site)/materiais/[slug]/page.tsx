@@ -6,6 +6,7 @@ import { getSite } from "@/content/site";
 import { localizePath } from "@/i18n/href";
 import { locales, resolveLocale } from "@/i18n/routing";
 import { materialDescription } from "@/lib/materials/rows";
+import { localizeMaterial } from "@/lib/materials/localize";
 import { getMaterialItem, listMaterials } from "@/lib/materials/source";
 import { breadcrumbJsonLd, buildMetadata } from "@/lib/seo";
 
@@ -20,14 +21,15 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: PageProps<"/[locale]/materiais/[slug]">) {
   const { locale: raw, slug } = await params;
-  const material = await getMaterialItem(slug);
-  if (!material) return {};
+  const found = await getMaterialItem(slug);
+  if (!found) return {};
+  const material = localizeMaterial(found, resolveLocale(raw));
   return buildMetadata({
     title: material.seoTitle ?? material.title,
     description: materialDescription(material),
     locale: resolveLocale(raw),
-    // Conteúdo só em português: a URL canônica é sempre a pt-BR.
-    contentLocale: "pt-BR",
+    // Sem tradução, a URL canônica é a pt-BR (a /en mostra o português).
+    contentLocale: found.en ? undefined : "pt-BR",
     path: `/materiais/${material.slug}`,
   });
 }
@@ -36,12 +38,16 @@ export default async function MaterialPage({ params }: PageProps<"/[locale]/mate
   const { locale: raw, slug } = await params;
   const locale = resolveLocale(raw);
   setRequestLocale(locale);
-  const material = await getMaterialItem(slug);
-  if (!material) notFound();
+  const found = await getMaterialItem(slug);
+  if (!found) notFound();
+  const material = localizeMaterial(found, locale);
 
   const { page } = getMaterialsUi(locale);
   const { ui } = getSite(locale);
-  const others = (await listMaterials()).filter((m) => m.slug !== material.slug).slice(0, 3);
+  const others = (await listMaterials())
+    .filter((m) => m.slug !== material.slug)
+    .slice(0, 3)
+    .map((m) => localizeMaterial(m, locale));
 
   return (
     <>
@@ -52,7 +58,7 @@ export default async function MaterialPage({ params }: PageProps<"/[locale]/mate
             breadcrumbJsonLd([
               { name: ui.home, path: localizePath("/", locale) },
               { name: page.back, path: localizePath("/materiais", locale) },
-              { name: material.title, path: localizePath(`/materiais/${material.slug}`, locale) },
+              { name: material.title, path: localizePath(`/materiais/${material.slug}`, material.contentLocale) },
             ]),
           ),
         }}
