@@ -5,8 +5,12 @@ import { useEffect, useMemo, useState } from "react";
 import { getSupabase } from "@/lib/supabase/client";
 import type { ArticleRecord, ArticleStatus } from "@/lib/supabase/types";
 import { adminInput, adminPrimary, adminSecondary } from "./admin-shell";
+import { LanguageStatus } from "./language-tabs";
 
-type Row = Pick<ArticleRecord, "id" | "slug" | "title" | "status" | "published_at" | "updated_at">;
+// en_title: só o título da tradução (en->>title), sem baixar o texto em inglês inteiro.
+type Row = Pick<ArticleRecord, "id" | "slug" | "title" | "status" | "published_at" | "updated_at"> & {
+  en_title: string | null;
+};
 
 export const statusLabel: Record<ArticleStatus, string> = {
   draft: "Rascunho",
@@ -27,7 +31,7 @@ async function fetchRows(): Promise<{ rows: Row[]; error?: string }> {
   if (!supabase) return { rows: [], error: "Supabase não configurado." };
   const { data, error } = await supabase
     .from("articles")
-    .select("id,slug,title,status,published_at,updated_at")
+    .select("id,slug,title,status,published_at,updated_at,en_title:en->>title")
     .order("updated_at", { ascending: false });
   return { rows: data ?? [], error: error?.message };
 }
@@ -106,6 +110,7 @@ export function ArticleList() {
               <tr className="border-b border-border text-fg-muted">
                 <th scope="col" className="px-5 py-3 font-semibold">Título</th>
                 <th scope="col" className="px-5 py-3 font-semibold">Status</th>
+                <th scope="col" className="px-5 py-3 font-semibold">Idiomas</th>
                 <th scope="col" className="px-5 py-3 font-semibold">Publicação</th>
                 <th scope="col" className="px-5 py-3 font-semibold">
                   <span className="sr-only">Ações</span>
@@ -123,6 +128,9 @@ export function ArticleList() {
                     <span className={`rounded-md px-2 py-1 text-xs font-semibold ${statusClass[row.status]}`}>
                       {statusLabel[row.status]}
                     </span>
+                  </td>
+                  <td className="px-5 py-4">
+                    <LanguageStatus translated={Boolean(row.en_title)} />
                   </td>
                   <td className="px-5 py-4 text-fg-muted">
                     {row.published_at ? dateTime.format(new Date(row.published_at)) : "—"}

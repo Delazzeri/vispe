@@ -5,8 +5,12 @@ import { useEffect, useMemo, useState } from "react";
 import { getSupabase } from "@/lib/supabase/client";
 import type { MaterialRecord, MaterialStatus } from "@/lib/supabase/types";
 import { adminInput, adminPrimary, adminSecondary } from "./admin-shell";
+import { LanguageStatus } from "./language-tabs";
 
-type Row = Pick<MaterialRecord, "id" | "slug" | "title" | "type" | "status" | "sort_order" | "file_name" | "updated_at">;
+// en_title: só o título da tradução (en->>title), sem baixar o texto em inglês inteiro.
+type Row = Pick<MaterialRecord, "id" | "slug" | "title" | "type" | "status" | "sort_order" | "file_name" | "updated_at"> & {
+  en_title: string | null;
+};
 
 export const materialStatusLabel: Record<MaterialStatus, string> = { draft: "Rascunho", published: "Publicado" };
 
@@ -15,7 +19,7 @@ async function fetchRows(): Promise<{ rows: Row[]; error?: string }> {
   if (!supabase) return { rows: [], error: "Supabase não configurado." };
   const { data, error } = await supabase
     .from("materials")
-    .select("id,slug,title,type,status,sort_order,file_name,updated_at")
+    .select("id,slug,title,type,status,sort_order,file_name,updated_at,en_title:en->>title")
     .order("sort_order", { ascending: true })
     .order("updated_at", { ascending: false });
   return { rows: data ?? [], error: error?.message };
@@ -99,6 +103,7 @@ export function MaterialList() {
               <tr className="border-b border-border text-fg-muted">
                 <th scope="col" className="px-5 py-3 font-semibold">Material</th>
                 <th scope="col" className="px-5 py-3 font-semibold">Status</th>
+                <th scope="col" className="px-5 py-3 font-semibold">Idiomas</th>
                 <th scope="col" className="px-5 py-3 font-semibold">Arquivo</th>
                 <th scope="col" className="px-5 py-3 font-semibold">
                   <span className="sr-only">Ações</span>
@@ -122,6 +127,9 @@ export function MaterialList() {
                     >
                       {materialStatusLabel[row.status]}
                     </span>
+                  </td>
+                  <td className="px-5 py-4">
+                    <LanguageStatus translated={Boolean(row.en_title)} />
                   </td>
                   <td className="px-5 py-4 text-fg-muted">
                     {row.file_name ?? <span className="font-medium text-brand-dark">Sem arquivo</span>}
