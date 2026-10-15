@@ -14,10 +14,13 @@
  *       MATERIAL_LINK_URL     https://<projeto>.supabase.co/functions/v1/material-link
  *       MATERIAL_LINK_SECRET  o mesmo segredo cadastrado na função, no Supabase
  *     Sem as duas últimas, o material só é registrado na planilha (sem e-mail).
- *  4. Implantar → Nova implantação → Tipo: App da Web.
+ *  4. No editor, escolha a função "autorizar" na barra de cima e clique em Executar:
+ *     o Google pede as permissões (planilha, Drive, e-mail e serviço externo).
+ *     Rode de novo sempre que o código passar a usar um serviço novo.
+ *  5. Implantar → Nova implantação → Tipo: App da Web.
  *       Executar como: Eu · Quem pode acessar: Qualquer pessoa.
  *     Autorize o acesso pedido (planilha, Drive, e-mail e conexões externas).
- *  5. Copie a URL do App da Web (termina em /exec) para NEXT_PUBLIC_FORMS_ENDPOINT
+ *  6. Copie a URL do App da Web (termina em /exec) para NEXT_PUBLIC_FORMS_ENDPOINT
  *     no .env.local e gere o build do site de novo.
  * Mudou este código? Implantar → Gerenciar implantações → editar → Nova versão
  * (a URL continua a mesma).
@@ -200,6 +203,23 @@ function sendMaterial(values) {
   } catch (error) {
     console.error(error);
     return { title: "", status: "erro: " + String(error).slice(0, 120) };
+  }
+}
+
+/**
+ * Rode uma vez no editor (Executar → autorizar) para o Google pedir todas as
+ * permissões que o App da Web usa. Sem isso, a chamada ao Supabase falha com
+ * "Você não tem permissão para chamar UrlFetchApp.fetch".
+ */
+function autorizar() {
+  SpreadsheetApp.getActiveSpreadsheet().getName();
+  const { resumeFolderId, materialLinkUrl } = config();
+  if (resumeFolderId) DriveApp.getFolderById(resumeFolderId).getName();
+  console.log("E-mails restantes hoje:", MailApp.getRemainingDailyQuota());
+  if (materialLinkUrl) {
+    const status = UrlFetchApp.fetch(materialLinkUrl, { method: "post", muteHttpExceptions: true }).getResponseCode();
+    // 401 aqui é o esperado (chamada sem o segredo): a conexão com o Supabase funciona.
+    console.log("Supabase (material-link) respondeu:", status);
   }
 }
 
