@@ -36,11 +36,21 @@ type SeoAssistantProps = {
 export type ArticleInput = { title: string; excerpt: string; markdown: string; category: string; tags: readonly string[] };
 
 /** Chama a Edge Function seo-assistant e traduz os erros para mensagens do admin. */
-async function invokeAssistant<T>(input: ArticleInput, task?: "faq"): Promise<T> {
+/** Corpo do pedido à função para os modos de artigo (sugestões de SEO e FAQ). */
+const articleBody = (input: ArticleInput, task?: "faq") => ({
+  task,
+  title: input.title,
+  excerpt: input.excerpt,
+  content: input.markdown,
+  category: input.category,
+  tags: input.tags,
+});
+
+async function invokeAssistant<T>(body: Record<string, unknown>): Promise<T> {
   const supabase = getSupabase();
   if (!supabase) throw new Error("Supabase não configurado.");
   const { data, error } = await supabase.functions.invoke<T>("seo-assistant", {
-    body: { task, title: input.title, excerpt: input.excerpt, content: input.markdown, category: input.category, tags: input.tags },
+    body,
   });
   if (error) {
     if (error instanceof FunctionsHttpError) {
@@ -56,13 +66,18 @@ async function invokeAssistant<T>(input: ArticleInput, task?: "faq"): Promise<T>
   return data;
 }
 
-const requestSuggestion = (input: ArticleInput) => invokeAssistant<SeoSuggestion>(input);
+const requestSuggestion = (input: ArticleInput) => invokeAssistant<SeoSuggestion>(articleBody(input));
 
 /** Perguntas frequentes geradas a partir do conteúdo do artigo (Gemini, tarefa "faq"). */
 export async function generateFaq(input: ArticleInput): Promise<{ question: string; answer: string }[]> {
-  const { faq } = await invokeAssistant<{ faq: { question: string; answer: string }[] }>(input, "faq");
+  const { faq } = await invokeAssistant<{ faq: { question: string; answer: string }[] }>(articleBody(input, "faq"));
   if (!faq.length) throw new Error("O assistente não conseguiu gerar perguntas para este texto.");
   return faq;
+}
+
+/** Tradução para o inglês (tarefa "translate"): devolve os mesmos campos enviados, traduzidos. */
+export function translateToEnglish(fields: Record<string, unknown>): Promise<Record<string, unknown>> {
+  return invokeAssistant<Record<string, unknown>>({ task: "translate", fields });
 }
 
 function Row({

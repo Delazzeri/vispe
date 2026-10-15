@@ -9,7 +9,17 @@ import { slugify } from "@/lib/slugify";
 import { getSupabase } from "@/lib/supabase/client";
 import type { Database, Json, MaterialRecord, MaterialStatus } from "@/lib/supabase/types";
 import { adminInput, adminPrimary, adminSecondary } from "./admin-shell";
+import {
+  emptyEnglish,
+  EnglishPanel,
+  englishFromJson,
+  englishToJson,
+  hasEnglish,
+  type EnglishDraft,
+  type EnglishFieldDef,
+} from "./english-panel";
 import { FaqEditor, Field, filledFaq, type FaqDraft } from "./form-parts";
+import { LanguageTabs, type EditorLanguage } from "./language-tabs";
 import { materialStatusLabel } from "./material-list";
 import { RichTextEditor, type RichTextValue } from "./rich-text-editor";
 
@@ -35,6 +45,8 @@ type Draft = {
   faq: FaqDraft[];
   markdown: string;
   json: JSONContent | null;
+  /** Versão em inglês (coluna en). */
+  en: EnglishDraft;
 };
 
 const emptyDraft: Draft = {
@@ -58,6 +70,7 @@ const emptyDraft: Draft = {
   faq: [],
   markdown: "",
   json: null,
+  en: emptyEnglish,
 };
 
 const types = ["E-book", "Planilha", "Checklist", "Guia prático", "Modelo", "Webinar"];
@@ -76,6 +89,17 @@ const fileTypes = [
 
 const formatSize = (bytes: number) =>
   bytes < 1024 * 1024 ? `${Math.round(bytes / 1024)} KB` : `${(bytes / 1024 / 1024).toFixed(1)} MB`;
+
+const englishDefs: readonly EnglishFieldDef[] = [
+  { key: "title", label: "Title", hint: "Card do catálogo e e-mail de envio em inglês." },
+  { key: "type", label: "Format", hint: "E-book, Spreadsheet, Checklist… (vazio: usa o formato em português)." },
+  { key: "tagline", label: "Summary", multiline: true },
+  { key: "headline", label: "Page title (opcional)" },
+  { key: "metaTitle", label: "Google title (opcional)", maxLength: 70 },
+  { key: "metaDescription", label: "Google description (opcional)", multiline: true, maxLength: 200 },
+  { key: "coverAlt", label: "Cover alt text (opcional)" },
+];
+const englishBody = { md: "descriptionMd", json: "descriptionJson" } as const;
 
 function rowToDraft(row: MaterialRecord): Draft {
   const faq = Array.isArray(row.faq)
@@ -107,6 +131,7 @@ function rowToDraft(row: MaterialRecord): Draft {
     faq,
     markdown: row.description_md,
     json: (row.description_json as JSONContent | null) ?? null,
+    en: englishFromJson(row.en, englishDefs, englishBody),
   };
 }
 
@@ -119,6 +144,8 @@ function validate(draft: Draft): string[] {
   if (!draft.tagline.trim()) errors.push("Preencha o resumo (aparece no card e no topo da página).");
   if (draft.status === "published" && !draft.coverUrl) errors.push("Envie a capa antes de publicar (ela aparece no catálogo).");
   if (draft.coverUrl && !draft.coverAlt.trim()) errors.push("Descreva a capa (texto alternativo).");
+  const enStarted = Boolean(draft.en.fields.title?.trim() || draft.en.markdown.trim());
+  if (enStarted && !hasEnglish(draft.en)) errors.push("Inglês: preencha título e descrição, ou remova a tradução.");
   return errors;
 }
 
@@ -133,6 +160,7 @@ export function MaterialEditor() {
   const [savedAt, setSavedAt] = useState<Date>();
   const [dirty, setDirty] = useState(false);
   const [preview, setPreview] = useState(false);
+  const [language, setLanguage] = useState<EditorLanguage>("pt");
   // Arquivos trocados/removidos: apagados do Storage depois de salvar.
   const [orphans, setOrphans] = useState<string[]>([]);
 
@@ -245,6 +273,7 @@ export function MaterialEditor() {
       status: draft.status,
       sort_order: draft.sortOrder,
       published_at: publishedAt,
+      en: englishToJson(draft.en, englishBody, true),
     };
 
     setSaving(true);
@@ -315,20 +344,58 @@ export function MaterialEditor() {
         </ul>
       )}
 
+      <LanguageTabs value={language} onChange={setLanguage} englishReady={hasEnglish(draft.en)} />
+
       {preview ? (
-        <article lang="pt-BR" className="mx-auto mt-8 max-w-3xl rounded-3xl border border-border bg-bg p-8 md:p-12">
-          <p className="text-sm font-semibold text-fg-muted">{draft.type}</p>
-          <h2 className="mt-3 text-balance text-4xl font-bold tracking-tight text-ink">{draft.headline || draft.title || "Título do material"}</h2>
-          <p className="mt-6 text-lg leading-8 text-fg-muted">{draft.tagline}</p>
+        <article lang={language === "en" ? "en-US" : "pt-BR"} className="mx-auto mt-8 max-w-3xl rounded-3xl border border-border bg-bg p-8 md:p-12">
+          <p className="text-sm font-semibold text-fg-muted">{(language === "en" && draft.en.fields.type) || draft.type}</p>
+          <h2 className="mt-3 text-balance text-4xl font-bold tracking-tight text-ink">
+            {language === "en" && hasEnglish(draft.en)
+              ? draft.en.fields.headline || draft.en.fields.title
+              : draft.headline || draft.title || "Título do material"}
+          </h2>
+          <p className="mt-6 text-lg leading-8 text-fg-muted">
+            {language === "en" && hasEnglish(draft.en) ? draft.en.fields.tagline : draft.tagline}
+          </p>
           {(draft.imageUrl || draft.coverUrl) && (
             // eslint-disable-next-line @next/next/no-img-element -- prévia de imagem do Storage
             <img src={draft.imageUrl || draft.coverUrl} alt="" className="mt-10 w-full rounded-3xl" />
           )}
-          <div className="article-body mt-10" dangerouslySetInnerHTML={{ __html: renderMarkdown(draft.markdown, "pt-BR") }} />
+          <div className="article-body mt-10" dangerouslySetInnerHTML={{
+              __html:
+                language === "en" && hasEnglish(draft.en)
+                  ? renderMarkdown(draft.en.markdown, "en-US")
+                  : renderMarkdown(draft.markdown, "pt-BR"),
+            }}
+          />
         </article>
       ) : (
         <div className="mt-8 grid gap-8 lg:grid-cols-12">
           <div className="space-y-5 lg:col-span-8">
+            {language === "en" ? (
+              <EnglishPanel
+                value={draft.en}
+                onChange={(en) => update({ en })}
+                defs={englishDefs}
+                body={englishBody}
+                bodyLabel="Description"
+                showFaq
+                source={() => ({
+                  fields: {
+                    title: draft.title,
+                    type: draft.type,
+                    tagline: draft.tagline,
+                    headline: draft.headline,
+                    metaTitle: draft.metaTitle,
+                    metaDescription: draft.metaDescription,
+                    coverAlt: draft.coverAlt,
+                  },
+                  markdown: draft.markdown,
+                  faq: draft.faq,
+                })}
+              />
+            ) : (
+            <>
             <Field label="Título" hint="Aparece no card do catálogo e no e-mail de envio.">
               <input value={draft.title} onChange={(e) => update({ title: e.target.value })} className={adminInput} />
             </Field>
@@ -362,6 +429,8 @@ export function MaterialEditor() {
               onChange={(faq) => update({ faq })}
               description="Aparecem na seção “Dúvidas” da página e no Google (FAQ)."
             />
+            </>
+            )}
           </div>
 
           <aside className="space-y-5 lg:col-span-4">

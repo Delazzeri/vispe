@@ -12,7 +12,17 @@ import { getSupabase } from "@/lib/supabase/client";
 import type { ArticleRecord, ArticleStatus, Database, Json } from "@/lib/supabase/types";
 import { adminInput, adminPrimary, adminSecondary } from "./admin-shell";
 import { statusLabel } from "./article-list";
+import {
+  emptyEnglish,
+  EnglishPanel,
+  englishFromJson,
+  englishToJson,
+  hasEnglish,
+  type EnglishDraft,
+  type EnglishFieldDef,
+} from "./english-panel";
 import { FaqEditor, Field, filledFaq, type FaqDraft } from "./form-parts";
+import { LanguageTabs, type EditorLanguage } from "./language-tabs";
 import { RichTextEditor, type RichTextValue } from "./rich-text-editor";
 import { generateFaq, SeoAssistant, type SeoPatch } from "./seo-assistant";
 
@@ -36,6 +46,8 @@ type Draft = {
   faq: FaqDraft[];
   /** FAQ no fim do artigo (e JSON-LD FAQPage). Desligado, nada é salvo nem publicado. */
   faqEnabled: boolean;
+  /** Versão em inglês (coluna en). */
+  en: EnglishDraft;
   markdown: string;
   json: JSONContent | null;
 };
@@ -56,6 +68,7 @@ const emptyDraft: Draft = {
   publishedAt: "",
   faq: [],
   faqEnabled: false,
+  en: emptyEnglish,
   markdown: "",
   json: null,
 };
@@ -69,6 +82,16 @@ const toLocalInput = (iso: string | null) => {
   const offset = date.getTimezoneOffset() * 60_000;
   return new Date(date.getTime() - offset).toISOString().slice(0, 16);
 };
+
+const englishDefs: readonly EnglishFieldDef[] = [
+  { key: "title", label: "Title" },
+  { key: "excerpt", label: "Summary", hint: "Card do blog, abaixo do título e no Google.", multiline: true },
+  { key: "category", label: "Category", hint: "Texto acima do título (vazio: usa a categoria em português)." },
+  { key: "metaTitle", label: "Google title (opcional)", maxLength: 70 },
+  { key: "metaDescription", label: "Google description (opcional)", multiline: true, maxLength: 200 },
+  { key: "coverAlt", label: "Cover alt text (opcional)", hint: "Descrição da capa em inglês." },
+];
+const englishBody = { md: "bodyMd", json: "bodyJson" } as const;
 
 function rowToDraft(row: ArticleRecord): Draft {
   const faq = Array.isArray(row.faq)
@@ -95,12 +118,25 @@ function rowToDraft(row: ArticleRecord): Draft {
     publishedAt: toLocalInput(row.published_at),
     faq,
     faqEnabled: faq.length > 0,
+    en: englishFromJson(row.en, englishDefs, englishBody),
     markdown: row.content_md,
     json: (row.content_json as JSONContent | null) ?? null,
   };
 }
 
-function draftToArticle(draft: Draft): Article {
+function draftToArticle(draft: Draft, language: EditorLanguage = "pt"): Article & { contentLocale: "pt-BR" | "en-US" } {
+  if (language === "en" && hasEnglish(draft.en)) {
+    const en = draft.en.fields;
+    return {
+      ...draftToArticle(draft),
+      title: en.title,
+      description: en.excerpt || draft.excerpt,
+      category: en.category || draft.category || "Category",
+      bodyMd: draft.en.markdown,
+      faq: draft.faqEnabled ? filledFaq(draft.en.faq) : undefined,
+      contentLocale: "en-US",
+    };
+  }
   return {
     slug: draft.slug || "previa",
     title: draft.title || "Título do artigo",
@@ -112,6 +148,7 @@ function draftToArticle(draft: Draft): Article {
     cover: draft.coverUrl ? { src: draft.coverUrl, alt: draft.coverAlt || draft.title } : undefined,
     bodyMd: draft.markdown,
     faq: draft.faqEnabled ? filledFaq(draft.faq) : undefined,
+    contentLocale: "pt-BR",
   };
 }
 
@@ -125,6 +162,8 @@ function validate(draft: Draft): string[] {
   if (!draft.category.trim()) errors.push("Preencha a categoria.");
   if (!draft.markdown.trim()) errors.push("O conteúdo está vazio.");
   if (draft.coverUrl && !draft.coverAlt.trim()) errors.push("Descreva a capa (texto alternativo).");
+  const enStarted = Boolean(draft.en.fields.title?.trim() || draft.en.markdown.trim());
+  if (enStarted && !hasEnglish(draft.en)) errors.push("Inglês: preencha título e texto, ou remova a tradução.");
   if (draft.status === "scheduled" && (!draft.publishedAt || new Date(draft.publishedAt) <= new Date()))
     errors.push("Agendado precisa de uma data de publicação no futuro.");
   return errors;
@@ -141,6 +180,7 @@ export function ArticleEditor() {
   const [savedAt, setSavedAt] = useState<Date>();
   const [dirty, setDirty] = useState(false);
   const [preview, setPreview] = useState(false);
+  const [language, setLanguage] = useState<EditorLanguage>("pt");
   const [generatingFaq, setGeneratingFaq] = useState(false);
   const [faqError, setFaqError] = useState<string>();
   // Muda quando o conteúdo é trocado de fora (assistente de SEO): recria o editor com o novo texto.
@@ -261,6 +301,7 @@ export function ArticleEditor() {
       published_at: publishedAt,
       tags: draft.tags,
       faq: faq.length ? (faq as unknown as Json) : null,
+      en: englishToJson(draft.en, englishBody, draft.faqEnabled),
     };
 
     setSaving(true);
@@ -315,13 +356,38 @@ export function ArticleEditor() {
         </ul>
       )}
 
+      <LanguageTabs value={language} onChange={setLanguage} englishReady={hasEnglish(draft.en)} />
+
       {preview ? (
         <div className="mt-8 rounded-3xl border border-border bg-bg">
-          <ArticleView article={draftToArticle(draft)} locale="pt-BR" preview />
+          <ArticleView article={draftToArticle(draft, language)} locale={language === "en" ? "en-US" : "pt-BR"} preview />
         </div>
       ) : (
         <div className="mt-8 grid gap-8 lg:grid-cols-12">
           <div className="space-y-5 lg:col-span-8">
+            {language === "en" ? (
+              <EnglishPanel
+                value={draft.en}
+                onChange={(en) => update({ en })}
+                defs={englishDefs}
+                body={englishBody}
+                bodyLabel="Content"
+                showFaq={draft.faqEnabled}
+                source={() => ({
+                  fields: {
+                    title: draft.title,
+                    excerpt: draft.excerpt,
+                    category: draft.category,
+                    metaTitle: draft.metaTitle,
+                    metaDescription: draft.metaDescription,
+                    coverAlt: draft.coverAlt,
+                  },
+                  markdown: draft.markdown,
+                  faq: draft.faq,
+                })}
+              />
+            ) : (
+            <>
             <Field label="Título">
               <input value={draft.title} onChange={(e) => update({ title: e.target.value })} className={adminInput} required />
             </Field>
@@ -393,6 +459,8 @@ export function ArticleEditor() {
                 />
               )}
             </div>
+            </>
+            )}
           </div>
 
           <aside className="space-y-5 lg:col-span-4">
