@@ -2,6 +2,7 @@ import { setRequestLocale } from "next-intl/server";
 import { resolveLocale } from "@/i18n/routing";
 import { SocialLinks } from "@/components/ui/social-links";
 import { CareersForm } from "@/components/sections/careers-form";
+import { CulturePoints } from "@/components/sections/culture-points";
 import { BrandPattern } from "@/components/ui/brand-pattern";
 import { getCareers, hrEmail, resumeMaxBytes } from "@/content/careers";
 import { getSite } from "@/content/site";
@@ -25,7 +26,7 @@ export async function generateMetadata({ params }: PageProps<"/[locale]/trabalhe
 export default async function TrabalheConoscoPage({ params }: PageProps<"/[locale]/trabalhe-conosco">) {
   const locale = resolveLocale((await params).locale);
   setRequestLocale(locale);
-  const { hero, about, form, messages } = getCareers(locale);
+  const { hero, about, culture, form, messages } = getCareers(locale);
   const { ui } = getSite(locale);
 
   return (
@@ -101,6 +102,13 @@ export default async function TrabalheConoscoPage({ params }: PageProps<"/[local
           />
         </div>
       </div>
+
+      <CulturePoints
+        title={culture.title}
+        description={culture.description}
+        points={culture.points}
+        className="mt-24 md:mt-32"
+      />
     </section>
   );
 }

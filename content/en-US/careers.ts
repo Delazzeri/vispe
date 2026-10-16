@@ -22,6 +22,23 @@ export const careers: CareersContent = {
     socialDescription: "Content on valuation, M&A, financial management and life behind the scenes at Vispe on our social channels.",
   },
 
+  culture: {
+    title: "Our culture",
+    description: "The 10 principles that guide everyday work at Vispe.",
+    points: [
+      "If you're going to complain, bring the solution",
+      "Always look for your own opportunities to improve",
+      "Honor your commitments",
+      "Face the hard truth",
+      "More action, less glamour",
+      "If it adds value, speak freely",
+      "Intrapreneurship",
+      "No intrigue and no whining",
+      "The fault is mine, and so is the solution",
+      "No gossip!",
+    ],
+  },
+
   form: {
     title: "Send your resume",
     description:

@@ -21,6 +21,23 @@ export const careers = {
     socialDescription: "Conteúdos sobre valuation, M&A, gestão financeira e os bastidores da Vispe nas nossas redes.",
   },
 
+  culture: {
+    title: "Nossa cultura",
+    description: "Os 10 pontos que guiam o dia a dia de quem trabalha na Vispe.",
+    points: [
+      "Se for reclamar de algo, já venha com a solução",
+      "Sempre busque suas próprias oportunidades de melhoria",
+      "Honre seus compromissos",
+      "Encare a verdade nua e crua",
+      "Mais ação, menos glamour",
+      "Se for agregar, comunique-se livremente",
+      "Intraempreendedorismo",
+      "Sem intrigas e sem mi-mi-mi",
+      "A culpa é minha e a solução também",
+      "Sem fofocas!",
+    ],
+  },
+
   form: {
     title: "Envie seu currículo",
     description:
