@@ -438,9 +438,9 @@ export const site = {
       },
       revenueOptions: [
         "Até R$ 100 mil",
-        "R$ 100 mil a R$ 500 mil",
-        "R$ 500 mil a R$ 2 milhões",
-        "Acima de R$ 2 milhões",
+        "R$ 100 mil a R$ 300 mil",
+        "R$ 300 mil a R$ 1 milhão",
+        "Acima de R$ 1 milhão",
       ],
       revenuePlaceholder: "Selecione",
       notSure: "Ainda não sei",

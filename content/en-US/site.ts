@@ -428,9 +428,9 @@ export const site: SiteContent = {
       },
       revenueOptions: [
         "Up to R$ 100k",
-        "R$ 100k to R$ 500k",
-        "R$ 500k to R$ 2M",
-        "Over R$ 2M",
+        "R$ 100k to R$ 300k",
+        "R$ 300k to R$ 1M",
+        "Over R$ 1M",
       ],
       revenuePlaceholder: "Select",
       notSure: "Not sure yet",

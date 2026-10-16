@@ -59,13 +59,11 @@ export const materialsUi = {
     ],
     revenueOptions: [
       "Até R$ 100 mil",
-      "Entre R$ 100 mil e R$ 200 mil",
-      "Entre R$ 200 mil e R$ 300 mil",
-      "Entre R$ 300 mil e R$ 400 mil",
-      "Entre R$ 400 mil e R$ 500 mil",
-      "Acima de R$ 500 mil",
+      "R$ 100 mil a R$ 300 mil",
+      "R$ 300 mil a R$ 1 milhão",
+      "Acima de R$ 1 milhão",
     ],
-    roleOptions: ["Sócio/Fundador", "CEO"],
+    roleOptions: ["Sócio proprietário", "CEO/Fundador"],
     painOptions: [
       "Falta de lucratividade",
       "Auxílio Estratégico para Tomar Decisões",
