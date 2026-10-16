@@ -1,12 +1,14 @@
 import { legacyMaterials } from "@/content/materials-legacy";
+import { buildQuery } from "@/lib/supabase/build-query";
 import { getSupabase } from "@/lib/supabase/client";
 import { legacyToItem } from "./legacy";
 import { publicMaterialColumns, rowToMaterial } from "./rows";
 import type { MaterialItem } from "./types";
 
 // Materiais usados no build (catálogo, páginas pré-renderizadas, sitemap). Com o
-// Supabase configurado, lê os publicados da tabela materials; sem ele (ou se não
-// responder), usa content/materials-legacy.ts para o site continuar no ar.
+// Supabase configurado, lê os publicados da tabela materials (se não responder, o
+// build para com erro em vez de gerar páginas quebradas); sem ele, usa
+// content/materials-legacy.ts.
 
 let cached: Promise<readonly MaterialItem[]> | undefined;
 
@@ -15,21 +17,15 @@ async function load(): Promise<readonly MaterialItem[]> {
   const local = legacyMaterials.map(legacyToItem).reverse();
   const supabase = getSupabase();
   if (!supabase) return local;
-  try {
-    const { data, error } = await supabase
+  const rows = await buildQuery("materiais", () =>
+    supabase
       .from("materials")
       .select(publicMaterialColumns)
       .eq("status", "published")
       .order("sort_order", { ascending: false })
-      .order("published_at", { ascending: false });
-    if (error) throw error;
-    return data.map(rowToMaterial);
-  } catch (error) {
-    const message =
-      error && typeof error === "object" && "message" in error ? String(error.message) : String(error);
-    console.warn(`[materiais] Supabase indisponível no build (${message.split("\n")[0]}); usando content/materials-legacy.ts.`);
-    return local;
-  }
+      .order("published_at", { ascending: false }),
+  );
+  return rows.map(rowToMaterial);
 }
 
 /** Publicados, na ordem do admin. */

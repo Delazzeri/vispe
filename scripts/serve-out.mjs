@@ -112,20 +112,26 @@ function rewrite(req, rules) {
 }
 
 createServer((req, res) => {
-  const rules = parseRules(); // relê a cada requisição: rebuild sem reiniciar
-  const result = rewrite(req, rules);
-  if (result.redirect) {
-    res.writeHead(result.status, { Location: result.redirect, Vary: "Accept-Language" });
-    return res.end();
+  try {
+    const rules = parseRules(); // relê a cada requisição: rebuild sem reiniciar
+    const result = rewrite(req, rules);
+    if (result.redirect) {
+      res.writeHead(result.status, { Location: result.redirect, Vary: "Accept-Language" });
+      return res.end();
+    }
+    let file = join(root, result.path);
+    if (existsSync(file) && statSync(file).isDirectory()) file = join(file, "index.html");
+    if (!existsSync(file)) {
+      res.writeHead(404, { "Content-Type": types[".html"] });
+      return res.end(readFileSync(join(root, "404.html")));
+    }
+    res.writeHead(200, { "Content-Type": types[extname(file)] ?? "application/octet-stream" });
+    res.end(readFileSync(file));
+  } catch {
+    // Durante o build, out/ é apagada e recriada: avisa em vez de derrubar o servidor.
+    if (!res.headersSent) res.writeHead(503, { "Content-Type": "text/plain; charset=utf-8", "Retry-After": "10" });
+    res.end("Build em andamento (out/ sendo gerada). Recarregue a página em alguns segundos.");
   }
-  let file = join(root, result.path);
-  if (existsSync(file) && statSync(file).isDirectory()) file = join(file, "index.html");
-  if (!existsSync(file)) {
-    res.writeHead(404, { "Content-Type": types[".html"] });
-    return res.end(readFileSync(join(root, "404.html")));
-  }
-  res.writeHead(200, { "Content-Type": types[extname(file)] ?? "application/octet-stream" });
-  res.end(readFileSync(file));
 }).listen(port, () => {
   console.log(`out/ com as regras do .htaccess em http://localhost:${port}`);
   // Escuta em todas as interfaces: celular/outro PC na mesma rede Wi-Fi abre pelo IP local.
