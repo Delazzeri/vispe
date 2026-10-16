@@ -20,7 +20,7 @@ async function fetchRows(): Promise<{ rows: Row[]; error?: string }> {
   const { data, error } = await supabase
     .from("materials")
     .select("id,slug,title,type,status,sort_order,file_name,updated_at,en_title:en->>title")
-    .order("sort_order", { ascending: true })
+    .order("sort_order", { ascending: false })
     .order("updated_at", { ascending: false });
   return { rows: data ?? [], error: error?.message };
 }

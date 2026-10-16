@@ -11,7 +11,8 @@ import type { MaterialItem } from "./types";
 let cached: Promise<readonly MaterialItem[]> | undefined;
 
 async function load(): Promise<readonly MaterialItem[]> {
-  const local = legacyMaterials.map(legacyToItem);
+  // Mesma ordem do banco: maior "ordem no catálogo" primeiro (o legado está do menor para o maior).
+  const local = legacyMaterials.map(legacyToItem).reverse();
   const supabase = getSupabase();
   if (!supabase) return local;
   try {
@@ -19,7 +20,7 @@ async function load(): Promise<readonly MaterialItem[]> {
       .from("materials")
       .select(publicMaterialColumns)
       .eq("status", "published")
-      .order("sort_order", { ascending: true })
+      .order("sort_order", { ascending: false })
       .order("published_at", { ascending: false });
     if (error) throw error;
     return data.map(rowToMaterial);

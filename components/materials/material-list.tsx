@@ -33,7 +33,7 @@ export function MaterialList({
       .from("materials")
       .select(publicMaterialColumns)
       .eq("status", "published")
-      .order("sort_order", { ascending: true })
+      .order("sort_order", { ascending: false })
       .order("published_at", { ascending: false })
       .then(({ data, error }) => {
         if (active && !error && data) setMaterials(data.map((row) => localizeMaterial(rowToMaterial(row), locale)));

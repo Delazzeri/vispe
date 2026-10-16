@@ -452,7 +452,7 @@ export function MaterialEditor() {
                   ))}
                 </datalist>
               </Field>
-              <Field label="Ordem no catálogo" hint="Menor aparece primeiro.">
+              <Field label="Ordem no catálogo" hint="Maior aparece primeiro.">
                 <input
                   type="number"
                   value={draft.sortOrder}
