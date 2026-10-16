@@ -8,7 +8,8 @@
 // Publicar (painel do Supabase, sem CLI): Edge Functions → Deploy a new function
 // → Via Editor → nome "seo-assistant" → cole este arquivo → Deploy.
 // Segredos (Edge Functions → Secrets): GEMINI_API_KEY (obrigatório) e, opcional,
-// GEMINI_MODEL (padrão: gemini-3.8-flash). Ver supabase/README.md.
+// GEMINI_MODEL (padrão: gemini-3.8-flash) e GEMINI_FALLBACK_MODEL (reserva quando o
+// principal está sobrecarregado; padrão: gemini-3.5-flash-lite). Ver supabase/README.md.
 
 import { createClient } from "jsr:@supabase/supabase-js@2";
 
@@ -128,24 +129,57 @@ const TRANSLATABLE = [
   "coverAlt",
 ] as const;
 
-/** Chama o Gemini pedindo JSON no formato do schema e devolve o objeto. */
-async function askGemini(apiKey: string, model: string, system: string, userText: string, responseSchema: unknown) {
-  const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey },
-    body: JSON.stringify({
-      systemInstruction: { parts: [{ text: system }] },
-      contents: [{ role: "user", parts: [{ text: userText }] }],
-      generationConfig: { responseMimeType: "application/json", responseSchema, temperature: 0.2 },
-    }),
-  });
-  if (!response.ok) {
-    console.error("Gemini", response.status, await response.text());
-    throw new Error(`gemini ${response.status}`);
+// Erros passageiros do Gemini (sobrecarga, limite por minuto, instabilidade): vale tentar de novo.
+const RETRYABLE = new Set([429, 500, 502, 503, 504]);
+const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+/**
+ * Chama o Gemini pedindo JSON no formato do schema e devolve o objeto.
+ * Erro passageiro: tenta o mesmo modelo mais uma vez e depois os modelos reserva,
+ * em ordem (o 503 "modelo sobrecarregado" costuma afetar um modelo por vez).
+ */
+async function askGemini(
+  apiKey: string,
+  models: readonly string[],
+  system: string,
+  userText: string,
+  responseSchema: unknown,
+  temperature = 0.2,
+) {
+  const attempts = [models[0], ...models];
+  let lastStatus = 0;
+  for (const [index, model] of attempts.entries()) {
+    if (index > 0) await wait(index === 1 ? 1500 : 500);
+    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey },
+      body: JSON.stringify({
+        systemInstruction: { parts: [{ text: system }] },
+        contents: [{ role: "user", parts: [{ text: userText }] }],
+        generationConfig: { responseMimeType: "application/json", responseSchema, temperature },
+      }),
+    });
+    if (response.ok) {
+      const result = await response.json();
+      const raw = (result.candidates?.[0]?.content?.parts ?? []).map((part: { text?: string }) => part.text ?? "").join("");
+      return JSON.parse(raw);
+    }
+    lastStatus = response.status;
+    console.error("Gemini", model, response.status, await response.text());
+    if (!RETRYABLE.has(response.status)) break;
   }
-  const result = await response.json();
-  const raw = (result.candidates?.[0]?.content?.parts ?? []).map((part: { text?: string }) => part.text ?? "").join("");
-  return JSON.parse(raw);
+  throw new Error(`gemini ${lastStatus}`);
+}
+
+/** Mensagem para o admin a partir do erro do Gemini. */
+function geminiError(error: unknown) {
+  const status = error instanceof Error ? error.message.replace("gemini ", "") : "";
+  if (status === "503" || status === "500" || status === "502" || status === "504")
+    return "O Gemini está sobrecarregado agora (erro " + status + "), mesmo depois de tentar outro modelo. Tente de novo em alguns minutos.";
+  if (status === "429") return "Limite de uso do Gemini atingido (erro 429). Espere um minuto ou confira a cota da chave no AI Studio.";
+  if (status === "400" || status === "404")
+    return "O Gemini recusou o pedido (erro " + status + "). Confira o segredo GEMINI_MODEL no Supabase.";
+  return "O Gemini não respondeu (" + (status || "erro") + "). Tente de novo em instantes.";
 }
 
 const slugify = (text: string) =>
@@ -178,7 +212,10 @@ Deno.serve(async (req) => {
 
     const apiKey = Deno.env.get("GEMINI_API_KEY");
     if (!apiKey) return json({ error: "Assistente não configurado: falta o segredo GEMINI_API_KEY no Supabase." }, 500);
-    const model = Deno.env.get("GEMINI_MODEL") ?? "gemini-3.8-flash";
+    // Modelo principal + reserva para quando ele estiver sobrecarregado (GEMINI_FALLBACK_MODEL, opcional).
+    const primary = Deno.env.get("GEMINI_MODEL") ?? "gemini-3.8-flash";
+    const fallback = Deno.env.get("GEMINI_FALLBACK_MODEL") ?? "gemini-3.5-flash-lite";
+    const models = fallback && fallback !== primary ? [primary, fallback] : [primary];
 
     const body = await req.json();
 
@@ -190,7 +227,7 @@ Deno.serve(async (req) => {
       if (!fields.title) return json({ error: "Preencha o título em português antes de traduzir." }, 400);
       if (JSON.stringify(fields).length > 90_000) return json({ error: "Conteúdo longo demais para traduzir de uma vez." }, 400);
       try {
-        const data = await askGemini(apiKey, model, TRANSLATE_SYSTEM, JSON.stringify(fields), translateSchema);
+        const data = await askGemini(apiKey, models, TRANSLATE_SYSTEM, JSON.stringify(fields), translateSchema);
         const translated: Record<string, unknown> = {};
         for (const key of TRANSLATABLE) if (fields[key] && text(data[key])) translated[key] = text(data[key]);
         if (fields.faq && Array.isArray(data.faq)) {
@@ -200,7 +237,7 @@ Deno.serve(async (req) => {
         }
         return json(translated);
       } catch (error) {
-        return json({ error: `O Gemini não respondeu (${error instanceof Error ? error.message : "erro"}). Tente de novo em instantes.` }, 502);
+        return json({ error: geminiError(error) }, 502);
       }
     }
     const title = text(body.title);
@@ -220,29 +257,12 @@ Deno.serve(async (req) => {
 
     // Tarefa "faq": só as perguntas frequentes; padrão: sugestões de SEO completas.
     const task = body.task === "faq" ? "faq" : "seo";
-    const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey },
-      body: JSON.stringify({
-        systemInstruction: { parts: [{ text: task === "faq" ? FAQ_SYSTEM : SYSTEM }] },
-        contents: [{ role: "user", parts: [{ text: articleContext }] }],
-        generationConfig: {
-          responseMimeType: "application/json",
-          responseSchema: task === "faq" ? faqSchema : schema,
-          temperature: 0.4,
-        },
-      }),
-    });
-    if (!response.ok) {
-      console.error("Gemini", response.status, await response.text());
-      return json({ error: `O Gemini não respondeu (erro ${response.status}). Tente de novo em instantes.` }, 502);
+    let data;
+    try {
+      data = await askGemini(apiKey, models, task === "faq" ? FAQ_SYSTEM : SYSTEM, articleContext, task === "faq" ? faqSchema : schema, 0.4);
+    } catch (error) {
+      return json({ error: geminiError(error) }, 502);
     }
-
-    const result = await response.json();
-    const raw = (result.candidates?.[0]?.content?.parts ?? [])
-      .map((part: { text?: string }) => part.text ?? "")
-      .join("");
-    const data = JSON.parse(raw);
 
     if (task === "faq") {
       const faq = Array.isArray(data.faq)

@@ -41,6 +41,8 @@ chave do Gemini nunca ir para o site, e só atende quem está logado e é staff.
 2. **Segredo no Supabase:** Edge Functions → Secrets → Add new secret:
    nome `GEMINI_API_KEY`, valor = a chave. Opcional: `GEMINI_MODEL` para trocar o modelo
    (padrão `gemini-3.8-flash`; o mais barato é `gemini-3.5-flash-lite`).
+   Se o modelo principal estiver sobrecarregado (erro 503), a função tenta de novo e passa
+   para o reserva `GEMINI_FALLBACK_MODEL` (padrão `gemini-3.5-flash-lite`).
 3. **Publicar a função:** Edge Functions → Deploy a new function → Via Editor →
    nome **`seo-assistant`** (exatamente assim) → apague o exemplo, cole todo o
    `supabase/functions/seo-assistant/index.ts` → Deploy function.
