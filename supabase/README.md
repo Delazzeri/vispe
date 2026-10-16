@@ -91,8 +91,10 @@ A aba `materiais` da planilha ganha as colunas "Título do material" e "Envio do
 ## Versão em inglês (artigos e materiais)
 
 Cada artigo e material pode ter uma versão em inglês para o site em `/en` (coluna `en`).
-No admin, aba **Inglês** do editor → "Traduzir com IA" (Gemini, pela função
-`seo-assistant`) → revisar → Salvar. Sem tradução, a página em inglês mostra o português
+No admin, a tradução é automática (Gemini, pela função `seo-assistant`): alguns segundos
+depois de mudar algo na aba Português, a aba **Inglês** é atualizada só no que mudou. O botão
+"Traduzir com IA" traduz tudo de uma vez, e o automático pode ser desligado na aba Inglês.
+Revise e salve. Sem tradução, a página em inglês mostra o português
 com o aviso "disponível só em português" e o canonical aponta para o pt.
 
 Projeto que já tem o banco (0001–0007) — uma vez:

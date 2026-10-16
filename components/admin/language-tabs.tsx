@@ -9,11 +9,14 @@ export function LanguageTabs({
   value,
   onChange,
   englishReady,
+  translating = false,
 }: {
   value: EditorLanguage;
   onChange: (language: EditorLanguage) => void;
   /** Tradução preenchida (título + texto): mostra o selo "pronto". */
   englishReady: boolean;
+  /** Tradução automática em andamento. */
+  translating?: boolean;
 }) {
   const tab = (language: EditorLanguage, label: string, badge?: string) => (
     <button
@@ -43,7 +46,7 @@ export function LanguageTabs({
   return (
     <div role="tablist" aria-label="Idioma do conteúdo" className="mt-8 inline-flex gap-1 rounded-xl border border-border bg-bg p-1">
       {tab("pt", "Português")}
-      {tab("en", "Inglês", englishReady ? "traduzido" : "sem tradução")}
+      {tab("en", "Inglês", translating ? "traduzindo…" : englishReady ? "traduzido" : "sem tradução")}
     </div>
   );
 }

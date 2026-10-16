@@ -1,7 +1,7 @@
 "use client";
 
 import type { JSONContent } from "@tiptap/react";
-import { useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { Json } from "@/lib/supabase/types";
 import { asObject, faqList, str } from "@/lib/translation-json";
 import { adminInput, adminPrimary, adminSecondary } from "./admin-shell";
@@ -57,53 +57,172 @@ export function englishToJson(en: EnglishDraft, body: EnglishBodyKeys, includeFa
   return out;
 }
 
+/** Conteúdo em português que vira inglês (campos curtos, texto longo e FAQ). */
+export type EnglishSource = { fields: Record<string, string>; markdown: string; faq: FaqDraft[] };
+
+/** Espera depois da última mudança no português antes de traduzir sozinho. */
+const AUTO_DELAY_MS = 3000;
+
+const sameFaq = (a: readonly FaqDraft[], b: readonly FaqDraft[]) => JSON.stringify(a) === JSON.stringify(b);
+
+function faqFromResult(value: unknown): FaqDraft[] | undefined {
+  if (!Array.isArray(value)) return undefined;
+  return value.flatMap((item) => {
+    const entry = item as { question?: unknown; answer?: unknown };
+    return typeof entry.question === "string" && typeof entry.answer === "string"
+      ? [{ question: entry.question, answer: entry.answer }]
+      : [];
+  });
+}
+
+export type EnglishTranslator = {
+  translating: boolean;
+  error?: string;
+  auto: boolean;
+  setAuto: (auto: boolean) => void;
+  /** Traduz tudo de novo (botão), substituindo o inglês atual. */
+  translateAll: () => Promise<void>;
+  /** Muda quando a tradução troca o texto longo: recria o editor de texto em inglês. */
+  version: number;
+  /** Remove a tradução (a /en volta a mostrar o português). */
+  clear: () => void;
+};
+
+/**
+ * Tradução para o inglês dos editores. Fica no editor (não na aba Inglês) para
+ * rodar com qualquer aba aberta: com o automático ligado, alguns segundos depois
+ * da última mudança no português, traduz só o que mudou e mantém os ajustes
+ * feitos à mão no inglês. Sem tradução ainda, traduz tudo.
+ */
+export function useEnglishTranslation({
+  source,
+  en,
+  setEn,
+  body,
+}: {
+  /** null enquanto o conteúdo carrega. */
+  source: EnglishSource | null;
+  en: EnglishDraft | undefined;
+  setEn: (update: (current: EnglishDraft) => EnglishDraft) => void;
+  body: EnglishBodyKeys;
+}): EnglishTranslator {
+  const [translating, setTranslating] = useState(false);
+  const [error, setError] = useState<string>();
+  const [auto, setAuto] = useState(true);
+  const [version, setVersion] = useState(0);
+  // Português na última tradução (ou ao abrir): base para saber o que mudou.
+  const baseline = useRef<EnglishSource | null>(null);
+  const latest = useRef({ source, en, setEn });
+  const running = useRef(0);
+
+  useEffect(() => {
+    latest.current = { source, en, setEn };
+  });
+
+  const run = useCallback(
+    async (snapshot: EnglishSource, full: boolean) => {
+      const current = latest.current.en ?? emptyEnglish;
+      const previous = full || !hasEnglish(current) ? null : baseline.current;
+      // Campos que mudaram desde a última tradução (tudo, se ainda não há tradução).
+      const request: Record<string, unknown> = {};
+      const cleared: string[] = [];
+      for (const [key, value] of Object.entries(snapshot.fields)) {
+        if (previous && previous.fields[key] === value) continue;
+        if (value.trim()) request[key] = value;
+        else cleared.push(key);
+      }
+      const markdownChanged = !previous || previous.markdown !== snapshot.markdown;
+      if (markdownChanged && snapshot.markdown.trim()) request[body.md] = snapshot.markdown;
+      const faqChanged = !previous || !sameFaq(previous.faq, snapshot.faq);
+      if (faqChanged && snapshot.faq.length) request.faq = snapshot.faq;
+
+      const titleChanged = "title" in request;
+      const id = ++running.current;
+      setError(undefined);
+      let result: Record<string, unknown> = {};
+      if (Object.keys(request).length) {
+        if (!request.title && !snapshot.fields.title?.trim()) return; // sem título não há o que traduzir ainda
+        // O título vai sempre junto como contexto (a função exige).
+        if (!request.title) request.title = snapshot.fields.title;
+        setTranslating(true);
+        try {
+          result = await translateToEnglish(request);
+        } catch (problem) {
+          if (id === running.current) setError(problem instanceof Error ? problem.message : String(problem));
+          return;
+        } finally {
+          if (id === running.current) setTranslating(false);
+        }
+        if (!Object.keys(result).length) {
+          if (id === running.current) setError("A IA não devolveu a tradução. Tente “Traduzir de novo”.");
+          return;
+        }
+      } else if (!cleared.length && !(markdownChanged || faqChanged)) {
+        return;
+      }
+
+      baseline.current = snapshot;
+      const translatedFaq = faqFromResult(result.faq);
+      const markdown = typeof result[body.md] === "string" ? String(result[body.md]) : undefined;
+      latest.current.setEn((en) => {
+        const fields = { ...en.fields };
+        for (const key of Object.keys(snapshot.fields)) {
+          if (typeof result[key] === "string" && (key !== "title" || titleChanged)) fields[key] = String(result[key]);
+        }
+        // Título só enviado como contexto: mantém o inglês atual, se houver.
+        if (!titleChanged && !en.fields.title && typeof result.title === "string") fields.title = String(result.title);
+        for (const key of cleared) fields[key] = "";
+        return {
+          fields,
+          markdown: markdown ?? (markdownChanged && !snapshot.markdown.trim() ? "" : en.markdown),
+          json: markdown !== undefined || (markdownChanged && !snapshot.markdown.trim()) ? null : en.json,
+          faq: translatedFaq ?? (faqChanged && !snapshot.faq.length ? [] : en.faq),
+        };
+      });
+      if (markdown !== undefined || markdownChanged) setVersion((v) => v + 1);
+    },
+    [body.md],
+  );
+
+  // Automático: depois de uma pausa nas mudanças do português.
+  const sourceKey = source ? JSON.stringify(source) : "";
+  useEffect(() => {
+    if (!source) return;
+    if (!baseline.current) {
+      baseline.current = source; // ao abrir: o inglês salvo vale para este português
+      return;
+    }
+    if (!auto || JSON.stringify(baseline.current) === sourceKey) return;
+    const timer = setTimeout(() => run(source, false), AUTO_DELAY_MS);
+    return () => clearTimeout(timer);
+    // sourceKey resume o conteúdo de source.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sourceKey, auto, run]);
+
+  const translateAll = useCallback(async () => {
+    if (latest.current.source) await run(latest.current.source, true);
+  }, [run]);
+
+  const clear = useCallback(() => {
+    latest.current.setEn(() => emptyEnglish);
+    setVersion((v) => v + 1);
+  }, []);
+
+  return { translating, error, auto, setAuto, translateAll, version, clear };
+}
+
 type EnglishPanelProps = {
   value: EnglishDraft;
   onChange: (next: EnglishDraft) => void;
   defs: readonly EnglishFieldDef[];
-  body: EnglishBodyKeys;
   bodyLabel: string;
   showFaq: boolean;
-  /** Conteúdo em português, enviado para a tradução. */
-  source: () => { fields: Record<string, string>; markdown: string; faq: FaqDraft[] };
+  translator: EnglishTranslator;
 };
 
-export function EnglishPanel({ value, onChange, defs, body, bodyLabel, showFaq, source }: EnglishPanelProps) {
-  const [translating, setTranslating] = useState(false);
-  const [error, setError] = useState<string>();
-  // Recria o editor de texto quando a tradução troca o conteúdo de fora.
-  const [version, setVersion] = useState(0);
+export function EnglishPanel({ value, onChange, defs, bodyLabel, showFaq, translator }: EnglishPanelProps) {
+  const { translating, error, auto, setAuto, translateAll, version, clear } = translator;
   const translated = hasEnglish(value);
-
-  async function translate() {
-    if (translated && !window.confirm("Substituir a tradução atual pela nova?")) return;
-    const pt = source();
-    setTranslating(true);
-    setError(undefined);
-    try {
-      const result = await translateToEnglish({
-        ...pt.fields,
-        [body.md]: pt.markdown,
-        ...(showFaq ? { faq: filledFaq(pt.faq) } : {}),
-      });
-      const fields: Record<string, string> = {};
-      for (const { key } of defs) fields[key] = typeof result[key] === "string" ? String(result[key]) : "";
-      const faq = Array.isArray(result.faq)
-        ? result.faq.flatMap((item) => {
-            const entry = item as { question?: unknown; answer?: unknown };
-            return typeof entry.question === "string" && typeof entry.answer === "string"
-              ? [{ question: entry.question, answer: entry.answer }]
-              : [];
-          })
-        : value.faq;
-      onChange({ fields, markdown: typeof result[body.md] === "string" ? String(result[body.md]) : "", json: null, faq });
-      setVersion((v) => v + 1);
-    } catch (problem) {
-      setError(problem instanceof Error ? problem.message : String(problem));
-    } finally {
-      setTranslating(false);
-    }
-  }
 
   const setField = (key: string, text: string) => onChange({ ...value, fields: { ...value.fields, [key]: text } });
 
@@ -114,22 +233,30 @@ export function EnglishPanel({ value, onChange, defs, body, bodyLabel, showFaq, 
           <div>
             <p className="text-sm font-semibold text-fg">Versão em inglês (site em /en)</p>
             <p className={`mt-0.5 text-xs ${translated ? "text-fg-muted" : "font-medium text-brand-dark"}`}>
-              {translated
-                ? "Com tradução: a página em inglês mostra este conteúdo."
-                : "Sem tradução: a página em inglês mostra o português com o aviso “disponível só em português”."}
+              {translating
+                ? "Traduzindo o que mudou no português…"
+                : translated
+                  ? "Com tradução: a página em inglês mostra este conteúdo."
+                  : "Sem tradução: a página em inglês mostra o português com o aviso “disponível só em português”."}
             </p>
           </div>
           <div className="flex flex-wrap gap-2">
-            <button type="button" onClick={translate} disabled={translating} className={adminPrimary}>
-              {translating ? "Traduzindo…" : translated ? "Traduzir de novo" : "Traduzir com IA"}
+            <button
+              type="button"
+              onClick={() => {
+                if (translated && !window.confirm("Traduzir tudo de novo? Os ajustes feitos à mão no inglês serão substituídos.")) return;
+                void translateAll();
+              }}
+              disabled={translating}
+              className={adminPrimary}
+            >
+              {translating ? "Traduzindo…" : translated ? "Traduzir tudo de novo" : "Traduzir com IA"}
             </button>
             {translated && (
               <button
                 type="button"
                 onClick={() => {
-                  if (!window.confirm("Remover a tradução? A página em inglês volta a mostrar o português.")) return;
-                  onChange(emptyEnglish);
-                  setVersion((v) => v + 1);
+                  if (window.confirm("Remover a tradução? A página em inglês volta a mostrar o português.")) clear();
                 }}
                 className={adminSecondary}
               >
@@ -138,10 +265,14 @@ export function EnglishPanel({ value, onChange, defs, body, bodyLabel, showFaq, 
             )}
           </div>
         </div>
-        <p className="mt-3 text-xs text-fg-muted">
-          A IA traduz a partir da aba Português (salve o português antes, se mudou). Revise antes de salvar: termos técnicos e
-          nomes podem precisar de ajuste.
-        </p>
+        <label className="mt-4 flex cursor-pointer items-start gap-3">
+          <input type="checkbox" checked={auto} onChange={(e) => setAuto(e.target.checked)} className="mt-0.5 h-4 w-4 accent-ink" />
+          <span className="text-xs text-fg-muted">
+            <span className="block text-sm font-medium text-fg">Traduzir automaticamente</span>
+            Ao mudar algo na aba Português (à mão ou pela IA), o inglês é atualizado sozinho em alguns segundos, só no que
+            mudou. Ajustes feitos aqui são mantidos até o campo em português mudar de novo. Revise antes de salvar.
+          </span>
+        </label>
         {error && (
           <p role="alert" className="mt-3 text-sm font-medium text-brand-dark">
             {error}
@@ -186,7 +317,7 @@ export function EnglishPanel({ value, onChange, defs, body, bodyLabel, showFaq, 
         <FaqEditor
           items={value.faq}
           onChange={(faq) => onChange({ ...value, faq })}
-          description="Perguntas frequentes em inglês (a IA traduz as da aba Português)."
+          description="Perguntas frequentes em inglês (traduzidas das da aba Português)."
         />
       )}
     </div>

@@ -15,6 +15,7 @@ import { statusLabel } from "./article-list";
 import {
   emptyEnglish,
   EnglishPanel,
+  useEnglishTranslation,
   englishFromJson,
   englishToJson,
   hasEnglish,
@@ -188,6 +189,23 @@ export function ArticleEditor() {
   const pillars = getSite("pt-BR").servicePillars;
   const categories = [...new Set(pillars.flatMap((pillar) => pillar.includes))];
 
+  // Inglês: tradução automática do que muda na aba Português (ver useEnglishTranslation).
+  const translator = useEnglishTranslation({
+    source: draft
+      ? {
+          fields: { title: draft.title, excerpt: draft.excerpt, category: draft.category, metaTitle: draft.metaTitle, metaDescription: draft.metaDescription, coverAlt: draft.coverAlt },
+          markdown: draft.markdown,
+          faq: draft.faqEnabled ? filledFaq(draft.faq) : [],
+        }
+      : null,
+    en: draft?.en,
+    setEn: (change) => {
+      setDirty(true);
+      setDraft((current) => (current ? { ...current, en: change(current.en) } : current));
+    },
+    body: englishBody,
+  });
+
   useEffect(() => {
     if (!id) return;
     let active = true;
@@ -356,7 +374,7 @@ export function ArticleEditor() {
         </ul>
       )}
 
-      <LanguageTabs value={language} onChange={setLanguage} englishReady={hasEnglish(draft.en)} />
+      <LanguageTabs value={language} onChange={setLanguage} englishReady={hasEnglish(draft.en)} translating={translator.translating} />
 
       {preview ? (
         <div className="mt-8 rounded-3xl border border-border bg-bg">
@@ -370,21 +388,9 @@ export function ArticleEditor() {
                 value={draft.en}
                 onChange={(en) => update({ en })}
                 defs={englishDefs}
-                body={englishBody}
                 bodyLabel="Content"
                 showFaq={draft.faqEnabled}
-                source={() => ({
-                  fields: {
-                    title: draft.title,
-                    excerpt: draft.excerpt,
-                    category: draft.category,
-                    metaTitle: draft.metaTitle,
-                    metaDescription: draft.metaDescription,
-                    coverAlt: draft.coverAlt,
-                  },
-                  markdown: draft.markdown,
-                  faq: draft.faq,
-                })}
+                translator={translator}
               />
             ) : (
             <>

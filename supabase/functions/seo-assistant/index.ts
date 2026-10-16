@@ -383,7 +383,12 @@ Deno.serve(async (req) => {
       if (!fields.title) return json({ error: "Preencha o título em português antes de traduzir." }, 400);
       if (JSON.stringify(fields).length > 90_000) return json({ error: "Conteúdo longo demais para traduzir de uma vez." }, 400);
       try {
-        const data = await askGemini(apiKey, models, TRANSLATE_SYSTEM, JSON.stringify(fields), translateSchema);
+        // Schema só com as chaves enviadas, todas obrigatórias: sem "required", o Gemini
+        // pode devolver o objeto vazio ou pela metade.
+        const properties: Record<string, unknown> = {};
+        for (const key of Object.keys(fields)) properties[key] = (translateSchema.properties as Record<string, unknown>)[key];
+        const responseSchema = { type: "OBJECT", properties, required: Object.keys(fields) };
+        const data = await askGemini(apiKey, models, TRANSLATE_SYSTEM, JSON.stringify(fields), responseSchema);
         const translated: Record<string, unknown> = {};
         for (const key of TRANSLATABLE) if (fields[key] && text(data[key])) translated[key] = text(data[key]);
         if (fields.faq && Array.isArray(data.faq)) {
