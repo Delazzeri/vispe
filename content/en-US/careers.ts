@@ -46,24 +46,28 @@ export const careers: CareersContent = {
     },
     areas: [
       {
-        name: "Controllership & Finance",
-        roles: ["Finance Assistant", "Financial Analyst", "Controllership Analyst", "Controller", "Finance Coordinator"],
+        name: "Administrative",
+        roles: ["Administrative Analyst", "Financial Analyst", "Financial Assistant", "HR"],
       },
       {
-        name: "M&A & Valuation",
-        roles: ["M&A Analyst", "Valuation Analyst", "Associate", "M&A Manager"],
+        name: "M&A",
+        roles: ["Advisor", "Head of M&A", "Closer", "BDR"],
       },
       {
-        name: "Tax Planning",
-        roles: ["Tax Assistant", "Tax Analyst", "Tax Consultant"],
+        name: "Marketing",
+        roles: ["Graphic Designer", "Social Media", "Paid Traffic Manager", "Video Editor", "Videomaker", "Social Selling", "Head of Marketing"],
+      },
+      {
+        name: "Operations",
+        roles: ["Head of Operations", "Financial Analyst", "CFO", "Controller"],
       },
       {
         name: "Sales",
-        roles: ["SDR / Pre-sales", "Account Executive", "Customer Success", "Sales Manager"],
+        roles: ["LDR", "BDR", "SDR", "Closer", "Partnerships", "Head of Sales", "Support", "CS/CX"],
       },
       {
-        name: "Administrative",
-        roles: ["Administrative Assistant", "Human Resources", "Front Desk"],
+        name: "Technology",
+        roles: ["Development Analyst", "Automation Analyst"],
       },
       { name: "Other", roles: [] },
     ],

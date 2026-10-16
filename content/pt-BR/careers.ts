@@ -44,28 +44,32 @@ export const careers = {
       // Rótulo do campo anti-spam (invisível; só leitores de tela antigos o veem).
       honeypot: "Empresa",
     },
-    // TODO(content): confirmar áreas e cargos com o RH. "Outras" não tem
-    // lista: abre um campo de texto para o candidato informar o cargo.
+    // Áreas em ordem alfabética; "Outras" fica por último e não tem lista:
+    // abre um campo de texto para o candidato informar o cargo.
     areas: [
       {
-        name: "Controladoria e Financeiro",
-        roles: ["Assistente Financeiro", "Analista Financeiro", "Analista de Controladoria", "Controller", "Coordenador(a) Financeiro"],
-      },
-      {
-        name: "M&A e Valuation",
-        roles: ["Analista de M&A", "Analista de Valuation", "Associate", "Gerente de M&A"],
-      },
-      {
-        name: "Planejamento Tributário",
-        roles: ["Assistente Fiscal", "Analista Tributário", "Consultor(a) Tributário"],
+        name: "Administrativo",
+        roles: ["Analista Administrativo", "Analista Financeiro", "Assistente Financeiro", "RH"],
       },
       {
         name: "Comercial",
-        roles: ["SDR / Pré-vendas", "Executivo(a) de Vendas", "Customer Success", "Gerente Comercial"],
+        roles: ["LDR", "BDR", "SDR", "Closer", "Parcerias", "Head Comercial", "Suporte", "CS/CX"],
       },
       {
-        name: "Administrativo",
-        roles: ["Assistente Administrativo", "Recursos Humanos", "Recepção"],
+        name: "M&A",
+        roles: ["Advisor", "Head de M&A", "Closer", "BDR"],
+      },
+      {
+        name: "Marketing",
+        roles: ["Designer Gráfico", "Social Media", "Gestor de Tráfego", "Editor de Vídeo", "Videomaker", "Social Selling", "Head de Marketing"],
+      },
+      {
+        name: "Operacional",
+        roles: ["Head de Operações", "Analista Financeiro", "CFO", "Controller"],
+      },
+      {
+        name: "Tecnologia",
+        roles: ["Analista de Desenvolvimento", "Analista de Automação"],
       },
       { name: "Outras", roles: [] },
     ] as readonly { name: string; roles: readonly string[] }[],
