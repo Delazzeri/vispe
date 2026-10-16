@@ -5,6 +5,7 @@
 
 import { createServer } from "node:http";
 import { existsSync, readFileSync, statSync } from "node:fs";
+import { networkInterfaces } from "node:os";
 import { extname, join, resolve } from "node:path";
 
 const root = resolve("out");
@@ -125,4 +126,12 @@ createServer((req, res) => {
   }
   res.writeHead(200, { "Content-Type": types[extname(file)] ?? "application/octet-stream" });
   res.end(readFileSync(file));
-}).listen(port, () => console.log(`out/ com as regras do .htaccess em http://localhost:${port}`));
+}).listen(port, () => {
+  console.log(`out/ com as regras do .htaccess em http://localhost:${port}`);
+  // Escuta em todas as interfaces: celular/outro PC na mesma rede Wi-Fi abre pelo IP local.
+  const lan = Object.values(networkInterfaces())
+    .flat()
+    .filter((net) => net && net.family === "IPv4" && !net.internal)
+    .map((net) => `http://${net.address}:${port}`);
+  if (lan.length) console.log(`Na rede: ${lan.join("  ")}`);
+});
