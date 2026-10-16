@@ -87,6 +87,9 @@ async function invokeAssistant<T>(body: Record<string, unknown>): Promise<T> {
     if (error instanceof FunctionsHttpError) {
       const status = error.context.status;
       if (status === 404) throw new Error("O assistente ainda não foi publicado no Supabase (ver supabase/README.md).");
+      // Limite de CPU/memória da Edge Function (WORKER_RESOURCE_LIMIT).
+      if (status === 546)
+        throw new Error("A função do assistente passou do limite de processamento do Supabase. Tente de novo; se repetir, veja Edge Functions → seo-assistant → Logs.");
       const body: unknown = await error.context.json().catch(() => null);
       const message = body && typeof body === "object" && "error" in body ? String(body.error) : undefined;
       throw new Error(message ?? `O assistente respondeu com erro ${status}.`);

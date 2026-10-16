@@ -50,7 +50,7 @@ chave do Gemini nunca ir para o site, e só atende quem está logado e é staff.
 4. Pronto: no admin, abra um artigo com título e texto e clique em "Otimizar SEO com IA".
    No editor de materiais, o assistente lê o **arquivo do material** (PDF direto; planilha,
    Word e PowerPoint como texto) e escreve título, resumo, textos do Google, slug, descrição e
-   FAQ a partir dele. Envie o arquivo antes; ZIP não é lido. Republique a função se ela é
+   FAQ a partir dele. Envie o arquivo antes; ZIP e planilha .xls antiga (salve como .xlsx) não são lidos. Republique a função se ela é
    anterior a isso.
    Erros da função aparecem em Edge Functions → seo-assistant → Logs.
 

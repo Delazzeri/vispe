@@ -16,7 +16,6 @@
 import { createClient } from "jsr:@supabase/supabase-js@2";
 import { encodeBase64 } from "jsr:@std/encoding@1/base64";
 import JSZip from "npm:jszip@3.10.1";
-import * as XLSX from "npm:xlsx@0.18.5";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -261,11 +260,17 @@ const INLINE_PDF_BYTES = 14 * 1024 * 1024; // acima disso, o PDF vai pela API de
 
 /** Texto dos elementos <tag> de um XML do Office, com quebra de linha a cada parágrafo. */
 function officeText(xml: string, tag: string, paragraph: string) {
-  return xml
+  const lines = xml
     .split(`</${paragraph}>`)
     .map((chunk) => [...chunk.matchAll(new RegExp(`<${tag}(?: [^>]*)?>([^<]*)</${tag}>`, "g"))].map((m) => m[1]).join(""))
     .filter((line) => line.trim())
-    .join("\n")
+    .join("\n");
+  return xmlDecode(lines);
+}
+
+/** Entidades do XML do Office (&amp; por último, para não decodificar duas vezes). */
+function xmlDecode(value: string) {
+  return value
     .replace(/&lt;/g, "<")
     .replace(/&gt;/g, ">")
     .replace(/&quot;/g, '"')
@@ -329,9 +334,38 @@ async function documentParts(apiKey: string, filePath: string): Promise<GeminiPa
     return [await uploadToGemini(apiKey, bytes, "application/pdf", name)];
   }
   if (extension === "csv") return asText(new TextDecoder().decode(bytes));
-  if (extension === "xlsx" || extension === "xls") {
-    const workbook = XLSX.read(bytes, { type: "array" });
-    const sheets = workbook.SheetNames.map((sheet: string) => `## Aba "${sheet}"\n${XLSX.utils.sheet_to_csv(workbook.Sheets[sheet], { blankrows: false })}`);
+  if (extension === "xls") throw new UserError("Planilha no formato antigo (.xls): salve como .xlsx e envie de novo para a IA ler.");
+  if (extension === "xlsx") {
+    // .xlsx é um ZIP de XMLs: lê os textos e valores direto, sem biblioteca de planilha
+    // (a que existia estourava o limite de CPU/memória da função ao carregar).
+    const zip = await JSZip.loadAsync(bytes);
+    const shared = ((await zip.file("xl/sharedStrings.xml")?.async("string")) ?? "")
+      .split("</si>")
+      .map((item: string) => xmlDecode([...item.matchAll(/<t(?: [^>]*)?>([^<]*)<\/t>/g)].map((m) => m[1]).join("")));
+    const names = [...((await zip.file("xl/workbook.xml")?.async("string")) ?? "").matchAll(/<sheet [^>]*name="([^"]*)"/g)].map((m) => xmlDecode(m[1]));
+    const sheetFiles = Object.keys(zip.files)
+      .filter((path) => /^xl\/worksheets\/sheet\d+\.xml$/.test(path))
+      .sort((a, b) => Number(a.match(/\d+/)?.[0]) - Number(b.match(/\d+/)?.[0]));
+    const sheets = await Promise.all(
+      sheetFiles.map(async (path, i) => {
+        const rows = (await zip.file(path)!.async("string"))
+          .split("</row>")
+          .slice(0, 300) // o começo de cada aba basta para entender a planilha
+          .map((row: string) =>
+            [...row.matchAll(/<c ([^>]*?)(?:\/>|>([\s\S]*?)<\/c>)/g)]
+              .map(([, attrs, inner = ""]) => {
+                const value = inner.match(/<v>([^<]*)<\/v>/)?.[1];
+                if (/t="s"/.test(attrs)) return value !== undefined ? (shared[Number(value)] ?? "") : "";
+                if (/t="inlineStr"/.test(attrs)) return xmlDecode([...inner.matchAll(/<t(?: [^>]*)?>([^<]*)<\/t>/g)].map((m) => m[1]).join(""));
+                return value !== undefined ? xmlDecode(value) : "";
+              })
+              .filter(Boolean)
+              .join(" | "),
+          )
+          .filter(Boolean);
+        return `## Aba "${names[i] ?? `Planilha ${i + 1}`}"\n${rows.join("\n")}`;
+      }),
+    );
     return asText(sheets.join("\n\n"));
   }
   if (extension === "docx") {
