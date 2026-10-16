@@ -15,7 +15,6 @@
 
 import { createClient } from "jsr:@supabase/supabase-js@2";
 import { encodeBase64 } from "jsr:@std/encoding@1/base64";
-import JSZip from "npm:jszip@3.10.1";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -268,6 +267,65 @@ function officeText(xml: string, tag: string, paragraph: string) {
   return xmlDecode(lines);
 }
 
+/**
+ * Leitor mínimo de ZIP (xlsx, docx e pptx são ZIPs de XMLs) com o descompressor
+ * nativo do runtime (DecompressionStream). Uma biblioteca em JavaScript gastava
+ * CPU demais e estourava o limite da função (erro 546). `read` devolve no máximo
+ * `maxBytes` do arquivo descompactado ("" se não existir).
+ */
+function openZip(bytes: Uint8Array) {
+  const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+  // Fim do diretório central: assinatura 0x06054b50, nos últimos ~64 KB.
+  let end = -1;
+  for (let i = bytes.length - 22; i >= Math.max(0, bytes.length - 65_557); i--) {
+    if (view.getUint32(i, true) === 0x06054b50) {
+      end = i;
+      break;
+    }
+  }
+  if (end < 0) throw new UserError("Não consegui abrir o arquivo (ZIP inválido). Salve de novo e envie outra vez.");
+  const entries = new Map<string, { method: number; size: number; offset: number }>();
+  const decoder = new TextDecoder();
+  let at = view.getUint32(end + 16, true);
+  for (let n = view.getUint16(end + 10, true); n > 0 && view.getUint32(at, true) === 0x02014b50; n--) {
+    const nameLength = view.getUint16(at + 28, true);
+    const name = decoder.decode(bytes.subarray(at + 46, at + 46 + nameLength));
+    entries.set(name, { method: view.getUint16(at + 10, true), size: view.getUint32(at + 20, true), offset: view.getUint32(at + 42, true) });
+    at += 46 + nameLength + view.getUint16(at + 30, true) + view.getUint16(at + 32, true);
+  }
+
+  async function read(name: string, maxBytes: number): Promise<string> {
+    const entry = entries.get(name);
+    if (!entry) return "";
+    const local = entry.offset;
+    const start = local + 30 + view.getUint16(local + 26, true) + view.getUint16(local + 28, true);
+    const data = bytes.subarray(start, start + entry.size);
+    if (entry.method === 0) return decoder.decode(data.subarray(0, maxBytes));
+    if (entry.method !== 8) return "";
+    const reader = new Blob([data.slice()]).stream().pipeThrough(new DecompressionStream("deflate-raw")).getReader();
+    const chunks: Uint8Array[] = [];
+    let total = 0;
+    while (total < maxBytes) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      chunks.push(value);
+      total += value.length;
+    }
+    await reader.cancel().catch(() => {});
+    const out = new Uint8Array(Math.min(total, maxBytes));
+    let offset = 0;
+    for (const chunk of chunks) {
+      const part = chunk.subarray(0, out.length - offset);
+      out.set(part, offset);
+      offset += part.length;
+      if (offset >= out.length) break;
+    }
+    return decoder.decode(out);
+  }
+
+  return { names: [...entries.keys()], read };
+}
+
 /** Entidades do XML do Office (&amp; por último, para não decodificar duas vezes). */
 function xmlDecode(value: string) {
   return value
@@ -336,19 +394,20 @@ async function documentParts(apiKey: string, filePath: string): Promise<GeminiPa
   if (extension === "csv") return asText(new TextDecoder().decode(bytes));
   if (extension === "xls") throw new UserError("Planilha no formato antigo (.xls): salve como .xlsx e envie de novo para a IA ler.");
   if (extension === "xlsx") {
-    // .xlsx é um ZIP de XMLs: lê os textos e valores direto, sem biblioteca de planilha
-    // (a que existia estourava o limite de CPU/memória da função ao carregar).
-    const zip = await JSZip.loadAsync(bytes);
-    const shared = ((await zip.file("xl/sharedStrings.xml")?.async("string")) ?? "")
+    // .xlsx é um ZIP de XMLs: lê os textos e valores direto, sem biblioteca de planilha.
+    // Só o começo de cada aba (com formatação, a aba inteira pode ter vários MB).
+    const zip = openZip(bytes);
+    const shared = (await zip.read("xl/sharedStrings.xml", 2_000_000))
       .split("</si>")
       .map((item: string) => xmlDecode([...item.matchAll(/<t(?: [^>]*)?>([^<]*)<\/t>/g)].map((m) => m[1]).join("")));
-    const names = [...((await zip.file("xl/workbook.xml")?.async("string")) ?? "").matchAll(/<sheet [^>]*name="([^"]*)"/g)].map((m) => xmlDecode(m[1]));
-    const sheetFiles = Object.keys(zip.files)
+    const names = [...(await zip.read("xl/workbook.xml", 200_000)).matchAll(/<sheet [^>]*name="([^"]*)"/g)].map((m) => xmlDecode(m[1]));
+    const sheetFiles = zip.names
       .filter((path) => /^xl\/worksheets\/sheet\d+\.xml$/.test(path))
-      .sort((a, b) => Number(a.match(/\d+/)?.[0]) - Number(b.match(/\d+/)?.[0]));
+      .sort((a, b) => Number(a.match(/\d+/)?.[0]) - Number(b.match(/\d+/)?.[0]))
+      .slice(0, 12);
     const sheets = await Promise.all(
       sheetFiles.map(async (path, i) => {
-        const rows = (await zip.file(path)!.async("string"))
+        const rows = (await zip.read(path, 400_000))
           .split("</row>")
           .slice(0, 300) // o começo de cada aba basta para entender a planilha
           .map((row: string) =>
@@ -369,16 +428,16 @@ async function documentParts(apiKey: string, filePath: string): Promise<GeminiPa
     return asText(sheets.join("\n\n"));
   }
   if (extension === "docx") {
-    const zip = await JSZip.loadAsync(bytes);
-    const xml = (await zip.file("word/document.xml")?.async("string")) ?? "";
+    const xml = await openZip(bytes).read("word/document.xml", 3_000_000);
     return asText(officeText(xml, "w:t", "w:p"));
   }
   if (extension === "pptx") {
-    const zip = await JSZip.loadAsync(bytes);
-    const slides = Object.keys(zip.files)
+    const zip = openZip(bytes);
+    const slides = zip.names
       .filter((path) => /^ppt\/slides\/slide\d+\.xml$/.test(path))
-      .sort((a, b) => Number(a.match(/\d+/)?.[0]) - Number(b.match(/\d+/)?.[0]));
-    const texts = await Promise.all(slides.map(async (path, i) => `## Slide ${i + 1}\n${officeText(await zip.file(path)!.async("string"), "a:t", "a:p")}`));
+      .sort((a, b) => Number(a.match(/\d+/)?.[0]) - Number(b.match(/\d+/)?.[0]))
+      .slice(0, 80);
+    const texts = await Promise.all(slides.map(async (path, i) => `## Slide ${i + 1}\n${officeText(await zip.read(path, 300_000), "a:t", "a:p")}`));
     return asText(texts.join("\n\n"));
   }
   throw new UserError("A IA ainda não lê esse formato de arquivo (ZIP). Use PDF, planilha, Word ou PowerPoint.");
