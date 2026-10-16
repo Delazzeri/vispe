@@ -23,6 +23,7 @@ import { FaqEditor, Field, filledFaq, type FaqDraft } from "./form-parts";
 import { LanguageTabs, type EditorLanguage } from "./language-tabs";
 import { materialStatusLabel } from "./material-list";
 import { RichTextEditor, type RichTextValue } from "./rich-text-editor";
+import { generateFaq, SeoAssistant, type SeoPatch } from "./seo-assistant";
 
 type Draft = {
   id?: string;
@@ -164,6 +165,10 @@ export function MaterialEditor() {
   // Arquivos trocados/removidos: apagados do Storage depois de salvar.
   const [orphans, setOrphans] = useState<string[]>([]);
   const [formats, setFormats] = useState<MaterialFormat[]>([]);
+  // Troca a chave do editor de texto quando a descrição muda por fora (diagramação da IA).
+  const [editorVersion, setEditorVersion] = useState(0);
+  const [generatingFaq, setGeneratingFaq] = useState(false);
+  const [faqError, setFaqError] = useState<string>();
   const [formatsError, setFormatsError] = useState<string>();
 
   useEffect(() => {
@@ -218,6 +223,40 @@ export function MaterialEditor() {
       return next;
     });
   };
+
+  function applySeo(patch: SeoPatch) {
+    const { markdown, slug, excerpt, ...fields } = patch;
+    update({
+      ...fields,
+      ...(excerpt !== undefined ? { tagline: excerpt } : {}),
+      ...(slug !== undefined ? { slug, slugTouched: true } : {}),
+      // Sem o JSON antigo: o editor reabre a partir do Markdown novo.
+      ...(markdown !== undefined ? { markdown, json: null } : {}),
+    });
+    if (markdown !== undefined) setEditorVersion((version) => version + 1);
+  }
+
+  async function fillFaqWithAi() {
+    if (!draft) return;
+    if (filledFaq(draft.faq).length && !window.confirm("Substituir as perguntas atuais pelas geradas?")) return;
+    setGeneratingFaq(true);
+    setFaqError(undefined);
+    try {
+      const faq = await generateFaq({
+        kind: "material",
+        title: draft.title,
+        excerpt: draft.tagline,
+        markdown: draft.markdown,
+        category: currentFormat?.name ?? "",
+        tags: [],
+      });
+      update({ faq });
+    } catch (problem) {
+      setFaqError(problem instanceof Error ? problem.message : String(problem));
+    } finally {
+      setGeneratingFaq(false);
+    }
+  }
 
   async function uploadImage(file: File, field: "coverUrl" | "imageUrl") {
     const supabase = getSupabase();
@@ -430,12 +469,23 @@ export function MaterialEditor() {
             <Field label="Título da página (opcional)" hint="Um título mais completo para o topo da página; vazio usa o título.">
               <input value={draft.headline} onChange={(e) => update({ headline: e.target.value })} className={adminInput} />
             </Field>
+            <SeoAssistant
+              kind="material"
+              title={draft.title}
+              excerpt={draft.tagline}
+              markdown={draft.markdown}
+              category={currentFormat?.name ?? ""}
+              tags={[]}
+              published={Boolean(draft.id) && draft.status === "published"}
+              current={{ metaTitle: draft.metaTitle, metaDescription: draft.metaDescription, slug: draft.slug }}
+              onApply={applySeo}
+            />
             <div>
               <p className="text-sm font-medium text-fg">Descrição</p>
               <p className="text-xs text-fg-muted">O que a pessoa vai encontrar, como usar… Use subtítulos e listas.</p>
               <div className="mt-1.5">
                 <RichTextEditor
-                  key={draft.id ?? "novo"}
+                  key={`${draft.id ?? "novo"}-${editorVersion}`}
                   initialJson={draft.json}
                   initialMarkdown={draft.markdown}
                   onChange={(value: RichTextValue) => update({ markdown: value.markdown, json: value.json })}
@@ -445,7 +495,19 @@ export function MaterialEditor() {
             <FaqEditor
               items={draft.faq}
               onChange={(faq) => update({ faq })}
-              description="Aparecem na seção “Dúvidas” da página e no Google (FAQ)."
+              description="Aparecem na seção “Dúvidas” da página e no Google (FAQ). Escreva à mão ou gere a partir da descrição e revise."
+              actions={
+                <>
+                  <button type="button" onClick={fillFaqWithAi} disabled={generatingFaq} className={adminPrimary}>
+                    {generatingFaq ? "Gerando perguntas…" : "Gerar perguntas com IA"}
+                  </button>
+                  {faqError && (
+                    <span role="alert" className="text-sm font-medium text-brand-dark">
+                      {faqError}
+                    </span>
+                  )}
+                </>
+              }
             />
             </>
             )}

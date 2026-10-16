@@ -26,19 +26,31 @@ type SeoAssistantProps = {
   markdown: string;
   category: string;
   tags: readonly string[];
-  /** Artigo já publicado: trocar o slug muda o endereço (o link antigo quebra). */
+  /** Artigo (padrão) ou página de material gratuito: muda as instruções da IA e os textos. */
+  kind?: AssistantKind;
+  /** Já publicado: trocar o slug muda o endereço (o link antigo quebra). */
   published: boolean;
   current: { metaTitle: string; metaDescription: string; slug: string };
   onApply: (patch: SeoPatch) => void;
 };
 
-/** Dados do artigo enviados ao assistente (Edge Function seo-assistant). */
-export type ArticleInput = { title: string; excerpt: string; markdown: string; category: string; tags: readonly string[] };
+export type AssistantKind = "article" | "material";
 
-/** Chama a Edge Function seo-assistant e traduz os erros para mensagens do admin. */
-/** Corpo do pedido à função para os modos de artigo (sugestões de SEO e FAQ). */
+/** Dados do artigo ou material enviados ao assistente (Edge Function seo-assistant). */
+export type ArticleInput = {
+  title: string;
+  excerpt: string;
+  markdown: string;
+  /** Categoria do artigo ou formato do material. */
+  category: string;
+  tags: readonly string[];
+  kind?: AssistantKind;
+};
+
+/** Corpo do pedido à função para as sugestões de SEO e o FAQ (artigo ou material). */
 const articleBody = (input: ArticleInput, task?: "faq") => ({
   task,
+  kind: input.kind ?? "article",
   title: input.title,
   excerpt: input.excerpt,
   content: input.markdown,
@@ -46,6 +58,7 @@ const articleBody = (input: ArticleInput, task?: "faq") => ({
   tags: input.tags,
 });
 
+/** Chama a Edge Function seo-assistant e traduz os erros para mensagens do admin. */
 async function invokeAssistant<T>(body: Record<string, unknown>): Promise<T> {
   const supabase = getSupabase();
   if (!supabase) throw new Error("Supabase não configurado.");
@@ -68,7 +81,7 @@ async function invokeAssistant<T>(body: Record<string, unknown>): Promise<T> {
 
 const requestSuggestion = (input: ArticleInput) => invokeAssistant<SeoSuggestion>(articleBody(input));
 
-/** Perguntas frequentes geradas a partir do conteúdo do artigo (Gemini, tarefa "faq"). */
+/** Perguntas frequentes geradas a partir do conteúdo do artigo ou do material (Gemini, tarefa "faq"). */
 export async function generateFaq(input: ArticleInput): Promise<{ question: string; answer: string }[]> {
   const { faq } = await invokeAssistant<{ faq: { question: string; answer: string }[] }>(articleBody(input, "faq"));
   if (!faq.length) throw new Error("O assistente não conseguiu gerar perguntas para este texto.");
@@ -119,7 +132,8 @@ function Row({
  * Aplicar. A diagramação pode ser desfeita.
  */
 export function SeoAssistant(props: SeoAssistantProps) {
-  const { title, excerpt, markdown, category, tags, published, current, onApply } = props;
+  const { title, excerpt, markdown, category, tags, kind = "article", published, current, onApply } = props;
+  const noun = kind === "material" ? "material" : "artigo";
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string>();
   const [suggestion, setSuggestion] = useState<SeoSuggestion>();
@@ -130,7 +144,7 @@ export function SeoAssistant(props: SeoAssistantProps) {
     setLoading(true);
     setError(undefined);
     try {
-      setSuggestion(await requestSuggestion({ title, excerpt, markdown, category, tags }));
+      setSuggestion(await requestSuggestion({ title, excerpt, markdown, category, tags, kind }));
       setShowLayout(false);
       setPreviousMarkdown(undefined);
     } catch (problem) {
@@ -171,7 +185,7 @@ export function SeoAssistant(props: SeoAssistantProps) {
           </p>
         </div>
         <button type="button" onClick={generate} disabled={loading} className={adminPrimary}>
-          {loading ? "Analisando o artigo…" : suggestion ? "Gerar de novo" : "Otimizar SEO com IA"}
+          {loading ? `Analisando o ${noun}…` : suggestion ? "Gerar de novo" : "Otimizar SEO com IA"}
         </button>
       </div>
 
@@ -206,7 +220,7 @@ export function SeoAssistant(props: SeoAssistantProps) {
             value={suggestion.slug}
             currentValue={current.slug}
             onApply={() => onApply({ slug: suggestion.slug })}
-            warning={published ? "Este artigo já está publicado: trocar o slug muda o endereço e o link antigo deixa de funcionar." : undefined}
+            warning={published ? `Este ${noun} já está publicado: trocar o slug muda o endereço e o link antigo deixa de funcionar.` : undefined}
           />
 
           <div className="rounded-xl border border-border p-4">
@@ -254,7 +268,7 @@ export function SeoAssistant(props: SeoAssistantProps) {
             <button type="button" onClick={applyAll} className={adminPrimary}>
               Aplicar tudo
             </button>
-            <p className="text-xs text-fg-muted">Revise antes de salvar: a IA pode errar. {published && "O slug de artigo publicado só muda pelo botão do campo."}</p>
+            <p className="text-xs text-fg-muted">Revise antes de salvar: a IA pode errar. {published && `O slug de ${noun} publicado só muda pelo botão do campo.`}</p>
           </div>
         </div>
       )}

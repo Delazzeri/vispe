@@ -1,6 +1,7 @@
 // Supabase Edge Function "seo-assistant" (Deno): sugere título para o Google,
 // descrição, resumo, slug e uma diagramação do artigo com foco em SEO, usando o
 // Gemini; com { task: "faq" }, gera as perguntas frequentes do artigo; com
+// { kind: "material" }, faz o mesmo para a página de um material gratuito; com
 // { task: "translate" }, traduz um artigo ou material para o inglês (site /en).
 // Roda no servidor do Supabase para a chave do Gemini nunca ir para o
 // site (que é estático); só atende quem está logado no admin E é staff.
@@ -61,6 +62,33 @@ Regras:
 - Cada resposta com 2 a 4 frases, direta, respondendo logo na primeira frase.
 - Use apenas informações que estão no artigo; nunca invente números, prazos, leis, clientes ou dados.
 - Não repita a mesma pergunta com outras palavras; cubra pontos diferentes do texto.
+- Sem Markdown, links ou HTML nas respostas.`;
+
+// Materiais gratuitos (kind: "material"): a página apresenta um material para baixar
+// (e-book, planilha, aula…) em troca do formulário; o texto descreve e convence.
+const MATERIAL_SYSTEM = `Você é editor de SEO das páginas de materiais gratuitos da Vispe Capital, consultoria financeira para pequenas e médias empresas no Brasil (controladoria, BPO financeiro, planejamento tributário, valuation, M&A, captação de recursos). Cada página apresenta um material para baixar (e-book, planilha, checklist, aula, prompt…) que a pessoa recebe por e-mail depois de preencher um formulário. Escreve em português do Brasil, tom profissional e direto.
+
+Regras inegociáveis:
+- Nunca invente fatos, números, conteúdos do material, clientes ou dados que não estejam no texto original.
+- Preserve o sentido e TODOS os links existentes no formato [texto](endereço), sem alterar os endereços.
+- Não use H1 (o título da página já é o H1). Use "## " para seções e "### " para subseções, sem pular níveis.
+
+O que entregar:
+- focusKeyword: a palavra-chave principal que alguém buscaria para achar este material (2 a 4 palavras; ex.: "planilha de fluxo de caixa").
+- metaTitle: até 60 caracteres, com a palavra-chave no início quando natural e o formato do material (ex.: "Planilha de DRE gratuita"), sem o nome da empresa.
+- metaDescription: entre 140 e 155 caracteres, com a palavra-chave, o que a pessoa recebe e um convite para baixar grátis.
+- excerpt: resumo de 1 frase (até 160 caracteres) para o card do catálogo: o benefício de ter o material.
+- slug: minúsculas, sem acentos, palavras separadas por hífen, até 60 caracteres, sem palavras vazias (de, da, o, a, para…).
+- contentMarkdown: a mesma descrição, rediagramada para leitura e SEO: abertura que diz o que é o material e para quem é, com a palavra-chave nas primeiras linhas; seções com subtítulos descritivos (## / ###), como o que você vai encontrar, para quem é e como usar, só com o que o texto original sustenta; listas (- ou 1.) para o conteúdo do material e os benefícios; parágrafos curtos; **negrito** só em termos-chave (com moderação). Sem tabelas, imagens ou HTML.
+- notes: de 2 a 5 observações curtas sobre o que foi melhorado ou o que o autor pode acrescentar (ex.: listar os capítulos do e-book ou as abas da planilha).`;
+
+const MATERIAL_FAQ_SYSTEM = `Você é editor de SEO das páginas de materiais gratuitos da Vispe Capital (consultoria financeira para PMEs no Brasil). Com base SOMENTE na descrição enviada, escreva perguntas frequentes para a seção "Dúvidas" da página do material, que também viram dados estruturados FAQPage para o Google.
+
+Regras:
+- De 4 a 6 perguntas que um empresário faria antes de baixar: o que o material traz, para quem serve, como usar, sobre o tema do material.
+- Cada resposta com 2 a 4 frases, direta, respondendo logo na primeira frase.
+- O material é gratuito e enviado por e-mail depois do formulário; fora isso, use apenas informações da descrição e nunca invente números, prazos, leis, clientes ou conteúdos.
+- Não repita a mesma pergunta com outras palavras.
 - Sem Markdown, links ou HTML nas respostas.`;
 
 const faqSchema = {
@@ -240,26 +268,41 @@ Deno.serve(async (req) => {
         return json({ error: geminiError(error) }, 502);
       }
     }
+    // kind "material": página de material gratuito (prompts e limites próprios).
+    const material = body.kind === "material";
     const title = text(body.title);
     const content = text(body.content);
-    if (!title || content.length < 200) return json({ error: "Escreva o título e ao menos alguns parágrafos antes de usar o assistente." }, 400);
+    if (!title || content.length < (material ? 120 : 200))
+      return json({ error: material ? "Escreva o título e uma descrição do material antes de usar o assistente." : "Escreva o título e ao menos alguns parágrafos antes de usar o assistente." }, 400);
     if (content.length > MAX_CONTENT) return json({ error: "Artigo longo demais para o assistente (máx. ~60 mil caracteres)." }, 400);
 
-    const articleContext = [
-      `Título do artigo: ${title}`,
-      `Categoria: ${text(body.category) || "(não informada)"}`,
-      `Serviços relacionados: ${Array.isArray(body.tags) && body.tags.length ? body.tags.join(", ") : "(nenhum)"}`,
-      `Resumo atual: ${text(body.excerpt) || "(vazio)"}`,
-      "",
-      "Conteúdo atual (Markdown):",
-      content,
-    ].join("\n");
+    const articleContext = (
+      material
+        ? [
+            `Título do material: ${title}`,
+            `Formato: ${text(body.category) || "(não informado)"}`,
+            `Resumo atual: ${text(body.excerpt) || "(vazio)"}`,
+            "",
+            "Descrição atual (Markdown):",
+            content,
+          ]
+        : [
+            `Título do artigo: ${title}`,
+            `Categoria: ${text(body.category) || "(não informada)"}`,
+            `Serviços relacionados: ${Array.isArray(body.tags) && body.tags.length ? body.tags.join(", ") : "(nenhum)"}`,
+            `Resumo atual: ${text(body.excerpt) || "(vazio)"}`,
+            "",
+            "Conteúdo atual (Markdown):",
+            content,
+          ]
+    ).join("\n");
 
     // Tarefa "faq": só as perguntas frequentes; padrão: sugestões de SEO completas.
     const task = body.task === "faq" ? "faq" : "seo";
     let data;
     try {
-      data = await askGemini(apiKey, models, task === "faq" ? FAQ_SYSTEM : SYSTEM, articleContext, task === "faq" ? faqSchema : schema, 0.4);
+      const system = task === "faq" ? (material ? MATERIAL_FAQ_SYSTEM : FAQ_SYSTEM) : material ? MATERIAL_SYSTEM : SYSTEM;
+      data = await askGemini(apiKey, models, system, articleContext, task === "faq" ? faqSchema : schema, 0.4);
     } catch (error) {
       return json({ error: geminiError(error) }, 502);
     }
