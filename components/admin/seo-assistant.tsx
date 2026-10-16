@@ -9,6 +9,9 @@ import { adminPrimary, adminSecondary } from "./admin-shell";
 
 /** Resposta da Edge Function supabase/functions/seo-assistant. */
 export type SeoSuggestion = {
+  /** Só materiais (escritos a partir do arquivo): nome do material e título da página. */
+  title?: string;
+  headline?: string;
   focusKeyword: string;
   metaTitle: string;
   metaDescription: string;
@@ -18,7 +21,15 @@ export type SeoSuggestion = {
   notes: string[];
 };
 
-export type SeoPatch = Partial<{ metaTitle: string; metaDescription: string; excerpt: string; slug: string; markdown: string }>;
+export type SeoPatch = Partial<{
+  title: string;
+  headline: string;
+  metaTitle: string;
+  metaDescription: string;
+  excerpt: string;
+  slug: string;
+  markdown: string;
+}>;
 
 type SeoAssistantProps = {
   title: string;
@@ -28,6 +39,10 @@ type SeoAssistantProps = {
   tags: readonly string[];
   /** Artigo (padrão) ou página de material gratuito: muda as instruções da IA e os textos. */
   kind?: AssistantKind;
+  /** Material: arquivo no bucket material-files que a IA lê para escrever a página. */
+  filePath?: string;
+  /** Material: título da página atual (para comparar com a sugestão). */
+  headline?: string;
   /** Já publicado: trocar o slug muda o endereço (o link antigo quebra). */
   published: boolean;
   current: { metaTitle: string; metaDescription: string; slug: string };
@@ -45,6 +60,8 @@ export type ArticleInput = {
   category: string;
   tags: readonly string[];
   kind?: AssistantKind;
+  /** Material: a IA lê este arquivo (bucket material-files) e escreve a partir dele. */
+  filePath?: string;
 };
 
 /** Corpo do pedido à função para as sugestões de SEO e o FAQ (artigo ou material). */
@@ -56,6 +73,7 @@ const articleBody = (input: ArticleInput, task?: "faq") => ({
   content: input.markdown,
   category: input.category,
   tags: input.tags,
+  filePath: input.filePath,
 });
 
 /** Chama a Edge Function seo-assistant e traduz os erros para mensagens do admin. */
@@ -132,8 +150,11 @@ function Row({
  * Aplicar. A diagramação pode ser desfeita.
  */
 export function SeoAssistant(props: SeoAssistantProps) {
-  const { title, excerpt, markdown, category, tags, kind = "article", published, current, onApply } = props;
-  const noun = kind === "material" ? "material" : "artigo";
+  const { title, excerpt, markdown, category, tags, kind = "article", filePath, headline = "", published, current, onApply } = props;
+  const isMaterial = kind === "material";
+  const noun = isMaterial ? "material" : "artigo";
+  // Material: escreve a partir do arquivo, então sem arquivo não há o que ler.
+  const missingFile = isMaterial && !filePath;
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string>();
   const [suggestion, setSuggestion] = useState<SeoSuggestion>();
@@ -144,7 +165,7 @@ export function SeoAssistant(props: SeoAssistantProps) {
     setLoading(true);
     setError(undefined);
     try {
-      setSuggestion(await requestSuggestion({ title, excerpt, markdown, category, tags, kind }));
+      setSuggestion(await requestSuggestion({ title, excerpt, markdown, category, tags, kind, filePath }));
       setShowLayout(false);
       setPreviousMarkdown(undefined);
     } catch (problem) {
@@ -164,6 +185,8 @@ export function SeoAssistant(props: SeoAssistantProps) {
     if (!suggestion) return;
     setPreviousMarkdown(markdown);
     onApply({
+      ...(suggestion.title ? { title: suggestion.title } : {}),
+      ...(suggestion.headline ? { headline: suggestion.headline } : {}),
       metaTitle: suggestion.metaTitle,
       metaDescription: suggestion.metaDescription,
       excerpt: suggestion.excerpt,
@@ -181,11 +204,22 @@ export function SeoAssistant(props: SeoAssistantProps) {
             Assistente de SEO (Gemini)
           </h2>
           <p className="mt-0.5 text-xs text-fg-muted">
-            Sugere título e descrição para o Google, resumo, slug e uma diagramação do texto. Nada muda até você aplicar.
+            {isMaterial
+              ? "Lê o arquivo do material e escreve título, resumo, textos para o Google, slug e a descrição da página. Nada muda até você aplicar."
+              : "Sugere título e descrição para o Google, resumo, slug e uma diagramação do texto. Nada muda até você aplicar."}
           </p>
+          {missingFile && <p className="mt-1 text-xs font-medium text-brand-dark">Envie o arquivo do material (na lateral) para liberar.</p>}
         </div>
-        <button type="button" onClick={generate} disabled={loading} className={adminPrimary}>
-          {loading ? `Analisando o ${noun}…` : suggestion ? "Gerar de novo" : "Otimizar SEO com IA"}
+        <button type="button" onClick={generate} disabled={loading || missingFile} className={adminPrimary}>
+          {loading
+            ? isMaterial
+              ? "Lendo o arquivo…"
+              : `Analisando o ${noun}…`
+            : suggestion
+              ? "Gerar de novo"
+              : isMaterial
+                ? "Escrever com IA a partir do arquivo"
+                : "Otimizar SEO com IA"}
         </button>
       </div>
 
@@ -200,6 +234,17 @@ export function SeoAssistant(props: SeoAssistantProps) {
           <p className="text-sm text-fg-muted">
             Palavra-chave principal: <strong className="text-fg">{suggestion.focusKeyword}</strong>
           </p>
+          {suggestion.title && (
+            <Row label="Título" hint="card e e-mail" value={suggestion.title} currentValue={title} onApply={() => onApply({ title: suggestion.title })} />
+          )}
+          {suggestion.headline && (
+            <Row
+              label="Título da página"
+              value={suggestion.headline}
+              currentValue={headline}
+              onApply={() => onApply({ headline: suggestion.headline })}
+            />
+          )}
           <Row
             label="Título para o Google"
             hint={`${suggestion.metaTitle.length}/60`}
@@ -225,7 +270,7 @@ export function SeoAssistant(props: SeoAssistantProps) {
 
           <div className="rounded-xl border border-border p-4">
             <div className="flex flex-wrap items-center justify-between gap-2">
-              <p className="text-sm font-semibold text-fg">Diagramação do conteúdo</p>
+              <p className="text-sm font-semibold text-fg">{isMaterial ? "Descrição da página" : "Diagramação do conteúdo"}</p>
               <div className="flex flex-wrap gap-2">
                 <button type="button" onClick={() => setShowLayout((v) => !v)} className={adminSecondary} aria-expanded={showLayout}>
                   {showLayout ? "Ocultar" : "Ver sugestão"}
@@ -239,11 +284,11 @@ export function SeoAssistant(props: SeoAssistantProps) {
                     }}
                     className={adminSecondary}
                   >
-                    Desfazer diagramação
+                    {isMaterial ? "Desfazer" : "Desfazer diagramação"}
                   </button>
                 ) : (
                   <button type="button" onClick={applyLayout} className={adminSecondary}>
-                    Aplicar ao conteúdo
+                    {isMaterial ? "Aplicar à descrição" : "Aplicar ao conteúdo"}
                   </button>
                 )}
               </div>

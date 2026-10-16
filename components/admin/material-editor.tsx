@@ -219,7 +219,8 @@ export function MaterialEditor() {
     setDraft((current) => {
       if (!current) return current;
       const next = { ...current, ...patch };
-      if (patch.title !== undefined && !current.slugTouched) next.slug = slugify(patch.title, 60);
+      // Slug acompanha o título até ser editado (ou vir junto no patch, como na sugestão da IA).
+      if (patch.title !== undefined && patch.slug === undefined && !current.slugTouched) next.slug = slugify(patch.title, 60);
       return next;
     });
   };
@@ -249,6 +250,7 @@ export function MaterialEditor() {
         markdown: draft.markdown,
         category: currentFormat?.name ?? "",
         tags: [],
+        filePath: draft.filePath || undefined,
       });
       update({ faq });
     } catch (problem) {
@@ -476,6 +478,8 @@ export function MaterialEditor() {
               markdown={draft.markdown}
               category={currentFormat?.name ?? ""}
               tags={[]}
+              filePath={draft.filePath || undefined}
+              headline={draft.headline}
               published={Boolean(draft.id) && draft.status === "published"}
               current={{ metaTitle: draft.metaTitle, metaDescription: draft.metaDescription, slug: draft.slug }}
               onApply={applySeo}
@@ -495,11 +499,11 @@ export function MaterialEditor() {
             <FaqEditor
               items={draft.faq}
               onChange={(faq) => update({ faq })}
-              description="Aparecem na seção “Dúvidas” da página e no Google (FAQ). Escreva à mão ou gere a partir da descrição e revise."
+              description="Aparecem na seção “Dúvidas” da página e no Google (FAQ). Escreva à mão ou gere a partir do arquivo do material e revise."
               actions={
                 <>
-                  <button type="button" onClick={fillFaqWithAi} disabled={generatingFaq} className={adminPrimary}>
-                    {generatingFaq ? "Gerando perguntas…" : "Gerar perguntas com IA"}
+                  <button type="button" onClick={fillFaqWithAi} disabled={generatingFaq || !draft.filePath} className={adminPrimary}>
+                    {generatingFaq ? "Lendo o arquivo…" : "Gerar perguntas com IA"}
                   </button>
                   {faqError && (
                     <span role="alert" className="text-sm font-medium text-brand-dark">

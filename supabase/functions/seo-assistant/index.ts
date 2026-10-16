@@ -1,7 +1,8 @@
 // Supabase Edge Function "seo-assistant" (Deno): sugere título para o Google,
 // descrição, resumo, slug e uma diagramação do artigo com foco em SEO, usando o
 // Gemini; com { task: "faq" }, gera as perguntas frequentes do artigo; com
-// { kind: "material" }, faz o mesmo para a página de um material gratuito; com
+// { kind: "material", filePath }, lê o arquivo do material (PDF, planilha, Word,
+// PowerPoint) e escreve a página e o FAQ a partir dele; com
 // { task: "translate" }, traduz um artigo ou material para o inglês (site /en).
 // Roda no servidor do Supabase para a chave do Gemini nunca ir para o
 // site (que é estático); só atende quem está logado no admin E é staff.
@@ -13,6 +14,9 @@
 // principal está sobrecarregado; padrão: gemini-3.5-flash-lite). Ver supabase/README.md.
 
 import { createClient } from "jsr:@supabase/supabase-js@2";
+import { encodeBase64 } from "jsr:@std/encoding@1/base64";
+import JSZip from "npm:jszip@3.10.1";
+import * as XLSX from "npm:xlsx@0.18.5";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -64,32 +68,53 @@ Regras:
 - Não repita a mesma pergunta com outras palavras; cubra pontos diferentes do texto.
 - Sem Markdown, links ou HTML nas respostas.`;
 
-// Materiais gratuitos (kind: "material"): a página apresenta um material para baixar
-// (e-book, planilha, aula…) em troca do formulário; o texto descreve e convence.
+// Materiais gratuitos (kind: "material"): a IA lê o ARQUIVO do material (PDF,
+// planilha, Word, PowerPoint…, anexado ao pedido) e escreve a página a partir dele.
+// A página apresenta o material, que a pessoa recebe por e-mail depois do formulário.
 const MATERIAL_SYSTEM = `Você é editor de SEO das páginas de materiais gratuitos da Vispe Capital, consultoria financeira para pequenas e médias empresas no Brasil (controladoria, BPO financeiro, planejamento tributário, valuation, M&A, captação de recursos). Cada página apresenta um material para baixar (e-book, planilha, checklist, aula, prompt…) que a pessoa recebe por e-mail depois de preencher um formulário. Escreve em português do Brasil, tom profissional e direto.
 
+Você recebe o ARQUIVO do material (anexo). Leia o documento inteiro e escreva tudo a partir dele: ele é a fonte principal. Título, formato e descrição já digitados no admin, se vierem, são só contexto extra.
+
 Regras inegociáveis:
-- Nunca invente fatos, números, conteúdos do material, clientes ou dados que não estejam no texto original.
-- Preserve o sentido e TODOS os links existentes no formato [texto](endereço), sem alterar os endereços.
+- Tudo precisa ser sustentado pelo documento: nunca invente números, capítulos, abas, ferramentas, clientes, resultados ou promessas que ele não tenha.
+- A página apresenta o material para a pessoa querer baixar: mostre o que tem dentro e o valor de usar, sem entregar o conteúdo inteiro (não copie tabelas, fórmulas ou o passo a passo completo).
 - Não use H1 (o título da página já é o H1). Use "## " para seções e "### " para subseções, sem pular níveis.
 
 O que entregar:
+- title: nome curto do material para o card do catálogo e o e-mail de envio (até 70 caracteres), fiel ao documento (ex.: o título da capa).
+- headline: título mais completo para o topo da página (até 90 caracteres), com o benefício principal.
 - focusKeyword: a palavra-chave principal que alguém buscaria para achar este material (2 a 4 palavras; ex.: "planilha de fluxo de caixa").
 - metaTitle: até 60 caracteres, com a palavra-chave no início quando natural e o formato do material (ex.: "Planilha de DRE gratuita"), sem o nome da empresa.
 - metaDescription: entre 140 e 155 caracteres, com a palavra-chave, o que a pessoa recebe e um convite para baixar grátis.
 - excerpt: resumo de 1 frase (até 160 caracteres) para o card do catálogo: o benefício de ter o material.
 - slug: minúsculas, sem acentos, palavras separadas por hífen, até 60 caracteres, sem palavras vazias (de, da, o, a, para…).
-- contentMarkdown: a mesma descrição, rediagramada para leitura e SEO: abertura que diz o que é o material e para quem é, com a palavra-chave nas primeiras linhas; seções com subtítulos descritivos (## / ###), como o que você vai encontrar, para quem é e como usar, só com o que o texto original sustenta; listas (- ou 1.) para o conteúdo do material e os benefícios; parágrafos curtos; **negrito** só em termos-chave (com moderação). Sem tabelas, imagens ou HTML.
-- notes: de 2 a 5 observações curtas sobre o que foi melhorado ou o que o autor pode acrescentar (ex.: listar os capítulos do e-book ou as abas da planilha).`;
+- contentMarkdown: a descrição da página (250 a 450 palavras), escrita a partir do documento: abertura que diz o que é o material e para quem é, com a palavra-chave nas primeiras linhas; "## O que você vai encontrar" com os tópicos, capítulos, abas ou seções reais do documento em lista; "## Para quem é"; "## Como usar" ou "## Por que usar" quando o documento sustentar; parágrafos curtos; **negrito** só em termos-chave (com moderação). Sem tabelas, imagens, links ou HTML.
+- notes: de 2 a 5 observações curtas para o autor (ex.: partes do documento que ficaram de fora, ou o que conferir antes de publicar).`;
 
-const MATERIAL_FAQ_SYSTEM = `Você é editor de SEO das páginas de materiais gratuitos da Vispe Capital (consultoria financeira para PMEs no Brasil). Com base SOMENTE na descrição enviada, escreva perguntas frequentes para a seção "Dúvidas" da página do material, que também viram dados estruturados FAQPage para o Google.
+const MATERIAL_FAQ_SYSTEM = `Você é editor de SEO das páginas de materiais gratuitos da Vispe Capital (consultoria financeira para PMEs no Brasil). Leia o ARQUIVO do material (anexo) e escreva perguntas frequentes para a seção "Dúvidas" da página do material, que também viram dados estruturados FAQPage para o Google.
 
 Regras:
-- De 4 a 6 perguntas que um empresário faria antes de baixar: o que o material traz, para quem serve, como usar, sobre o tema do material.
+- De 4 a 6 perguntas que um empresário faria antes de baixar: o que o material traz, para quem serve, como usar, e dúvidas sobre o tema que o documento responde.
 - Cada resposta com 2 a 4 frases, direta, respondendo logo na primeira frase.
-- O material é gratuito e enviado por e-mail depois do formulário; fora isso, use apenas informações da descrição e nunca invente números, prazos, leis, clientes ou conteúdos.
+- O material é gratuito e enviado por e-mail depois do formulário; fora isso, use apenas informações do documento e nunca invente números, prazos, leis, clientes ou conteúdos.
 - Não repita a mesma pergunta com outras palavras.
 - Sem Markdown, links ou HTML nas respostas.`;
+
+const materialSchema = {
+  type: "OBJECT",
+  properties: {
+    title: { type: "STRING" },
+    headline: { type: "STRING" },
+    focusKeyword: { type: "STRING" },
+    metaTitle: { type: "STRING" },
+    metaDescription: { type: "STRING" },
+    excerpt: { type: "STRING" },
+    slug: { type: "STRING" },
+    contentMarkdown: { type: "STRING" },
+    notes: { type: "ARRAY", items: { type: "STRING" } },
+  },
+  required: ["title", "headline", "focusKeyword", "metaTitle", "metaDescription", "excerpt", "slug", "contentMarkdown", "notes"],
+};
 
 const faqSchema = {
   type: "OBJECT",
@@ -170,10 +195,11 @@ async function askGemini(
   apiKey: string,
   models: readonly string[],
   system: string,
-  userText: string,
+  user: string | GeminiPart[],
   responseSchema: unknown,
   temperature = 0.2,
 ) {
+  const parts = typeof user === "string" ? [{ text: user }] : user;
   const attempts = [models[0], ...models];
   let lastStatus = 0;
   for (const [index, model] of attempts.entries()) {
@@ -183,7 +209,7 @@ async function askGemini(
       headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey },
       body: JSON.stringify({
         systemInstruction: { parts: [{ text: system }] },
-        contents: [{ role: "user", parts: [{ text: userText }] }],
+        contents: [{ role: "user", parts }],
         generationConfig: { responseMimeType: "application/json", responseSchema, temperature },
       }),
     });
@@ -221,6 +247,108 @@ const slugify = (text: string) =>
     .replace(/-+$/, "");
 
 const text = (value: unknown) => (typeof value === "string" ? value.trim() : "");
+
+type GeminiPart =
+  | { text: string }
+  | { inline_data: { mime_type: string; data: string } }
+  | { file_data: { mime_type: string; file_uri: string } };
+
+/** Erro com mensagem pronta para o admin (arquivo ausente, formato sem leitura…). */
+class UserError extends Error {}
+
+const MAX_DOC_TEXT = 200_000; // caracteres de texto extraído (planilhas e documentos)
+const INLINE_PDF_BYTES = 14 * 1024 * 1024; // acima disso, o PDF vai pela API de arquivos do Gemini
+
+/** Texto dos elementos <tag> de um XML do Office, com quebra de linha a cada parágrafo. */
+function officeText(xml: string, tag: string, paragraph: string) {
+  return xml
+    .split(`</${paragraph}>`)
+    .map((chunk) => [...chunk.matchAll(new RegExp(`<${tag}(?: [^>]*)?>([^<]*)</${tag}>`, "g"))].map((m) => m[1]).join(""))
+    .filter((line) => line.trim())
+    .join("\n")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/&apos;/g, "'")
+    .replace(/&amp;/g, "&");
+}
+
+/** PDF grande: envia pela API de arquivos do Gemini e devolve a referência (fica lá por 48 h). */
+async function uploadToGemini(apiKey: string, bytes: Uint8Array, mime: string, name: string): Promise<GeminiPart> {
+  const start = await fetch("https://generativelanguage.googleapis.com/upload/v1beta/files", {
+    method: "POST",
+    headers: {
+      "x-goog-api-key": apiKey,
+      "X-Goog-Upload-Protocol": "resumable",
+      "X-Goog-Upload-Command": "start",
+      "X-Goog-Upload-Header-Content-Length": String(bytes.length),
+      "X-Goog-Upload-Header-Content-Type": mime,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ file: { display_name: name } }),
+  });
+  const uploadUrl = start.headers.get("x-goog-upload-url");
+  if (!start.ok || !uploadUrl) throw new Error(`gemini ${start.status}`);
+  const upload = await fetch(uploadUrl, {
+    method: "POST",
+    headers: { "X-Goog-Upload-Offset": "0", "X-Goog-Upload-Command": "upload, finalize" },
+    body: bytes,
+  });
+  if (!upload.ok) throw new Error(`gemini ${upload.status}`);
+  let file = (await upload.json()).file;
+  // O Gemini processa o arquivo antes de liberar o uso (PDF: segundos).
+  for (let i = 0; file?.state === "PROCESSING" && i < 30; i++) {
+    await wait(2000);
+    file = await (await fetch(`https://generativelanguage.googleapis.com/v1beta/${file.name}`, { headers: { "x-goog-api-key": apiKey } })).json();
+  }
+  if (file?.state !== "ACTIVE") throw new UserError("O Gemini não conseguiu processar o PDF. Tente de novo ou envie um arquivo menor.");
+  return { file_data: { mime_type: mime, file_uri: file.uri } };
+}
+
+/**
+ * Baixa o arquivo do material (bucket privado material-files, com a chave de
+ * serviço) e devolve o pedaço da mensagem que o Gemini lê: PDF direto; planilha,
+ * Word e PowerPoint como texto extraído.
+ */
+async function documentParts(apiKey: string, filePath: string): Promise<GeminiPart[]> {
+  if (!/^[0-9a-f-]{36}\/[a-z0-9-]+\.[a-z0-9]+$/.test(filePath)) throw new UserError("Arquivo do material inválido.");
+  const admin = createClient(
+    Deno.env.get("SUPABASE_URL") ?? "",
+    Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? Deno.env.get("SERVICE_ROLE_KEY") ?? "",
+    { auth: { persistSession: false } },
+  );
+  const { data: blob, error } = await admin.storage.from("material-files").download(filePath);
+  if (error || !blob) throw new UserError("Não encontrei o arquivo do material. Envie o arquivo de novo.");
+  const bytes = new Uint8Array(await blob.arrayBuffer());
+  const extension = filePath.split(".").pop() ?? "";
+  const name = filePath.split("/").pop() ?? "material";
+  const asText = (content: string) => [{ text: `Conteúdo do arquivo "${name}":\n\n${content.slice(0, MAX_DOC_TEXT)}` }];
+
+  if (extension === "pdf") {
+    if (bytes.length <= INLINE_PDF_BYTES) return [{ inline_data: { mime_type: "application/pdf", data: encodeBase64(bytes) } }];
+    return [await uploadToGemini(apiKey, bytes, "application/pdf", name)];
+  }
+  if (extension === "csv") return asText(new TextDecoder().decode(bytes));
+  if (extension === "xlsx" || extension === "xls") {
+    const workbook = XLSX.read(bytes, { type: "array" });
+    const sheets = workbook.SheetNames.map((sheet: string) => `## Aba "${sheet}"\n${XLSX.utils.sheet_to_csv(workbook.Sheets[sheet], { blankrows: false })}`);
+    return asText(sheets.join("\n\n"));
+  }
+  if (extension === "docx") {
+    const zip = await JSZip.loadAsync(bytes);
+    const xml = (await zip.file("word/document.xml")?.async("string")) ?? "";
+    return asText(officeText(xml, "w:t", "w:p"));
+  }
+  if (extension === "pptx") {
+    const zip = await JSZip.loadAsync(bytes);
+    const slides = Object.keys(zip.files)
+      .filter((path) => /^ppt\/slides\/slide\d+\.xml$/.test(path))
+      .sort((a, b) => Number(a.match(/\d+/)?.[0]) - Number(b.match(/\d+/)?.[0]));
+    const texts = await Promise.all(slides.map(async (path, i) => `## Slide ${i + 1}\n${officeText(await zip.file(path)!.async("string"), "a:t", "a:p")}`));
+    return asText(texts.join("\n\n"));
+  }
+  throw new UserError("A IA ainda não lê esse formato de arquivo (ZIP). Use PDF, planilha, Word ou PowerPoint.");
+}
 
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
@@ -268,23 +396,24 @@ Deno.serve(async (req) => {
         return json({ error: geminiError(error) }, 502);
       }
     }
-    // kind "material": página de material gratuito (prompts e limites próprios).
+    // kind "material": a IA escreve a partir do arquivo do material (filePath no bucket privado).
     const material = body.kind === "material";
     const title = text(body.title);
-    const content = text(body.content);
-    if (!title || content.length < (material ? 120 : 200))
-      return json({ error: material ? "Escreva o título e uma descrição do material antes de usar o assistente." : "Escreva o título e ao menos alguns parágrafos antes de usar o assistente." }, 400);
+    const content = text(body.content).slice(0, material ? 20_000 : undefined);
+    const filePath = text(body.filePath);
+    if (material && !filePath) return json({ error: "Envie o arquivo do material primeiro: a IA escreve a página a partir dele." }, 400);
+    if (!material && (!title || content.length < 200))
+      return json({ error: "Escreva o título e ao menos alguns parágrafos antes de usar o assistente." }, 400);
     if (content.length > MAX_CONTENT) return json({ error: "Artigo longo demais para o assistente (máx. ~60 mil caracteres)." }, 400);
 
     const articleContext = (
       material
         ? [
-            `Título do material: ${title}`,
+            "O arquivo do material vem anexado. Contexto já digitado no admin (pode estar vazio ou incompleto):",
+            `Título atual: ${title || "(vazio)"}`,
             `Formato: ${text(body.category) || "(não informado)"}`,
             `Resumo atual: ${text(body.excerpt) || "(vazio)"}`,
-            "",
-            "Descrição atual (Markdown):",
-            content,
+            `Descrição atual: ${content || "(vazia)"}`,
           ]
         : [
             `Título do artigo: ${title}`,
@@ -302,8 +431,11 @@ Deno.serve(async (req) => {
     let data;
     try {
       const system = task === "faq" ? (material ? MATERIAL_FAQ_SYSTEM : FAQ_SYSTEM) : material ? MATERIAL_SYSTEM : SYSTEM;
-      data = await askGemini(apiKey, models, system, articleContext, task === "faq" ? faqSchema : schema, 0.4);
+      const responseSchema = task === "faq" ? faqSchema : material ? materialSchema : schema;
+      const user = material ? [...(await documentParts(apiKey, filePath)), { text: articleContext }] : articleContext;
+      data = await askGemini(apiKey, models, system, user, responseSchema, 0.4);
     } catch (error) {
+      if (error instanceof UserError) return json({ error: error.message }, 400);
       return json({ error: geminiError(error) }, 502);
     }
 
@@ -318,11 +450,12 @@ Deno.serve(async (req) => {
     }
 
     return json({
+      ...(material ? { title: text(data.title).slice(0, 90), headline: text(data.headline).slice(0, 120) } : {}),
       focusKeyword: text(data.focusKeyword),
       metaTitle: text(data.metaTitle).slice(0, 70),
       metaDescription: text(data.metaDescription).slice(0, 200),
       excerpt: text(data.excerpt).slice(0, 300),
-      slug: slugify(text(data.slug)) || slugify(title),
+      slug: slugify(text(data.slug)) || slugify(title || text(data.title)),
       contentMarkdown: text(data.contentMarkdown),
       notes: Array.isArray(data.notes) ? data.notes.map(text).filter(Boolean).slice(0, 6) : [],
     });

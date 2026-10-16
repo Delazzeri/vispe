@@ -48,8 +48,10 @@ chave do Gemini nunca ir para o site, e só atende quem está logado e é staff.
    `supabase/functions/seo-assistant/index.ts` → Deploy function.
    Deixe ligada a opção de exigir JWT (Verify JWT / Enforce JWT), que é o padrão.
 4. Pronto: no admin, abra um artigo com título e texto e clique em "Otimizar SEO com IA".
-   O editor de materiais tem o mesmo assistente e o "Gerar perguntas com IA", com instruções
-   próprias para páginas de material gratuito (mesma função; republique-a se ela é anterior a isso).
+   No editor de materiais, o assistente lê o **arquivo do material** (PDF direto; planilha,
+   Word e PowerPoint como texto) e escreve título, resumo, textos do Google, slug, descrição e
+   FAQ a partir dele. Envie o arquivo antes; ZIP não é lido. Republique a função se ela é
+   anterior a isso.
    Erros da função aparecem em Edge Functions → seo-assistant → Logs.
 
 ## Materiais gratuitos no admin (arquivo privado + link que expira)
