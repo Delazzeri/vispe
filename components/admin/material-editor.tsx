@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState, type FormEvent } from "react";
 import { renderMarkdown } from "@/lib/blog/markdown";
+import { fetchMaterialFormats, type MaterialFormat } from "@/lib/materials/formats";
 import { slugify } from "@/lib/slugify";
 import { getSupabase } from "@/lib/supabase/client";
 import type { Database, Json, MaterialRecord, MaterialStatus } from "@/lib/supabase/types";
@@ -28,7 +29,8 @@ type Draft = {
   title: string;
   slug: string;
   slugTouched: boolean;
-  type: string;
+  /** Slug do formato (material_formats). */
+  format: string;
   tagline: string;
   headline: string;
   coverUrl: string;
@@ -53,7 +55,7 @@ const emptyDraft: Draft = {
   title: "",
   slug: "",
   slugTouched: false,
-  type: "E-book",
+  format: "",
   tagline: "",
   headline: "",
   coverUrl: "",
@@ -73,7 +75,6 @@ const emptyDraft: Draft = {
   en: emptyEnglish,
 };
 
-const types = ["E-book", "Planilha", "Checklist", "Guia prático", "Modelo", "Webinar"];
 const imageTypes = ["image/jpeg", "image/png", "image/webp"];
 const imageMaxBytes = 5 * 1024 * 1024; // limites dos buckets (0006_materials.sql)
 const fileMaxBytes = 50 * 1024 * 1024;
@@ -92,7 +93,6 @@ const formatSize = (bytes: number) =>
 
 const englishDefs: readonly EnglishFieldDef[] = [
   { key: "title", label: "Title", hint: "Card do catálogo e e-mail de envio em inglês." },
-  { key: "type", label: "Format", hint: "E-book, Spreadsheet, Checklist… (vazio: usa o formato em português)." },
   { key: "tagline", label: "Summary", multiline: true },
   { key: "headline", label: "Page title (opcional)" },
   { key: "metaTitle", label: "Google title (opcional)", maxLength: 70 },
@@ -114,7 +114,7 @@ function rowToDraft(row: MaterialRecord): Draft {
     title: row.title,
     slug: row.slug,
     slugTouched: true,
-    type: row.type,
+    format: row.format ?? "",
     tagline: row.tagline,
     headline: row.headline ?? "",
     coverUrl: row.cover_image_url ?? "",
@@ -135,12 +135,12 @@ function rowToDraft(row: MaterialRecord): Draft {
   };
 }
 
-function validate(draft: Draft): string[] {
+function validate(draft: Draft, formats: readonly MaterialFormat[]): string[] {
   const errors: string[] = [];
   if (!draft.title.trim()) errors.push("Preencha o título.");
   if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(draft.slug) || draft.slug === "item")
     errors.push('Slug inválido: só minúsculas, números e hífens (e não pode ser "item").');
-  if (!draft.type.trim()) errors.push("Preencha o formato (E-book, Planilha…).");
+  if (!formats.some((format) => format.slug === draft.format)) errors.push("Escolha o formato do material.");
   if (!draft.tagline.trim()) errors.push("Preencha o resumo (aparece no card e no topo da página).");
   if (draft.status === "published" && !draft.coverUrl) errors.push("Envie a capa antes de publicar (ela aparece no catálogo).");
   if (draft.coverUrl && !draft.coverAlt.trim()) errors.push("Descreva a capa (texto alternativo).");
@@ -163,6 +163,20 @@ export function MaterialEditor() {
   const [language, setLanguage] = useState<EditorLanguage>("pt");
   // Arquivos trocados/removidos: apagados do Storage depois de salvar.
   const [orphans, setOrphans] = useState<string[]>([]);
+  const [formats, setFormats] = useState<MaterialFormat[]>([]);
+  const [formatsError, setFormatsError] = useState<string>();
+
+  useEffect(() => {
+    let active = true;
+    fetchMaterialFormats().then((result) => {
+      if (!active) return;
+      setFormats(result.formats);
+      setFormatsError(result.error);
+    });
+    return () => {
+      active = false;
+    };
+  }, []);
 
   useEffect(() => {
     if (!id) return;
@@ -191,6 +205,9 @@ export function MaterialEditor() {
 
   if (loadError) return <p className="text-sm font-medium text-brand-dark">{loadError}</p>;
   if (!draft) return <p className="text-sm text-fg-muted">Carregando material…</p>;
+
+  const currentFormat = formats.find((format) => format.slug === draft.format);
+  const formatLabel = (language === "en" ? currentFormat?.name_en || currentFormat?.name : currentFormat?.name) ?? "";
 
   const update = (patch: Partial<Draft>) => {
     setDirty(true);
@@ -247,7 +264,7 @@ export function MaterialEditor() {
     event.preventDefault();
     const supabase = getSupabase();
     if (!supabase || !draft) return;
-    const problems = validate(draft);
+    const problems = validate(draft, formats);
     setErrors(problems);
     if (problems.length) return;
 
@@ -256,7 +273,9 @@ export function MaterialEditor() {
     const record: Database["public"]["Tables"]["materials"]["Update"] = {
       title: draft.title.trim(),
       slug: draft.slug,
-      type: draft.type.trim(),
+      format: draft.format,
+      // Espelho do nome em português (o site lê o nome pela tabela de formatos).
+      type: formats.find((format) => format.slug === draft.format)?.name ?? "",
       tagline: draft.tagline.trim(),
       headline: draft.headline.trim() || null,
       description_md: draft.markdown,
@@ -348,7 +367,7 @@ export function MaterialEditor() {
 
       {preview ? (
         <article lang={language === "en" ? "en-US" : "pt-BR"} className="mx-auto mt-8 max-w-3xl rounded-3xl border border-border bg-bg p-8 md:p-12">
-          <p className="text-sm font-semibold text-fg-muted">{(language === "en" && draft.en.fields.type) || draft.type}</p>
+          <p className="text-sm font-semibold text-fg-muted">{formatLabel}</p>
           <h2 className="mt-3 text-balance text-4xl font-bold tracking-tight text-ink">
             {language === "en" && hasEnglish(draft.en)
               ? draft.en.fields.headline || draft.en.fields.title
@@ -383,7 +402,6 @@ export function MaterialEditor() {
                 source={() => ({
                   fields: {
                     title: draft.title,
-                    type: draft.type,
                     tagline: draft.tagline,
                     headline: draft.headline,
                     metaTitle: draft.metaTitle,
@@ -444,13 +462,26 @@ export function MaterialEditor() {
                   ))}
                 </select>
               </Field>
-              <Field label="Formato">
-                <input value={draft.type} onChange={(e) => update({ type: e.target.value })} list="material-types" className={adminInput} />
-                <datalist id="material-types">
-                  {types.map((type) => (
-                    <option key={type} value={type} />
+              <Field label="Formato" hint="Vira o filtro do catálogo no site.">
+                <select value={draft.format} onChange={(e) => update({ format: e.target.value })} className={adminInput}>
+                  <option value="" disabled>
+                    Escolha…
+                  </option>
+                  {formats.map((format) => (
+                    <option key={format.slug} value={format.slug}>
+                      {format.name}
+                    </option>
                   ))}
-                </datalist>
+                </select>
+                {formatsError ? (
+                  <span className="mt-1 block text-xs font-medium text-brand-dark">
+                    Não deu para carregar os formatos ({formatsError}). A migration 0009 já rodou?
+                  </span>
+                ) : (
+                  <Link href="/admin/materiais/formatos/" className="mt-1 inline-block text-xs font-medium text-brand-dark underline-offset-2 hover:underline">
+                    Gerenciar formatos
+                  </Link>
+                )}
               </Field>
               <Field label="Ordem no catálogo" hint="Maior aparece primeiro.">
                 <input

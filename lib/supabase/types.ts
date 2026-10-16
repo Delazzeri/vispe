@@ -1,4 +1,4 @@
-// Tipos do banco escritos à mão a partir de supabase/migrations (0001–0008).
+// Tipos do banco escritos à mão a partir de supabase/migrations (0001–0009).
 // Depois de criar o projeto, regenerar com:
 //   supabase gen types typescript --project-id <ref> > lib/supabase/types.ts
 
@@ -34,7 +34,10 @@ export type MaterialStatus = "draft" | "published";
 type MaterialRow = {
   id: string;
   slug: string;
+  /** Nome em português do formato (espelho de material_formats.name, mantido pelo admin). */
   type: string;
+  /** Formato (material_formats.slug, 0009). */
+  format: string | null;
   title: string;
   tagline: string;
   headline: string | null;
@@ -59,6 +62,14 @@ type MaterialRow = {
   updated_at: string;
 };
 
+type MaterialFormatRow = {
+  slug: string;
+  name: string;
+  name_en: string;
+  sort_order: number;
+  created_at: string;
+};
+
 type ProfileRow = {
   id: string;
   full_name: string | null;
@@ -79,6 +90,20 @@ export type Database = {
         Row: MaterialRow;
         Insert: Partial<Omit<MaterialRow, "slug" | "title">> & Pick<MaterialRow, "slug" | "title">;
         Update: Partial<MaterialRow>;
+        Relationships: [
+          {
+            foreignKeyName: "materials_format_fkey";
+            columns: ["format"];
+            isOneToOne: false;
+            referencedRelation: "material_formats";
+            referencedColumns: ["slug"];
+          },
+        ];
+      };
+      material_formats: {
+        Row: MaterialFormatRow;
+        Insert: Partial<Omit<MaterialFormatRow, "slug" | "name">> & Pick<MaterialFormatRow, "slug" | "name">;
+        Update: Partial<MaterialFormatRow>;
         Relationships: [];
       };
       profiles: {
@@ -97,3 +122,4 @@ export type Database = {
 
 export type ArticleRecord = ArticleRow;
 export type MaterialRecord = MaterialRow;
+export type MaterialFormatRecord = MaterialFormatRow;

@@ -61,6 +61,12 @@ if (!supabaseUrl || !supabaseKey) {
     });
     if (translations.ok) ok("Supabase: traduções (coluna en) disponíveis.");
     else warn("Rode a migration 0008_translations.sql antes de publicar: sem ela o build não lê os artigos/materiais do banco.");
+    const formats = await fetch(`${supabaseUrl}/rest/v1/materials?select=format,format_info:material_formats(name)&limit=1`, {
+      headers: { apikey: supabaseKey, Authorization: `Bearer ${supabaseKey}` },
+      signal: AbortSignal.timeout(10_000),
+    });
+    if (formats.ok) ok("Supabase: formatos dos materiais (0009) disponíveis.");
+    else warn("Rode a migration 0009_material_formats.sql antes de publicar: sem ela o build não lê os materiais do banco.");
   } catch {
     warn("Supabase não responde (projeto inexistente ou pausado?): o build usará os artigos de content/blog.ts.");
   }

@@ -31,10 +31,14 @@ export function legacyToMarkdown(material: LegacyMaterial): string {
   return parts.join("\n\n");
 }
 
+// Formato do conteúdo local → slug de material_formats (0009), para o filtro funcionar sem o banco.
+const legacyFormats: Record<string, string> = { "E-book": "ebook", Planilha: "planilha", Checklist: "checklist", "Guia prático": "guia" };
+
 export function legacyToItem(material: LegacyMaterial): MaterialItem {
   return {
     slug: material.slug,
     type: material.type,
+    format: legacyFormats[material.type],
     title: material.title,
     tagline: material.tagline,
     headline: material.headline,

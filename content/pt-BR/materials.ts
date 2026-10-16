@@ -10,6 +10,8 @@ export const materialsUi = {
 
   card: { cta: "Ver material" },
 
+  filter: { label: "Filtrar materiais por formato", all: "Todos" },
+
   page: {
     back: "Materiais gratuitos",
     cta: "Quero receber o material",

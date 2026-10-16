@@ -13,6 +13,8 @@ export const materialsUi: Widen<typeof ptBR> = {
 
   card: { cta: "See material" },
 
+  filter: { label: "Filter materials by format", all: "All" },
+
   page: {
     back: "Free materials",
     cta: "Get the material",

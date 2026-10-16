@@ -70,9 +70,14 @@ export function MaterialList() {
             Publicados aparecem no site na hora; quem preenche o formulário recebe por e-mail um link que expira.
           </p>
         </div>
-        <Link href="/admin/materiais/editor/" className={adminPrimary}>
-          Novo material
-        </Link>
+        <div className="flex gap-2">
+          <Link href="/admin/materiais/formatos/" className={adminSecondary}>
+            Formatos
+          </Link>
+          <Link href="/admin/materiais/editor/" className={adminPrimary}>
+            Novo material
+          </Link>
+        </div>
       </div>
 
       <label className="mt-8 block max-w-sm text-sm font-medium text-fg">

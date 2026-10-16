@@ -26,8 +26,14 @@ export type MaterialTranslation = {
 
 export type MaterialItem = {
   slug: string;
-  /** Formato exibido no card e no topo da página (E-book, Planilha, Checklist…). */
+  /** Nome do formato exibido no card e no topo da página (E-book, Planilha…). */
   type: string;
+  /** Formato (material_formats.slug): chave do filtro do catálogo. */
+  format?: string;
+  /** Nome do formato em inglês (site em /en). */
+  typeEn?: string;
+  /** Ordem do formato no filtro (material_formats.sort_order). */
+  formatOrder?: number;
   title: string;
   /** Resumo curto: card do catálogo e abertura da página. */
   tagline: string;

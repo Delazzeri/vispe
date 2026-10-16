@@ -9,14 +9,16 @@ import type { MaterialFaqItem, MaterialItem, MaterialTranslation } from "./types
  * Colunas que o público pode ler. O caminho do arquivo (file_path) fica de fora:
  * o anônimo nem tem permissão nessa coluna (0006_materials.sql); o link de
  * download só sai por e-mail, gerado pela Edge Function material-link.
+ * format_info: nome do formato em pt e en (tabela material_formats, 0009).
  */
 export const publicMaterialColumns =
-  "slug,type,title,tagline,headline,description_md,cover_image_url,cover_image_alt,image_url,faq,meta_title,meta_description,sort_order,published_at,en";
+  "slug,type,format,title,tagline,headline,description_md,cover_image_url,cover_image_alt,image_url,faq,meta_title,meta_description,sort_order,published_at,en,format_info:material_formats(name,name_en,sort_order)";
 
 export type PublicMaterialRow = Pick<
   MaterialRecord,
   | "slug"
   | "type"
+  | "format"
   | "title"
   | "tagline"
   | "headline"
@@ -30,7 +32,7 @@ export type PublicMaterialRow = Pick<
   | "sort_order"
   | "published_at"
   | "en"
->;
+> & { format_info: { name: string; name_en: string; sort_order: number } | null };
 
 function faqFromJson(value: MaterialRecord["faq"]): MaterialFaqItem[] | undefined {
   if (!Array.isArray(value)) return undefined;
@@ -65,7 +67,10 @@ function translationFromJson(value: MaterialRecord["en"]): MaterialTranslation |
 export function rowToMaterial(row: PublicMaterialRow): MaterialItem {
   return {
     slug: row.slug,
-    type: row.type,
+    type: row.format_info?.name ?? row.type,
+    format: row.format ?? undefined,
+    typeEn: row.format_info?.name_en || undefined,
+    formatOrder: row.format_info?.sort_order,
     title: row.title,
     tagline: row.tagline,
     headline: row.headline ?? undefined,

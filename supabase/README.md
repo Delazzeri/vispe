@@ -103,6 +103,17 @@ Projeto que já tem o banco (0001–0007) — uma vez:
 Depois de traduzir, rode `pnpm release` e suba o pacote: a página em inglês vira HTML
 estático com SEO próprio (canonical e hreflang nas duas versões).
 
+## Formatos dos materiais (seletor no admin + filtro no site)
+
+O formato de cada material (Aula, Planilha, E-book, Prompt, Checklist, Guia…) é escolhido
+num seletor no editor. A lista fica em **Admin → Materiais → Formatos**: lá dá para criar
+formatos novos, renomear e definir o nome em inglês e a ordem. O catálogo do site mostra um
+filtro com os formatos que têm material publicado (link compartilhável: `/materiais/?formato=planilha`).
+
+Projeto que já tem o banco (0001–0008) — uma vez: SQL Editor →
+`supabase/migrations/0009_material_formats.sql` → Run. Ela cria os 6 formatos e converte o
+formato dos materiais atuais ("Guia prático" vira "Guia"). Depois, `pnpm release`.
+
 ## No dia a dia
 
 - Publicar no admin já mostra o post no site (página única `/blog/post/`, lida no navegador).

@@ -7,10 +7,13 @@ export type LocalizedMaterial = MaterialItem & { contentLocale: Locale };
 /** Em /en, usa a tradução salva no admin; sem ela, devolve o português (com aviso na página). */
 export function localizeMaterial(material: MaterialItem, locale: Locale): LocalizedMaterial {
   const en = material.en;
-  if (locale !== "en-US" || !en) return { ...material, contentLocale: "pt-BR" };
+  if (locale !== "en-US") return { ...material, contentLocale: "pt-BR" };
+  // O nome do formato é da interface (filtro do catálogo): em /en vai em inglês mesmo sem tradução.
+  const type = material.typeEn || en?.type || material.type;
+  if (!en) return { ...material, type, contentLocale: "pt-BR" };
   return {
     ...material,
-    type: en.type ?? material.type,
+    type,
     title: en.title,
     tagline: en.tagline || material.tagline,
     headline: en.headline,

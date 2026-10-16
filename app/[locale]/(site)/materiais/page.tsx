@@ -22,7 +22,7 @@ export async function generateMetadata({ params }: PageProps<"/[locale]/materiai
 export default async function MateriaisPage({ params }: PageProps<"/[locale]/materiais">) {
   const locale = resolveLocale((await params).locale);
   setRequestLocale(locale);
-  const { hero, card, page } = getMaterialsUi(locale);
+  const { hero, card, page, filter } = getMaterialsUi(locale);
   const { ui } = getSite(locale);
 
   return (
@@ -55,6 +55,7 @@ export default async function MateriaisPage({ params }: PageProps<"/[locale]/mat
           initial={(await listMaterials()).map((material) => localizeMaterial(material, locale))}
           cta={card.cta}
           emptyLabel={page.empty}
+          filter={filter}
           locale={locale}
         />
       </div>
