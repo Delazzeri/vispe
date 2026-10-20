@@ -80,9 +80,14 @@ const articleBody = (input: ArticleInput, task?: "faq") => ({
 async function invokeAssistant<T>(body: Record<string, unknown>): Promise<T> {
   const supabase = getSupabase();
   if (!supabase) throw new Error("Supabase não configurado.");
-  const { data, error } = await supabase.functions.invoke<T>("seo-assistant", {
-    body,
-  });
+  let { data, error } = await supabase.functions.invoke<T>("seo-assistant", { body });
+  // 546: o processo da função estourou CPU/memória (às vezes herdada de um pedido
+  // anterior, como a leitura de um PDF). O Supabase o descarta; a nova tentativa
+  // roda num processo limpo.
+  if (error instanceof FunctionsHttpError && error.context.status === 546) {
+    await new Promise((resolve) => setTimeout(resolve, 1500));
+    ({ data, error } = await supabase.functions.invoke<T>("seo-assistant", { body }));
+  }
   if (error) {
     if (error instanceof FunctionsHttpError) {
       const status = error.context.status;

@@ -255,7 +255,10 @@ type GeminiPart =
 class UserError extends Error {}
 
 const MAX_DOC_TEXT = 200_000; // caracteres de texto extraído (planilhas e documentos)
-const INLINE_PDF_BYTES = 14 * 1024 * 1024; // acima disso, o PDF vai pela API de arquivos do Gemini
+// Acima disso, o PDF vai pela API de arquivos do Gemini. Dentro do pedido, o base64 +
+// o JSON ocupam ~4–6× o tamanho do PDF na memória (o limite da função é 250 MB e é
+// compartilhado com os pedidos seguintes do mesmo processo — erro 546).
+const INLINE_PDF_BYTES = 4 * 1024 * 1024;
 
 /** Texto dos elementos <tag> de um XML do Office, com quebra de linha a cada parágrafo. */
 function officeText(xml: string, tag: string, paragraph: string) {
@@ -337,14 +340,14 @@ function xmlDecode(value: string) {
 }
 
 /** PDF grande: envia pela API de arquivos do Gemini e devolve a referência (fica lá por 48 h). */
-async function uploadToGemini(apiKey: string, bytes: Uint8Array, mime: string, name: string): Promise<GeminiPart> {
+async function uploadToGemini(apiKey: string, file: Blob, mime: string, name: string): Promise<GeminiPart> {
   const start = await fetch("https://generativelanguage.googleapis.com/upload/v1beta/files", {
     method: "POST",
     headers: {
       "x-goog-api-key": apiKey,
       "X-Goog-Upload-Protocol": "resumable",
       "X-Goog-Upload-Command": "start",
-      "X-Goog-Upload-Header-Content-Length": String(bytes.length),
+      "X-Goog-Upload-Header-Content-Length": String(file.size),
       "X-Goog-Upload-Header-Content-Type": mime,
       "Content-Type": "application/json",
     },
@@ -355,17 +358,18 @@ async function uploadToGemini(apiKey: string, bytes: Uint8Array, mime: string, n
   const upload = await fetch(uploadUrl, {
     method: "POST",
     headers: { "X-Goog-Upload-Offset": "0", "X-Goog-Upload-Command": "upload, finalize" },
-    body: bytes,
+    // O Blob vai como está (sem cópia nem base64): é o que mantém a memória baixa.
+    body: file,
   });
   if (!upload.ok) throw new Error(`gemini ${upload.status}`);
-  let file = (await upload.json()).file;
+  let stored = (await upload.json()).file;
   // O Gemini processa o arquivo antes de liberar o uso (PDF: segundos).
-  for (let i = 0; file?.state === "PROCESSING" && i < 30; i++) {
+  for (let i = 0; stored?.state === "PROCESSING" && i < 30; i++) {
     await wait(2000);
-    file = await (await fetch(`https://generativelanguage.googleapis.com/v1beta/${file.name}`, { headers: { "x-goog-api-key": apiKey } })).json();
+    stored = await (await fetch(`https://generativelanguage.googleapis.com/v1beta/${stored.name}`, { headers: { "x-goog-api-key": apiKey } })).json();
   }
-  if (file?.state !== "ACTIVE") throw new UserError("O Gemini não conseguiu processar o PDF. Tente de novo ou envie um arquivo menor.");
-  return { file_data: { mime_type: mime, file_uri: file.uri } };
+  if (stored?.state !== "ACTIVE") throw new UserError("O Gemini não conseguiu processar o PDF. Tente de novo ou envie um arquivo menor.");
+  return { file_data: { mime_type: mime, file_uri: stored.uri } };
 }
 
 /**
@@ -382,15 +386,17 @@ async function documentParts(apiKey: string, filePath: string): Promise<GeminiPa
   );
   const { data: blob, error } = await admin.storage.from("material-files").download(filePath);
   if (error || !blob) throw new UserError("Não encontrei o arquivo do material. Envie o arquivo de novo.");
-  const bytes = new Uint8Array(await blob.arrayBuffer());
   const extension = filePath.split(".").pop() ?? "";
   const name = filePath.split("/").pop() ?? "material";
   const asText = (content: string) => [{ text: `Conteúdo do arquivo "${name}":\n\n${content.slice(0, MAX_DOC_TEXT)}` }];
 
   if (extension === "pdf") {
-    if (bytes.length <= INLINE_PDF_BYTES) return [{ inline_data: { mime_type: "application/pdf", data: encodeBase64(bytes) } }];
-    return [await uploadToGemini(apiKey, bytes, "application/pdf", name)];
+    // PDF pequeno vai dentro do pedido (base64); maior vai pela API de arquivos, sem cópias na memória.
+    if (blob.size <= INLINE_PDF_BYTES)
+      return [{ inline_data: { mime_type: "application/pdf", data: encodeBase64(new Uint8Array(await blob.arrayBuffer())) } }];
+    return [await uploadToGemini(apiKey, blob, "application/pdf", name)];
   }
+  const bytes = new Uint8Array(await blob.arrayBuffer());
   if (extension === "csv") return asText(new TextDecoder().decode(bytes));
   if (extension === "xls") throw new UserError("Planilha no formato antigo (.xls): salve como .xlsx e envie de novo para a IA ler.");
   if (extension === "xlsx") {
