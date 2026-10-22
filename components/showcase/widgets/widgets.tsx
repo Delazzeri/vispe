@@ -70,6 +70,7 @@ function Shell({
 }) {
   return (
     <div
+      data-size={size}
       className={cn(
         "flex h-18 max-w-full shrink-0 overflow-hidden rounded-2xl border border-paper/10 p-2.5 text-paper",
         // Vidro sobre a parede escura do Fin 24/7; preto sólido sobre fundos claros.

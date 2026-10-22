@@ -1,5 +1,6 @@
 import { LocaleLink as Link } from "@/components/ui/locale-link";
 import Image from "next/image";
+import type { CSSProperties } from "react";
 import { HeroScene } from "@/components/sections/hero-scene";
 import { SocialLinks } from "@/components/ui/social-links";
 import type { LocalizedArticle } from "@/lib/blog/localize";
@@ -132,7 +133,8 @@ export function Footer({ posts }: { posts: readonly LocalizedArticle[] }) {
       </div>
 
       {/* Cena com o vídeo só abaixo dos menus; o wordmark decorativo aparece
-          inteiro na base, e o tamanho acompanha a largura (cqw). */}
+          inteiro na base, e o tamanho acompanha a largura (cqw): no celular ocupa a
+          largura toda; do tablet em diante, como na referência. */}
       <div className="relative isolate -mt-16 h-[420px] md:-mt-40 md:h-[640px]">
         <HeroScene
           className="absolute inset-0 -z-10 overflow-hidden"
@@ -141,12 +143,12 @@ export function Footer({ posts }: { posts: readonly LocalizedArticle[] }) {
         />
         <div
           aria-hidden
-          className="absolute inset-x-0 bottom-0 mx-auto max-w-[1700px] select-none px-6 pb-6"
+          className="absolute inset-x-0 bottom-0 mx-auto max-w-[1700px] select-none px-4 pb-6 md:px-6"
           style={{ containerType: "inline-size" }}
         >
           <p
-            className="whitespace-nowrap text-center font-bold text-bg"
-            style={{ fontSize: "22cqw", lineHeight: 0.8, letterSpacing: "-0.05em" }}
+            className="whitespace-nowrap text-center font-bold text-bg text-(length:--wordmark) md:text-(length:--wordmark-md)"
+            style={{ "--wordmark": "42cqw", "--wordmark-md": "22cqw", lineHeight: 0.8, letterSpacing: "-0.05em" } as CSSProperties}
           >
             Vispe
           </p>

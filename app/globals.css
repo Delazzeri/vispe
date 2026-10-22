@@ -143,3 +143,23 @@ body {
     @apply rounded-3xl;
   }
 }
+
+/*
+ * Fileira de widgets das soluções (components/sections/category-blocks.tsx):
+ * no celular, os widgets largos crescem até completar a linha, para todas as
+ * linhas terminarem na mesma borda. O widget pode ser o próprio item do flex
+ * (dentro de um wrapper display:contents) ou estar dentro de um controle
+ * interativo (scrub, ciclo, checklist), que então cresce no lugar dele.
+ * Fora de @layer de propósito: precisa vencer a largura fixa (w-58) das utilities.
+ */
+@media (width < 48rem) {
+  .widget-row [data-size="m"] {
+    flex-grow: 1;
+  }
+  .widget-row > :not(.contents):has(> [data-size="m"]) {
+    flex-grow: 1;
+  }
+  .widget-row > :not(.contents):has(> [data-size="m"]) > [data-size="m"] {
+    width: 100%;
+  }
+}

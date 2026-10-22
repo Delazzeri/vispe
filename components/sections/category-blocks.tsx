@@ -69,8 +69,9 @@ export function CategoryBlocks({ id }: { id?: string }) {
                   {/* Widgets ilustrativos do Fin 24/7, em preto sólido. Os decorativos
                       ficam fora da árvore de acessibilidade; os interativos não. */}
                   {/* No celular, zoom (que também encolhe o espaço ocupado, ao contrário
-                      de scale) deixa os widgets menores e cabendo em até 2 linhas. */}
-                  <div className="mt-6 flex flex-wrap gap-3 max-md:[zoom:0.7]">
+                      de scale) deixa os widgets menores e cabendo em até 2 linhas; os largos
+                      crescem até completar a linha (.widget-row em globals.css). */}
+                  <div className="widget-row mt-6 flex flex-wrap gap-3 max-md:[zoom:0.7]">
                     {modelId ? (
                       // Card com cálculo: os widgets "controle" recalculam os demais.
                       <LinkedWidgets
