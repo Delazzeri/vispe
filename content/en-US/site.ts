@@ -32,8 +32,8 @@ export const site: SiteContent = {
   },
 
   awards: [
-    { src: "/media/award/en-US/+2bi.png", width: 655, height: 766, alt: "2026 seal: over R$ 2 billion in managed equity" },
-    { src: "/media/award/en-US/+700.png", width: 684, height: 766, alt: "2026 seal: over R$ 700 million in M&A transactions" },
+    { src: "/media/award/en-US/+400.png", width: 655, height: 766, alt: "2026 seal: over $400 million in managed equity" },
+    { src: "/media/award/en-US/+140.png", width: 684, height: 766, alt: "2026 seal: over $140 million in M&A transactions" },
     { src: "/media/award/en-US/+300.png", width: 719, height: 765, alt: "2026 seal: over 300 valuation reports issued" },
   ],
 
