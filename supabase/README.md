@@ -120,6 +120,19 @@ Projeto que já tem o banco (0001–0008) — uma vez: SQL Editor →
 `supabase/migrations/0009_material_formats.sql` → Run. Ela cria os 6 formatos e converte o
 formato dos materiais atuais ("Guia prático" vira "Guia"). Depois, `pnpm release`.
 
+## Episódios do Equity Talks (carrossel da home)
+
+O carrossel mostra os 15 episódios mais recentes da playlist Equity Talks do YouTube (id em
+`content/episodes.ts`). O build já sai com os episódios da época; no navegador, a Edge
+Function `youtube-episodes` entrega a playlist atual e o site inclui o que saiu depois, em
+até ~30 minutos, sem novo release. Só entram vídeos com "EquityTalks 0XX" no fim do título;
+a imagem é a thumbnail do próprio vídeo no YouTube.
+
+Publicar (uma vez): Edge Functions → Deploy a new function → Via Editor → nome
+**`youtube-episodes`** → cole todo o `supabase/functions/youtube-episodes/index.ts` →
+**desligue "Verify JWT"** → Deploy. Não tem segredo. Se a função não estiver publicada, o
+carrossel fica com a lista do último build.
+
 ## No dia a dia
 
 - Publicar no admin já mostra o post no site (página única `/blog/post/`, lida no navegador).

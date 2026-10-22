@@ -13,6 +13,7 @@ import { FAQ } from "@/components/sections/faq";
 import { LeadSection } from "@/components/sections/lead-section";
 import { localizeArticle } from "@/lib/blog/localize";
 import { listArticles } from "@/lib/blog/source";
+import { listEpisodes } from "@/lib/episodes/youtube";
 import { resolveLocale } from "@/i18n/routing";
 
 export default async function HomePage({ params }: PageProps<"/[locale]">) {
@@ -27,7 +28,7 @@ export default async function HomePage({ params }: PageProps<"/[locale]">) {
       <Showcase id="como-trabalhamos" />
       <Testimonials id="depoimentos" />
       <Fin id="fin" />
-      <ImageCarousel />
+      <ImageCarousel episodes={await listEpisodes()} />
       <ServicePillars id="equity" />
       <Blog id="blog" posts={(await listArticles()).map((article) => localizeArticle(article, resolveLocale(locale)))} />
       <FAQ id="faq" />
