@@ -129,7 +129,9 @@ export function MaterialView({ material, locale, others = [] }: MaterialViewProp
           </h2>
           <div className="mt-12 grid gap-4">
             {material.faq.map((item) => (
+              // Mesmo name em todos: abrir um card fecha o que estava aberto.
               <details
+                name="material-faq"
                 key={item.question}
                 className="group rounded-xl bg-surface p-6 shadow-[0_1px_2px_rgba(38,38,38,0.04),0_4px_12px_-4px_rgba(38,38,38,0.1)]"
               >
