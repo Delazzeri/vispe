@@ -7,14 +7,24 @@ import type { SiteContent } from "@/content/site";
 import type { Locale } from "@/i18n/routing";
 import { Field, inputClass } from "@/components/ui/form-field";
 import { cn } from "@/lib/cn";
-import { leadAnchor } from "@/lib/lead";
+import { format } from "@/content/types";
+import { leadAnchor, notSureInterest } from "@/lib/lead";
+
+const chipClass =
+  "inline-flex rounded-lg border border-border bg-bg/60 px-4 py-2 text-sm font-medium text-fg transition-colors hover:border-fg/30 peer-checked:border-ink peer-checked:bg-ink peer-checked:text-paper peer-focus-visible:ring-2 peer-focus-visible:ring-brand-dark peer-focus-visible:ring-offset-2";
+
+type InterestOption = {
+  value: string;
+  label: string;
+  services?: readonly { value: string; label: string }[];
+};
 
 type LeadFormProps = {
   locale: Locale;
   copy: SiteContent["contact"]["form"];
   messages: SiteContent["contact"]["messages"];
-  /** Opções de interesse: pilares + "ainda não sei". */
-  interests: readonly { value: string; label: string }[];
+  /** Opções de interesse: pilares (com os serviços de cada um) + "ainda não sei". */
+  interests: readonly InterestOption[];
   /** Exibido quando o envio pelo site ainda não está disponível (ex.: redes da Vispe). */
   fallback: ReactNode;
 };
@@ -28,9 +38,16 @@ function interestFromHash(values: readonly string[]) {
   return values.includes(value) ? value : undefined;
 }
 
+/** Marca/desmarca um interesse: "ainda não sei" e os pilares se excluem. */
+function withInterest(current: readonly string[], value: string, checked: boolean): string[] {
+  if (!checked) return current.filter((item) => item !== value);
+  if (value === notSureInterest) return [notSureInterest];
+  return [...current.filter((item) => item !== notSureInterest && item !== value), value];
+}
+
 export function LeadForm({ locale, copy, messages, interests, fallback }: LeadFormProps) {
   const [state, setState] = useState<LeadState>({ status: "idle" });
-  const [interest, setInterest] = useState<string>();
+  const [selected, setSelected] = useState<string[]>([]);
   const [pending, startTransition] = useTransition();
   const { fields } = copy;
 
@@ -38,7 +55,8 @@ export function LeadForm({ locale, copy, messages, interests, fallback }: LeadFo
     const values = interests.map((option) => option.value);
     const sync = () => {
       const fromHash = interestFromHash(values);
-      if (fromHash) setInterest(fromHash);
+      // CTA de pilar: acrescenta o pilar ao que já estava marcado.
+      if (fromHash) setSelected((current) => withInterest(current, fromHash, true));
     };
     sync();
     window.addEventListener("hashchange", sync);
@@ -59,7 +77,10 @@ export function LeadForm({ locale, copy, messages, interests, fallback }: LeadFo
     startTransition(async () => {
       const result = await submitLead(formData);
       setState(result);
-      if (result.status === "success") form.reset();
+      if (result.status === "success") {
+        form.reset();
+        setSelected([]);
+      }
     });
   }
 
@@ -142,26 +163,18 @@ export function LeadForm({ locale, copy, messages, interests, fallback }: LeadFo
         <p id="lead-interest-label" className="text-sm font-medium text-fg">
           {fields.interest}
         </p>
-        <div
-          role="radiogroup"
-          aria-labelledby="lead-interest-label"
-          {...a11y("interest")}
-          className="mt-3 flex flex-wrap gap-2"
-        >
+        <div role="group" aria-labelledby="lead-interest-label" {...a11y("interest")} className="mt-3 flex flex-wrap gap-2">
           {interests.map((option) => (
             <label key={option.value} className="cursor-pointer">
               <input
-                type="radio"
+                type="checkbox"
                 name="interest"
                 value={option.value}
-                required
-                checked={interest === option.value}
-                onChange={() => setInterest(option.value)}
+                checked={selected.includes(option.value)}
+                onChange={(event) => setSelected((current) => withInterest(current, option.value, event.target.checked))}
                 className="peer sr-only"
               />
-              <span className="inline-flex rounded-lg border border-border bg-bg/60 px-4 py-2 text-sm font-medium text-fg transition-colors hover:border-fg/30 peer-checked:border-ink peer-checked:bg-ink peer-checked:text-paper peer-focus-visible:ring-2 peer-focus-visible:ring-brand-dark peer-focus-visible:ring-offset-2">
-                {option.label}
-              </span>
+              <span className={chipClass}>{option.label}</span>
             </label>
           ))}
         </div>
@@ -171,6 +184,23 @@ export function LeadForm({ locale, copy, messages, interests, fallback }: LeadFo
             {errors.interest}
           </p>
         )}
+
+        {/* Cada pilar marcado abre os serviços dele (opcionais, mais de um por pilar). */}
+        {interests
+          .filter((option) => option.services?.length && selected.includes(option.value))
+          .map((option) => (
+            <fieldset key={option.value} className="mt-4 rounded-xl border border-border bg-bg/40 p-4">
+              <legend className="px-1 text-sm font-medium text-fg">{format(fields.services, { pillar: option.label })}</legend>
+              <div className="mt-1 flex flex-wrap gap-2">
+                {option.services?.map((service) => (
+                  <label key={service.value} className="cursor-pointer">
+                    <input type="checkbox" name="services" value={service.value} className="peer sr-only" />
+                    <span className={cn(chipClass, "px-3 py-1.5")}>{service.label}</span>
+                  </label>
+                ))}
+              </div>
+            </fieldset>
+          ))}
       </div>
 
       <Field id="lead-message" label={fields.message}>

@@ -433,7 +433,8 @@ export const site = {
         company: "Empresa",
         segment: "Segmento",
         revenue: "Faturamento mensal",
-        interest: "Como podemos ajudar?",
+        interest: "Como podemos ajudar? (marque uma ou mais opções)",
+        services: "Serviços de {pillar} (opcional)",
         message: "Conte um pouco do seu momento (opcional)",
       },
       revenueOptions: [
@@ -458,7 +459,7 @@ export const site = {
         email: "Informe um e-mail válido.",
         phone: "Informe um WhatsApp com DDD.",
         revenue: "Selecione uma faixa de faturamento.",
-        interest: "Escolha uma opção.",
+        interest: "Escolha pelo menos uma opção.",
         consent: "É preciso concordar para enviarmos o contato.",
       },
     },

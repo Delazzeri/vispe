@@ -83,6 +83,14 @@ const SHEETS = {
   ],
 };
 
+/**
+ * Colunas acrescentadas depois que a aba já existia: entram no fim (depois de
+ * Idioma/Página e das colunas do material), para as linhas antigas não desalinharem.
+ */
+const TRAILING = {
+  diagnostico: [["services", "Serviços"]],
+};
+
 /** Textos do e-mail do material, no idioma da página onde a pessoa pediu. */
 const MATERIAL_EMAIL = {
   "pt-BR": {
@@ -132,6 +140,7 @@ function doPost(e) {
         clean(values.locale),
         clean(body.page),
         ...after,
+        ...(TRAILING[body.sheet] || []).map(([key]) => clean(values[key])),
       ]);
     } finally {
       lock.releaseLock();
@@ -152,6 +161,7 @@ function sheetFor(name, columns) {
   if (name === "carreiras") header.push("Currículo");
   header.push("Idioma", "Página");
   if (name === "materiais") header.push("Título do material", "Envio do link");
+  header.push(...(TRAILING[name] || []).map(([, title]) => title));
   const current = sheet.getLastColumn() ? sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0] : [];
   if (current.join("|") !== header.join("|")) {
     sheet.getRange(1, 1, 1, header.length).setValues([header]).setFontWeight("bold");

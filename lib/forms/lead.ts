@@ -30,13 +30,23 @@ export async function submitLead(formData: FormData): Promise<LeadState> {
   if (!text(formData, "company")) errors.company = msg.required;
   if (!text(formData, "segment")) errors.segment = msg.required;
   if (!form.revenueOptions.some((option) => option === text(formData, "revenue"))) errors.revenue = msg.revenue;
-  const interests = [...site.servicePillars.map((pillar) => pillar.slug), notSureInterest];
-  if (!interests.includes(text(formData, "interest"))) errors.interest = msg.interest;
+  // Um ou mais pilares, ou só "ainda não sei".
+  const chosen = formData.getAll("interest").filter((value): value is string => typeof value === "string");
+  const pillars = getSite("pt-BR").servicePillars.filter((pillar) => chosen.includes(pillar.slug));
+  const notSure = chosen.length === 1 && chosen[0] === notSureInterest;
+  if (!notSure && (!pillars.length || pillars.length !== chosen.length)) errors.interest = msg.interest;
   if (formData.get("consent") !== "on") errors.consent = msg.consent;
 
   if (Object.keys(errors).length > 0) return { status: "invalid", errors };
 
   const values = formValues(formData, ["website"]);
   values.message = (values.message ?? "").slice(0, 2000);
+  // Na planilha, os nomes em português: "Crescimento; Risco" e os serviços marcados dos pilares escolhidos.
+  values.interest = notSure ? getSite("pt-BR").contact.form.notSure : pillars.map((pillar) => pillar.name).join("; ");
+  const offered = new Set(pillars.flatMap((pillar) => pillar.includes));
+  values.services = formData
+    .getAll("services")
+    .filter((value): value is string => typeof value === "string" && offered.has(value))
+    .join("; ");
   return (await submitToSheet("diagnostico", values)) === "sent" ? { status: "success" } : { status: "unavailable" };
 }

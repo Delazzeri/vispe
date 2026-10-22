@@ -423,7 +423,8 @@ export const site: SiteContent = {
         company: "Company",
         segment: "Industry",
         revenue: "Monthly revenue",
-        interest: "How can we help?",
+        interest: "How can we help? (choose one or more)",
+        services: "{pillar} services (optional)",
         message: "Tell us a bit about where you are (optional)",
       },
       revenueOptions: [
@@ -448,7 +449,7 @@ export const site: SiteContent = {
         email: "Enter a valid email.",
         phone: "Enter a WhatsApp number with area code.",
         revenue: "Select a revenue range.",
-        interest: "Choose an option.",
+        interest: "Choose at least one option.",
         consent: "Please agree so we can get in touch.",
       },
     },

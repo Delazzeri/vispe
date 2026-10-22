@@ -1,7 +1,7 @@
 import { LeadForm } from "@/components/sections/lead-form";
 import { Reveal } from "@/components/motion/reveal";
 import { SocialLinks } from "@/components/ui/social-links";
-import { useSite } from "@/content/site";
+import { getSite, useSite } from "@/content/site";
 import { resolveLocale } from "@/i18n/routing";
 import { leadAnchor, notSureInterest } from "@/lib/lead";
 import { useLocale } from "next-intl";
@@ -16,7 +16,15 @@ export function LeadSection({ id = leadAnchor, headingLevel = "h2" }: { id?: str
   const { contact } = site;
   const Heading = headingLevel;
   const interests = [
-    ...site.servicePillars.map((pillar) => ({ value: pillar.slug, label: pillar.name })),
+    // Serviços: rótulo no idioma da página, valor em português (a planilha fica igual nos dois idiomas).
+    ...site.servicePillars.map((pillar) => {
+      const pt = getSite("pt-BR").servicePillars.find((item) => item.slug === pillar.slug) ?? pillar;
+      return {
+        value: pillar.slug,
+        label: pillar.name,
+        services: pillar.includes.map((label, index) => ({ value: pt.includes[index] ?? label, label })),
+      };
+    }),
     { value: notSureInterest, label: contact.form.notSure },
   ];
 
