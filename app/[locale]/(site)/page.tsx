@@ -30,10 +30,10 @@ export default async function HomePage({ params }: PageProps<"/[locale]">) {
       <Fin id="fin" />
       <ImageCarousel episodes={await listEpisodes()} />
       <ServicePillars id="equity" />
-      <Blog id="blog" posts={(await listArticles()).map((article) => localizeArticle(article, resolveLocale(locale)))} />
-      <FAQ id="faq" />
       {/* Destino de todos os CTAs de diagnóstico (#diagnostico). */}
       <LeadSection />
+      <Blog id="blog" posts={(await listArticles()).map((article) => localizeArticle(article, resolveLocale(locale)))} />
+      <FAQ id="faq" />
     </>
   );
 }
