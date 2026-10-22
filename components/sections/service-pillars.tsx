@@ -10,9 +10,9 @@ import { useSite } from "@/content/site";
 import { format } from "@/content/types";
 import { leadAnchor } from "@/lib/lead";
 
-/** Tamanho que faz uma palavra de `length` caracteres caber na largura do card. */
-function fitSize(length: number) {
-  return `min(60px, ${(100 / (length * 0.78)).toFixed(2)}cqw)`;
+/** Tamanho que faz uma palavra de `length` caracteres caber na largura do card, até `max` px. */
+function fitSize(length: number, max = 60) {
+  return `min(${max}px, ${(100 / (length * 0.78)).toFixed(2)}cqw)`;
 }
 
 export function ServicePillars({ id }: { id?: string }) {
@@ -20,6 +20,7 @@ export function ServicePillars({ id }: { id?: string }) {
   const locale = resolveLocale(useLocale());
   const { title, description } = site.servicesCarousel;
   const longestLabel = Math.max(...site.servicePillars.map((pillar) => pillar.shortLabel.length));
+  const longestSideLabel = Math.max(...site.servicePillars.filter((_, index) => index !== 1).map((pillar) => pillar.shortLabel.length));
 
   return (
     <section id={id} aria-label={site.ui.pillarsLabel} className="relative overflow-hidden bg-bg py-24 md:py-32">
@@ -69,10 +70,11 @@ export function ServicePillars({ id }: { id?: string }) {
                       {
                         // Dimensiona pela largura real do container (cqw): ~0.78em
                         // por caractere em caixa alta bold, então a palavra sempre
-                        // cabe em uma linha, teto de 60px. No desktop cada palavra
-                        // preenche o card; no celular, com os cards empilhados, todas
+                        // cabe em uma linha, teto de 60px. No desktop a palavra do meio
+                        // preenche o card e as laterais usam o tamanho da lateral mais
+                        // longa, com teto de 44px (nunca competem com o destaque do centro); no celular, com os cards empilhados, todas
                         // usam o tamanho da mais longa para ficarem padronizadas.
-                        "--fit-own": fitSize(pillar.shortLabel.length),
+                        "--fit-own": isCenter ? fitSize(pillar.shortLabel.length) : fitSize(longestSideLabel, 44),
                         "--fit-all": fitSize(longestLabel),
                         lineHeight: 1,
                       } as CSSProperties
