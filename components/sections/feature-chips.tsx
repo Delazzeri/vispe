@@ -1,6 +1,7 @@
 "use client";
 
-import { motion, useReducedMotion, type Variants } from "motion/react";
+import * as m from "motion/react-m";
+import { useReducedMotion, type Variants } from "motion/react";
 import { stagger } from "@/components/motion/presets";
 import { Reveal } from "@/components/motion/reveal";
 import { VideoPlaceholder } from "@/components/ui/video-placeholder";
@@ -59,7 +60,7 @@ export function FeatureChips({ id }: { id?: string }) {
             ))}
           </ul>
         ) : (
-          <motion.ul
+          <m.ul
             aria-label={site.ui.solutionsLabel}
             className="mt-10 flex flex-wrap justify-center gap-2"
             initial="hidden"
@@ -68,15 +69,15 @@ export function FeatureChips({ id }: { id?: string }) {
             variants={container}
           >
             {chips.map((label) => (
-              <motion.li
+              <m.li
                 key={label}
                 variants={chip}
                 className="rounded-lg bg-surface px-3 py-1.5 text-xs font-medium text-fg shadow-[0_1px_2px_rgba(38,38,38,0.04),0_4px_12px_-4px_rgba(38,38,38,0.1)]"
               >
                 {label}
-              </motion.li>
+              </m.li>
             ))}
-          </motion.ul>
+          </m.ul>
         )}
       </div>
 

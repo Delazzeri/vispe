@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import { getSupabase } from "@/lib/supabase/client";
 import type { MaterialRecord, MaterialStatus } from "@/lib/supabase/types";
 import { adminInput, adminPrimary, adminSecondary } from "./admin-shell";
+import { CoverOptimizer } from "./cover-optimizer";
 import { LanguageStatus } from "./language-tabs";
 
 // en_title: só o título da tradução (en->>title), sem baixar o texto em inglês inteiro.
@@ -70,7 +71,8 @@ export function MaterialList() {
             Publicados aparecem no site na hora; quem preenche o formulário recebe por e-mail um link que expira.
           </p>
         </div>
-        <div className="flex gap-2">
+        <div className="flex items-start gap-2">
+          <CoverOptimizer />
           <Link href="/admin/materiais/formatos/" className={adminSecondary}>
             Formatos
           </Link>

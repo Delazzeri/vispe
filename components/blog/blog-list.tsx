@@ -45,9 +45,9 @@ export function BlogList({
 
   return (
     <ul className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-      {articles.map((article) => (
+      {articles.map((article, index) => (
         <li key={article.slug}>
-          <BlogCard post={article} />
+          <BlogCard post={article} priority={index === 0} />
         </li>
       ))}
     </ul>

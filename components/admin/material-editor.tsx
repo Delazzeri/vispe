@@ -8,6 +8,7 @@ import { renderMarkdown } from "@/lib/blog/markdown";
 import { fetchMaterialFormats, type MaterialFormat } from "@/lib/materials/formats";
 import { slugify } from "@/lib/slugify";
 import { getSupabase } from "@/lib/supabase/client";
+import { optimizeImage } from "@/lib/admin/optimize-image";
 import type { Database, Json, MaterialRecord, MaterialStatus } from "@/lib/supabase/types";
 import { adminInput, adminPrimary, adminSecondary } from "./admin-shell";
 import {
@@ -284,9 +285,12 @@ export function MaterialEditor() {
     if (!imageTypes.includes(file.type)) return setErrors(["A imagem precisa ser JPG, PNG ou WebP."]);
     if (file.size > imageMaxBytes) return setErrors(["A imagem passa de 5 MB."]);
     setUploading(field);
-    const extension = file.type.split("/")[1].replace("jpeg", "jpg");
-    const path = `${field === "coverUrl" ? "covers" : "images"}/${draft.slug || "material"}-${crypto.randomUUID().slice(0, 8)}.${extension}`;
-    const { error } = await supabase.storage.from("material-images").upload(path, file, { cacheControl: "31536000" });
+    // WebP até 1600px: a capa aparece no catálogo e no topo da página do material.
+    const image = await optimizeImage(file);
+    const path = `${field === "coverUrl" ? "covers" : "images"}/${draft.slug || "material"}-${crypto.randomUUID().slice(0, 8)}.${image.extension}`;
+    const { error } = await supabase.storage
+      .from("material-images")
+      .upload(path, image.blob, { cacheControl: "31536000", contentType: image.contentType });
     setUploading(undefined);
     if (error) return setErrors([`Falha no upload: ${error.message}`]);
     update({ [field]: supabase.storage.from("material-images").getPublicUrl(path).data.publicUrl });

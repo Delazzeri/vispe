@@ -1,7 +1,8 @@
 "use client";
 
 import type { ReactNode } from "react";
-import { motion, useReducedMotion, type Variants } from "motion/react";
+import * as m from "motion/react-m";
+import { useReducedMotion, type Variants } from "motion/react";
 
 /**
  * EXCEÇÃO À REGRA GERAL DE MOTION (CLAUDE.md §8: "o H1 do hero aparece
@@ -35,9 +36,9 @@ export function HeroIntro({ children, className }: { children: ReactNode; classN
   }
 
   return (
-    <motion.div initial="hidden" animate="visible" variants={container} className={className}>
+    <m.div initial="hidden" animate="visible" variants={container} className={className}>
       {children}
-    </motion.div>
+    </m.div>
   );
 }
 
@@ -55,8 +56,8 @@ export function HeroIntroItem({
   }
 
   return (
-    <motion.div variants={item} className={className}>
+    <m.div variants={item} className={className}>
       {children}
-    </motion.div>
+    </m.div>
   );
 }

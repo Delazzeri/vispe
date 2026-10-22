@@ -1,7 +1,8 @@
 "use client";
 
 import { useRef, type ReactNode } from "react";
-import { motion, useScroll, useTransform, useReducedMotion } from "motion/react";
+import * as m from "motion/react-m";
+import { useScroll, useTransform, useReducedMotion } from "motion/react";
 
 type ParallaxProps = {
   children: ReactNode;
@@ -17,7 +18,7 @@ export function Parallax({ children, speed = 0.2, className }: ParallaxProps) {
 
   return (
     <div ref={ref} className={className}>
-      <motion.div style={shouldReduceMotion ? undefined : { y }}>{children}</motion.div>
+      <m.div style={shouldReduceMotion ? undefined : { y }}>{children}</m.div>
     </div>
   );
 }

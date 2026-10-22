@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useSyncExternalStore } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { useReducedMotion } from "motion/react";
 import { cn } from "@/lib/cn";
 import { isMotionPaused, subscribeMotion } from "@/lib/motion-preference";
@@ -23,6 +23,11 @@ type HeroSceneProps = {
    * passagem ao fundo não marcar uma linha (usado no hero, onde a cena é baixa).
    */
   softFadeOnMobile?: boolean;
+  /**
+   * Só cria o vídeo quando a cena chega perto da tela (rodapé): com autoplay, o
+   * navegador baixaria o arquivo inteiro em toda página, mesmo sem a pessoa rolar.
+   */
+  lazy?: boolean;
 };
 
 export function HeroScene({
@@ -31,10 +36,26 @@ export function HeroScene({
   fadeBottom = true,
   src,
   softFadeOnMobile,
+  lazy = false,
 }: HeroSceneProps) {
   const shouldReduceMotion = useReducedMotion();
   const paused = useSyncExternalStore(subscribeMotion, isMotionPaused, () => false);
   const videoRef = useRef<HTMLVideoElement>(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const [near, setNear] = useState(!lazy);
+
+  useEffect(() => {
+    const wrapper = wrapperRef.current;
+    if (near || !wrapper) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) setNear(true);
+      },
+      { rootMargin: "600px 0px" },
+    );
+    observer.observe(wrapper);
+    return () => observer.disconnect();
+  }, [near]);
 
   // "Pausar animações" do rodapé (WCAG 2.2.2): o vídeo em loop também para.
   useEffect(() => {
@@ -42,15 +63,16 @@ export function HeroScene({
     if (!video) return;
     if (paused) video.pause();
     else video.play().catch(() => {});
-  }, [paused]);
+  }, [paused, near]);
 
   return (
-    <div aria-hidden className={className}>
-      {shouldReduceMotion ? (
+    <div ref={wrapperRef} aria-hidden className={className}>
+      {shouldReduceMotion || !near ? (
         // eslint-disable-next-line @next/next/no-img-element
         <img
           src="/media/hero/scene-poster-1600.jpg"
           alt=""
+          loading={near ? undefined : "lazy"}
           className="absolute inset-0 h-full w-full object-cover"
         />
       ) : (

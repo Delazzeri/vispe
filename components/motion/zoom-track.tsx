@@ -1,7 +1,8 @@
 "use client";
 
 import { useRef, type ReactNode } from "react";
-import { motion, transform, useScroll, useTransform, useReducedMotion } from "motion/react";
+import * as m from "motion/react-m";
+import { transform, useScroll, useTransform, useReducedMotion } from "motion/react";
 
 type ZoomTrackProps = {
   children: ReactNode;
@@ -38,9 +39,9 @@ export function ZoomTrack({ children }: ZoomTrackProps) {
   return (
     <div ref={ref} className="relative h-[calc(700px+100vh)]">
       <div className="pointer-events-none sticky top-0 h-screen w-full overflow-hidden">
-        <motion.div style={{ scale, opacity }} className="flex h-full w-full items-center justify-center">
+        <m.div style={{ scale, opacity }} className="flex h-full w-full items-center justify-center">
           {children}
-        </motion.div>
+        </m.div>
       </div>
     </div>
   );

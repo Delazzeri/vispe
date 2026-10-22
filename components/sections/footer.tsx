@@ -140,6 +140,7 @@ export function Footer({ posts }: { posts: readonly LocalizedArticle[] }) {
           className="absolute inset-0 -z-10 overflow-hidden"
           src="/media/hero/scene-footer2.mp4"
           preload="metadata"
+          lazy
         />
         <div
           aria-hidden

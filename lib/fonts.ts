@@ -3,12 +3,18 @@ import localFont from "next/font/local";
 
 // Fontes do site (layouts do site, do admin e a página 404 global).
 
+// Inter é só reserva (a Inter Display cobre os pesos e caracteres do site):
+// sem preload, o navegador só baixa se algum caractere faltar.
 export const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
   display: "swap",
+  preload: false,
 });
 
+// Arquivos recortados para o alfabeto latino + pontuação/setas usadas no site
+// (~33KB cada, antes ~111KB). Originais completos em originais/fonts/; recorte
+// com pyftsubset (fonttools), ver docs/design-system.md.
 export const interDisplay = localFont({
   variable: "--font-inter-display",
   display: "swap",

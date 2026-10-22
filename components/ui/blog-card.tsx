@@ -10,9 +10,11 @@ import { format } from "@/content/types";
 type BlogCardProps = {
   /** Já no idioma da página (localizeArticle). */
   post: Article & { contentLocale?: string };
+  /** Capa na primeira dobra (1º card da listagem): carrega já, com prioridade. */
+  priority?: boolean;
 };
 
-export function BlogCard({ post }: BlogCardProps) {
+export function BlogCard({ post, priority = false }: BlogCardProps) {
   const locale = useLocale();
   const { ui } = useSite();
   return (
@@ -25,6 +27,7 @@ export function BlogCard({ post }: BlogCardProps) {
             alt={post.cover.alt}
             fill
             sizes="(max-width: 767px) 100vw, 33vw"
+            priority={priority}
             className="object-cover transition-transform duration-500 group-hover:scale-[1.02]"
           />
         </div>

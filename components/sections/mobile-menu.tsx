@@ -2,7 +2,8 @@
 
 import { useState } from "react";
 import { LocaleLink as Link } from "@/components/ui/locale-link";
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import * as m from "motion/react-m";
+import { AnimatePresence, useReducedMotion } from "motion/react";
 import { Download, Menu, X } from "lucide-react";
 import { spring } from "@/components/motion/presets";
 import { LanguageSwitcher } from "@/components/ui/language-switcher";
@@ -28,7 +29,7 @@ export function MobileMenu() {
 
       <AnimatePresence>
         {open && (
-          <motion.div
+          <m.div
             id="mobile-nav"
             initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, y: -12 }}
             animate={shouldReduceMotion ? { opacity: 1 } : { opacity: 1, y: 0 }}
@@ -65,7 +66,7 @@ export function MobileMenu() {
               {/* No celular o seletor de idioma mora aqui (no desktop, no canto da página). */}
               <LanguageSwitcher className="mt-4 self-center" />
             </nav>
-          </motion.div>
+          </m.div>
         )}
       </AnimatePresence>
     </div>

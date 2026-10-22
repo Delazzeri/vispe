@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import * as m from "motion/react-m";
+import { AnimatePresence, useReducedMotion } from "motion/react";
 import { spring } from "@/components/motion/presets";
 import type { SiteContent } from "@/content/site";
 import { openPreferencesEvent, readConsent, saveConsent, type ConsentCategory } from "@/lib/consent";
@@ -108,7 +109,7 @@ export function CookieConsent({ labels }: { labels: CookieLabels }) {
   return (
     <AnimatePresence>
       {view !== "closed" && (
-        <motion.div
+        <m.div
           ref={panelRef}
           role="dialog"
           aria-modal="false"
@@ -175,7 +176,7 @@ export function CookieConsent({ labels }: { labels: CookieLabels }) {
               </>
             )}
           </div>
-        </motion.div>
+        </m.div>
       )}
     </AnimatePresence>
   );

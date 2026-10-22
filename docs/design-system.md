@@ -44,6 +44,7 @@ O Fin 24/7 (CFO virtual da Vispe) tem identidade própria em verde, medida no po
 
 - Fonte: stack `"Inter Display", Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif` — mesmo stack usado pela referência cooldock.app.
   - **Inter Display**: corte estático da família Inter otimizado para texto grande (títulos), distribuído via rsms.me/inter (SIL OFL) e hospedado localmente em `public/fonts/inter-display/` + `next/font/local` (pesos 400/500/600/700).
+    Os arquivos publicados são **recortados** (~33KB cada; o completo tem ~111KB): `pyftsubset originais/fonts/inter-display/InterDisplay-<Peso>.woff2 --unicodes="U+0000-00FF,U+0100-017F,U+0192,U+02C6,U+02DA,U+02DC,U+2000-206F,U+20AC,U+2122,U+2190-21FF,U+2212,U+2248,U+2260,U+2264-2265,U+FEFF,U+FFFD" --layout-features='*' --flavor=woff2`. Texto novo com caractere fora disso (outro alfabeto, símbolo raro) → incluir o intervalo e recortar de novo a partir dos originais em `originais/fonts/` (fora do Git).
   - **Inter**: fallback via `next/font/google` (`display: swap`), cobre pesos/estilos que o corte Display não tem.
 - Decisão de marca: o manual da Vispe especifica Montserrat/Barlow/Gotham; por pedido explícito do time, o site institucional usa Inter/Inter Display como substituição moderna (anteriormente Geist) — aplica-se apenas a este projeto web, não sobrescreve o manual para outras peças (impressos, apresentações, social).
 - Pesos: 400 (texto), 500 (destaques), 600 (subtítulos), 700 (H1/H2).

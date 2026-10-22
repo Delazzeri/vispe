@@ -9,6 +9,7 @@ import { getSite } from "@/content/site";
 import type { Article } from "@/lib/blog/types";
 import { slugify } from "@/lib/slugify";
 import { getSupabase } from "@/lib/supabase/client";
+import { optimizeImage } from "@/lib/admin/optimize-image";
 import type { ArticleRecord, ArticleStatus, Database, Json } from "@/lib/supabase/types";
 import { adminInput, adminPrimary, adminSecondary } from "./admin-shell";
 import { statusLabel } from "./article-list";
@@ -283,9 +284,12 @@ export function ArticleEditor() {
     if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) return setErrors(["A capa precisa ser JPG, PNG ou WebP."]);
     if (file.size > coverMaxBytes) return setErrors(["A capa passa de 3 MB."]);
     setUploading(true);
-    const extension = file.type.split("/")[1].replace("jpeg", "jpg");
-    const path = `covers/${Date.now()}-${draft.slug || "capa"}.${extension}`;
-    const { error } = await supabase.storage.from("article-images").upload(path, file, { cacheControl: "31536000" });
+    // WebP até 1600px: a capa é o LCP da página do artigo.
+    const image = await optimizeImage(file);
+    const path = `covers/${Date.now()}-${draft.slug || "capa"}.${image.extension}`;
+    const { error } = await supabase.storage
+      .from("article-images")
+      .upload(path, image.blob, { cacheControl: "31536000", contentType: image.contentType });
     setUploading(false);
     if (error) return setErrors([`Falha no upload: ${error.message}`]);
     update({ coverUrl: supabase.storage.from("article-images").getPublicUrl(path).data.publicUrl });

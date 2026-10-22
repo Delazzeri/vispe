@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { NextIntlClientProvider } from "next-intl";
+import { MotionProvider } from "@/components/motion/motion-provider";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { isLocale, locales, resolveLocale, type Locale } from "@/i18n/routing";
 import { fontVariables } from "@/lib/fonts";
@@ -62,16 +63,18 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd(locale)) }}
         />
         <NextIntlClientProvider>
-          {/* Só no topo: absoluto (rola com a página), ao contrário do header sticky.
-              No celular o header ocupa a largura toda, então o seletor vai para o menu. */}
-          <LanguageSwitcher className="absolute top-6 right-6 z-40 hidden md:flex" />
-          <Header />
-          <main id="main-content" className="flex-1">
-            {children}
-          </main>
-          <Footer posts={(await listArticles()).map((article) => localizeArticle(article, locale))} />
-          <WhatsAppButton labels={getSite(locale).ui.whatsappFloat} />
-          <CookieConsent labels={getSite(locale).ui.cookies} />
+          <MotionProvider>
+            {/* Só no topo: absoluto (rola com a página), ao contrário do header sticky.
+                No celular o header ocupa a largura toda, então o seletor vai para o menu. */}
+            <LanguageSwitcher className="absolute top-6 right-6 z-40 hidden md:flex" />
+            <Header />
+            <main id="main-content" className="flex-1">
+              {children}
+            </main>
+            <Footer posts={(await listArticles()).map((article) => localizeArticle(article, locale))} />
+            <WhatsAppButton labels={getSite(locale).ui.whatsappFloat} />
+            <CookieConsent labels={getSite(locale).ui.cookies} />
+          </MotionProvider>
         </NextIntlClientProvider>
       </body>
     </html>
