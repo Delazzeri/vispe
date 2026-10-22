@@ -87,12 +87,12 @@ export const site = {
 
   servicePillars: [
     {
-      slug: "organizacao",
-      shortLabel: "ORGANIZAÇÃO",
-      tagline: "Organize o seu financeiro",
-      name: "Organização",
-      cta: "Quero me organizar",
-      includes: ["Diagnóstico Financeiro", "BPO Financeiro", "Due Diligence"],
+      slug: "crescimento",
+      shortLabel: "CRESCIMENTO",
+      tagline: "Prepare-se para o próximo salto",
+      name: "Crescimento",
+      cta: "Quero crescer minha empresa",
+      includes: ["Aceleração Comercial", "Fusões e Aquisições", "Captação de Recursos"],
     },
     {
       slug: "margem",
@@ -109,12 +109,12 @@ export const site = {
       ],
     },
     {
-      slug: "crescimento",
-      shortLabel: "CRESCIMENTO",
-      tagline: "Prepare-se para o próximo salto",
-      name: "Crescimento",
-      cta: "Quero crescer minha empresa",
-      includes: ["Aceleração Comercial", "Fusões e Aquisições", "Captação de Recursos"],
+      slug: "organizacao",
+      shortLabel: "RISCO",
+      tagline: "Organize o seu financeiro",
+      name: "Risco",
+      cta: "Quero me organizar",
+      includes: ["Diagnóstico Financeiro", "BPO Financeiro", "Due Diligence"],
     },
   ],
 

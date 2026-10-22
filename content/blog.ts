@@ -32,7 +32,7 @@ export type BlogPost = {
   category: string;
   /**
    * Serviços relacionados, com os mesmos nomes dos pilares (servicePillars.includes
-   * em pt-BR). Definem em quais filtros do blog (Organização, Margem, Crescimento) o
+   * em pt-BR). Definem em quais filtros do blog (Crescimento, Margem, Risco) o
    * post aparece; pode estar em mais de um.
    */
   tags: readonly string[];
