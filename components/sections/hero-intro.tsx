@@ -3,6 +3,7 @@
 import type { ReactNode } from "react";
 import * as m from "motion/react-m";
 import { useReducedMotion, type Variants } from "motion/react";
+import { cn } from "@/lib/cn";
 
 /**
  * EXCEÇÃO À REGRA GERAL DE MOTION (CLAUDE.md §8: "o H1 do hero aparece
@@ -11,6 +12,9 @@ import { useReducedMotion, type Variants } from "motion/react";
  * Isso troca uma fração de LCP por fidelidade visual à referência — decisão
  * consciente, não descuido. Não usar este padrão em outras seções acima
  * da dobra sem a mesma aprovação explícita.
+ *
+ * No celular, o painel (LCP da home) aparece pronto, sem o fade (staticOnMobile):
+ * decisão do time para o LCP do mobile; no desktop a intro segue igual.
  */
 const container: Variants = {
   hidden: {},
@@ -45,9 +49,12 @@ export function HeroIntro({ children, className }: { children: ReactNode; classN
 export function HeroIntroItem({
   children,
   className,
+  staticOnMobile = false,
 }: {
   children: ReactNode;
   className?: string;
+  /** No celular, ignora o fade/translate (vence o estilo inline do Motion com !important). */
+  staticOnMobile?: boolean;
 }) {
   const shouldReduceMotion = useReducedMotion();
 
@@ -56,7 +63,10 @@ export function HeroIntroItem({
   }
 
   return (
-    <m.div variants={item} className={className}>
+    <m.div
+      variants={item}
+      className={cn(className, staticOnMobile && "max-md:opacity-100! max-md:[transform:none]!")}
+    >
       {children}
     </m.div>
   );

@@ -76,7 +76,7 @@ export function Hero({ id }: { id?: string }) {
         {/* As rochas se posicionam pela tela-mac (não pela janela): a sobreposição
             fica igual em qualquer largura, sem elas se afastarem em telas largas. */}
         <div className="relative w-full max-w-6xl">
-          <HeroIntroItem className="relative z-10 -mt-6 md:-mt-10">
+          <HeroIntroItem staticOnMobile className="relative z-10 -mt-6 md:-mt-10">
             <DashboardMockup />
           </HeroIntroItem>
 
