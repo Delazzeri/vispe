@@ -10,6 +10,9 @@ import { isMotionPaused, subscribeMotion } from "@/lib/motion-preference";
 const heroClassName =
   "absolute inset-x-0 bottom-0 -z-10 h-[380px] overflow-hidden md:bottom-auto md:top-[360px] md:h-[620px]";
 
+/** Mesmo corte da fonte de vídeo mobile (<source media>). */
+const mobileQuery = "(max-width: 809px)";
+
 type HeroSceneProps = {
   /** Posicionamento/tamanho do wrapper (padrão: faixa do hero). */
   className?: string;
@@ -28,6 +31,12 @@ type HeroSceneProps = {
    * navegador baixaria o arquivo inteiro em toda página, mesmo sem a pessoa rolar.
    */
   lazy?: boolean;
+  /**
+   * No celular, o vídeo só começa (e só baixa) depois do evento load: não disputa
+   * a rede com o que aparece primeiro. Até lá fica o poster. No desktop dá play
+   * logo após a hidratação.
+   */
+  deferOnMobile?: boolean;
 };
 
 export function HeroScene({
@@ -37,6 +46,7 @@ export function HeroScene({
   src,
   softFadeOnMobile,
   lazy = false,
+  deferOnMobile = false,
 }: HeroSceneProps) {
   const shouldReduceMotion = useReducedMotion();
   const paused = useSyncExternalStore(subscribeMotion, isMotionPaused, () => false);
@@ -61,9 +71,20 @@ export function HeroScene({
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
-    if (paused) video.pause();
-    else video.play().catch(() => {});
-  }, [paused, near]);
+    if (paused) {
+      video.pause();
+      return;
+    }
+    const start = () => {
+      video.play().catch(() => {});
+    };
+    if (!deferOnMobile || !window.matchMedia(mobileQuery).matches || document.readyState === "complete") {
+      start();
+      return;
+    }
+    window.addEventListener("load", start, { once: true });
+    return () => window.removeEventListener("load", start);
+  }, [paused, near, deferOnMobile]);
 
   return (
     <div ref={wrapperRef} aria-hidden className={className}>
@@ -83,12 +104,12 @@ export function HeroScene({
           }}
           className="absolute inset-0 h-full w-full object-cover"
           poster="/media/hero/scene-poster-1600.jpg"
-          autoPlay={!paused}
+          autoPlay={!paused && !deferOnMobile}
           muted
           loop
           playsInline
           disablePictureInPicture
-          preload={preload}
+          preload={deferOnMobile ? "none" : preload}
         >
           {src ? (
             <source src={src} type="video/mp4" />

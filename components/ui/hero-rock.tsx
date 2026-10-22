@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useId, useRef } from "react";
+import { useEffect, useId, useRef, useSyncExternalStore } from "react";
 import Image from "next/image";
 import { useReducedMotion } from "motion/react";
 import { cn } from "@/lib/cn";
@@ -23,7 +23,16 @@ type HeroRockProps = {
   className?: string;
 };
 
+// No celular a rocha tem ~150–200px: o loader serve a versão -480/-640 em vez da -1000.
 const sizes = "(max-width: 809px) 206px, 500px";
+const hoverQuery = "(hover: hover) and (pointer: fine)";
+function subscribeHover(onChange: () => void) {
+  const media = window.matchMedia(hoverQuery);
+  media.addEventListener("change", onChange);
+  return () => media.removeEventListener("change", onChange);
+}
+const canHoverNow = () => window.matchMedia(hoverQuery).matches;
+
 const SPOTLIGHT_RADIUS = 75; // px — raio padrão do reveal ao redor do cursor
 const CORE_RATIO = 0.3; // fração do raio que fica sólida/estável, sem distorção
 const LEAVE_DELAY = 1200; // ms antes de começar a desfazer o reveal ao tirar o mouse
@@ -41,6 +50,10 @@ export function HeroRock({ side, hoverScale, trackSection, spotlightRadius = SPO
   const ringRef = useRef<SVGCircleElement>(null);
   const leaveTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const shouldReduceMotion = useReducedMotion();
+  // A camada dourada só aparece com o mouse: em touch ela nunca é vista, então nem
+  // é criada (poupa o download da imagem e o filtro SVG animado). No servidor é
+  // false, para o HTML e a hidratação baterem.
+  const canHover = useSyncExternalStore(subscribeHover, canHoverNow, () => false);
 
   function handleMouseMove(event: { clientX: number; clientY: number }) {
     const rect = containerRef.current?.getBoundingClientRect();
@@ -107,91 +120,95 @@ export function HeroRock({ side, hoverScale, trackSection, spotlightRadius = SPO
         sizes={sizes}
         className="h-auto w-full select-none"
       />
-      <Image
-        ref={hoverLayerRef}
-        src={hover}
-        alt=""
-        width={1000}
-        height={1454}
-        sizes={sizes}
-        className="absolute inset-0 h-full w-full select-none object-contain opacity-0"
-        style={{
-          mask: `url(#${filterId}-mask)`,
-          WebkitMask: `url(#${filterId}-mask)`,
-          transform: hoverScale ? `scale(${hoverScale})` : undefined,
-        }}
-      />
+      {canHover && (
+        <>
+          <Image
+            ref={hoverLayerRef}
+            src={hover}
+            alt=""
+            width={1000}
+            height={1454}
+            sizes={sizes}
+            className="absolute inset-0 h-full w-full select-none object-contain opacity-0"
+            style={{
+              mask: `url(#${filterId}-mask)`,
+              WebkitMask: `url(#${filterId}-mask)`,
+              transform: hoverScale ? `scale(${hoverScale})` : undefined,
+            }}
+          />
 
-      {/*
-        A máscara combina duas regiões: um núcleo circular sólido e
-        estático (sem filtro — sempre nítido, o "foco" do pincel) e um
-        anel externo que passa pela turbulência animada, ondulando só
-        a borda. feComposite "over" funde o núcleo por cima do anel
-        distorcido, garantindo que a distorção nunca invada o centro.
-      */}
-      <svg aria-hidden className="absolute h-0 w-0">
-        <defs>
-          <filter id={`${filterId}-wobble`} x="-40%" y="-40%" width="180%" height="180%">
-            <feTurbulence
-              type="fractalNoise"
-              baseFrequency="0.006 0.008"
-              numOctaves="2"
-              seed={side === "left" ? 3 : 8}
-              result="noiseA"
-            >
-              {!shouldReduceMotion && (
-                <animate
-                  attributeName="baseFrequency"
-                  dur="7s"
-                  values="0.005 0.007;0.009 0.005;0.006 0.010;0.005 0.007"
-                  repeatCount="indefinite"
+          {/*
+            A máscara combina duas regiões: um núcleo circular sólido e
+            estático (sem filtro — sempre nítido, o "foco" do pincel) e um
+            anel externo que passa pela turbulência animada, ondulando só
+            a borda. feComposite "over" funde o núcleo por cima do anel
+            distorcido, garantindo que a distorção nunca invada o centro.
+          */}
+          <svg aria-hidden className="absolute h-0 w-0">
+            <defs>
+              <filter id={`${filterId}-wobble`} x="-40%" y="-40%" width="180%" height="180%">
+                <feTurbulence
+                  type="fractalNoise"
+                  baseFrequency="0.006 0.008"
+                  numOctaves="2"
+                  seed={side === "left" ? 3 : 8}
+                  result="noiseA"
+                >
+                  {!shouldReduceMotion && (
+                    <animate
+                      attributeName="baseFrequency"
+                      dur="7s"
+                      values="0.005 0.007;0.009 0.005;0.006 0.010;0.005 0.007"
+                      repeatCount="indefinite"
+                    />
+                  )}
+                </feTurbulence>
+                <feTurbulence
+                  type="turbulence"
+                  baseFrequency="0.011 0.01"
+                  numOctaves="1"
+                  seed={side === "left" ? 11 : 19}
+                  result="noiseB"
+                >
+                  {!shouldReduceMotion && (
+                    <animate
+                      attributeName="baseFrequency"
+                      dur="5.3s"
+                      values="0.012 0.009;0.008 0.015;0.014 0.006;0.012 0.009"
+                      repeatCount="indefinite"
+                    />
+                  )}
+                </feTurbulence>
+                <feMerge result="noise">
+                  <feMergeNode in="noiseA" />
+                  <feMergeNode in="noiseB" />
+                </feMerge>
+                <feDisplacementMap
+                  in="SourceGraphic"
+                  in2="noise"
+                  scale="90"
+                  xChannelSelector="R"
+                  yChannelSelector="G"
                 />
-              )}
-            </feTurbulence>
-            <feTurbulence
-              type="turbulence"
-              baseFrequency="0.011 0.01"
-              numOctaves="1"
-              seed={side === "left" ? 11 : 19}
-              result="noiseB"
-            >
-              {!shouldReduceMotion && (
-                <animate
-                  attributeName="baseFrequency"
-                  dur="5.3s"
-                  values="0.012 0.009;0.008 0.015;0.014 0.006;0.012 0.009"
-                  repeatCount="indefinite"
-                />
-              )}
-            </feTurbulence>
-            <feMerge result="noise">
-              <feMergeNode in="noiseA" />
-              <feMergeNode in="noiseB" />
-            </feMerge>
-            <feDisplacementMap
-              in="SourceGraphic"
-              in2="noise"
-              scale="90"
-              xChannelSelector="R"
-              yChannelSelector="G"
-            />
-          </filter>
+              </filter>
 
-          <mask id={`${filterId}-mask`} maskUnits="objectBoundingBox" maskContentUnits="userSpaceOnUse">
-            {/* Anel: círculo cheio (levemente maior que o núcleo) distorcido pela turbulência */}
-            <circle
-              ref={ringRef}
-              cx="-1000"
-              cy="-1000"
-              r={spotlightRadius}
-              fill="white"
-              filter={`url(#${filterId}-wobble)`}
-            />
-            {/* Núcleo: sólido, nítido, sem filtro — a área de foco estável */}
-            <circle ref={coreRef} cx="-1000" cy="-1000" r={coreRadius} fill="white" />
-          </mask>
-        </defs>
-      </svg>
+              <mask id={`${filterId}-mask`} maskUnits="objectBoundingBox" maskContentUnits="userSpaceOnUse">
+                {/* Anel: círculo cheio (levemente maior que o núcleo) distorcido pela turbulência */}
+                <circle
+                  ref={ringRef}
+                  cx="-1000"
+                  cy="-1000"
+                  r={spotlightRadius}
+                  fill="white"
+                  filter={`url(#${filterId}-wobble)`}
+                />
+                {/* Núcleo: sólido, nítido, sem filtro — a área de foco estável */}
+                <circle ref={coreRef} cx="-1000" cy="-1000" r={coreRadius} fill="white" />
+              </mask>
+            </defs>
+          </svg>
+        </>
+      )}
     </div>
   );
 }

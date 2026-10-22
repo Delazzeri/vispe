@@ -15,7 +15,7 @@ export function Hero({ id }: { id?: string }) {
       aria-labelledby="hero-heading"
       className="relative isolate overflow-clip bg-bg"
     >
-      <HeroScene softFadeOnMobile />
+      <HeroScene softFadeOnMobile deferOnMobile />
 
       <HeroIntro className="relative mx-auto flex max-w-4xl flex-col items-center px-6 pt-10 text-center md:pt-16">
         <HeroIntroItem>
