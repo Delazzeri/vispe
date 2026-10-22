@@ -9,11 +9,13 @@ type MaterialCardProps = {
   cta: string;
   /** Nível do título (h2 no catálogo, h3 em "Outros materiais"). */
   headingLevel?: "h2" | "h3";
+  /** Capa na primeira dobra (1º card do catálogo): carrega já, com prioridade. */
+  priority?: boolean;
   className?: string;
 };
 
 /** Card do catálogo: capa + formato + título, inteiro clicável até a LP do material. */
-export function MaterialCard({ material, cta, headingLevel = "h2", className }: MaterialCardProps) {
+export function MaterialCard({ material, cta, headingLevel = "h2", priority = false, className }: MaterialCardProps) {
   const Heading = headingLevel;
   return (
     <Link
@@ -30,6 +32,7 @@ export function MaterialCard({ material, cta, headingLevel = "h2", className }: 
             alt={material.cover.alt}
             fill
             sizes="(min-width: 1024px) 360px, (min-width: 640px) 50vw, 100vw"
+            priority={priority}
             className="object-cover"
           />
         </div>

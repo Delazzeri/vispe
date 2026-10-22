@@ -105,9 +105,9 @@ export function MaterialList({
         </div>
       )}
       <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-        {visible.map((material) => (
+        {visible.map((material, index) => (
           <li key={material.slug}>
-            <MaterialCard material={material} cta={cta} />
+            <MaterialCard material={material} cta={cta} priority={index === 0} />
           </li>
         ))}
       </ul>
