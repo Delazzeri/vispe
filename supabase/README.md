@@ -135,8 +135,8 @@ carrossel fica com a lista do último build.
 
 ## Landing pages (/lp/<endereço>/)
 
-Criadas em **Admin → Landing pages** a partir de um modelo (diagnóstico financeiro,
-workshop, M&A, superaula). Cada LP é uma lista de seções prontas com o visual do site;
+Criadas em **Admin → Landing pages** a partir de um modelo (captura de leads, vendas,
+pré-lançamento, inscrição em evento, obrigado, upsell/cross-sell). Cada LP é uma lista de seções prontas com o visual do site;
 no admin dá para editar textos, fotos, botões e o formulário, reordenar e acrescentar
 seções. Publicada, abre na hora em `/lp/<endereço>/` (inglês em `/en/lp/<endereço>/`) e
 vira página estática no próximo `pnpm release`. "Não indexar" deixa a LP fora do

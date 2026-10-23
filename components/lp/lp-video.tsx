@@ -3,7 +3,6 @@
 import { useState } from "react";
 import Image from "next/image";
 import { Play } from "lucide-react";
-import { Reveal } from "@/components/motion/reveal";
 import type { LpUi } from "@/content/lp-ui";
 import { youtubeId } from "@/lib/lp/normalize";
 import type { LpVideo as LpVideoData } from "@/lib/lp/types";
@@ -22,9 +21,9 @@ export function LpVideo({ id, data, ui }: { id: string; data: LpVideoData; ui: L
   const label = data.title || ui.watchVideo;
 
   return (
-    <LpSectionShell id={id} title={data.title} subtitle={data.text}>
-      <Reveal>
-        <div className="relative mx-auto aspect-video max-w-4xl overflow-hidden rounded-3xl bg-ink">
+    <LpSectionShell id={id} title={data.title} subtitle={data.text} layout="stacked">
+      <>
+        <div className="relative aspect-video max-w-5xl overflow-hidden rounded-3xl bg-ink">
           {playing ? (
             <iframe
               src={`https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0`}
@@ -51,7 +50,7 @@ export function LpVideo({ id, data, ui }: { id: string; data: LpVideoData; ui: L
             </button>
           )}
         </div>
-      </Reveal>
+      </>
     </LpSectionShell>
   );
 }

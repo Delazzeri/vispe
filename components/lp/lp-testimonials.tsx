@@ -1,34 +1,47 @@
 import Image from "next/image";
-import { Quote } from "lucide-react";
-import { Reveal } from "@/components/motion/reveal";
 import type { LpTestimonials as LpTestimonialsData } from "@/lib/lp/types";
-import { LpSectionShell, lpCardClass, lpCardItemClass, lpCardListClass } from "./parts";
+import { LpSectionShell } from "./parts";
 
-/** Depoimentos reais de clientes. */
-export function LpTestimonials({ id, data }: { id: string; data: LpTestimonialsData }) {
+type Item = LpTestimonialsData["items"][number];
+
+function Author({ item }: { item: Item }) {
   return (
-    <LpSectionShell id={id} title={data.title}>
-      <ul className={lpCardListClass}>
-        {data.items.map((item, index) => (
-          <li key={`${item.name}-${index}`} className={lpCardItemClass}>
-            <Reveal delay={index * 0.06} className={`${lpCardClass} flex h-full flex-col p-7`}>
-              <Quote className="h-6 w-6 text-brand-dark" aria-hidden />
-              <blockquote className="mt-4 flex-1 text-base leading-relaxed text-fg italic">“{item.text}”</blockquote>
-              <div className="mt-6 flex items-center gap-3">
-                {item.photo && (
-                  <div className="relative h-11 w-11 shrink-0 overflow-hidden rounded-full">
-                    <Image src={item.photo.src} alt={item.photo.alt} fill sizes="44px" className="object-cover" />
-                  </div>
-                )}
-                <div>
-                  <p className="text-sm font-semibold text-ink">{item.name}</p>
-                  {item.company && <p className="text-sm text-fg-muted">{item.company}</p>}
-                </div>
-              </div>
-            </Reveal>
-          </li>
-        ))}
-      </ul>
+    <figcaption className="mt-6 flex items-center gap-3">
+      {item.photo && (
+        <span className="relative h-12 w-12 shrink-0 overflow-hidden rounded-full">
+          <Image src={item.photo.src} alt={item.photo.alt} fill sizes="48px" className="object-cover" />
+        </span>
+      )}
+      <span>
+        <span className="block text-base font-semibold text-ink">{item.name}</span>
+        {item.company && <span className="block text-sm text-fg-muted">{item.company}</span>}
+      </span>
+    </figcaption>
+  );
+}
+
+/** Depoimentos: o primeiro em destaque, grande; os demais menores, abaixo. */
+export function LpTestimonials({ id, data }: { id: string; data: LpTestimonialsData }) {
+  const [featured, ...rest] = data.items;
+  if (!featured) return null;
+  return (
+    <LpSectionShell id={id} title={data.title} layout="stacked">
+      <figure className="max-w-4xl border-l-4 border-brand pl-6 md:pl-10">
+        <blockquote className="text-2xl font-medium leading-snug text-ink md:text-4xl" style={{ letterSpacing: "-0.02em" }}>
+          “{featured.text}”
+        </blockquote>
+        <Author item={featured} />
+      </figure>
+      {rest.length > 0 && (
+        <div className="mt-14 grid gap-10 md:grid-cols-2">
+          {rest.map((item, index) => (
+            <figure key={`${item.name}-${index}`}>
+              <blockquote className="text-lg leading-relaxed text-fg">“{item.text}”</blockquote>
+              <Author item={item} />
+            </figure>
+          ))}
+        </div>
+      )}
     </LpSectionShell>
   );
 }

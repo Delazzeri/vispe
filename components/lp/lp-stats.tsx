@@ -1,26 +1,24 @@
-import { Reveal } from "@/components/motion/reveal";
 import type { LpStats as LpStatsData } from "@/lib/lp/types";
 import { LpSectionShell } from "./parts";
 
-/** Até 4 números de destaque (só dados reais da Vispe). */
+/** Números de destaque (só dados reais da Vispe) em uma linha, separados por fios. */
 export function LpStats({ id, data }: { id: string; data: LpStatsData }) {
   if (data.items.length === 0) return null;
   return (
-    <LpSectionShell id={id} title={data.title || undefined} className="py-14 md:py-20">
-      {/* Centralizado: com 2 ou 3 números a linha não fica encostada à esquerda. */}
-      <dl className="flex flex-wrap justify-center gap-6">
+    <LpSectionShell id={id} title={data.title || undefined} layout="stacked" className="py-14 md:py-20">
+      <dl className="grid grid-cols-2 gap-y-10 md:flex md:divide-x md:divide-border">
         {data.items.map((item, index) => (
-          <Reveal key={`${item.value}-${index}`} delay={index * 0.06} className="w-[calc(50%-12px)] text-center md:w-[calc(25%-18px)]">
+          <div key={`${item.value}-${index}`} className="md:flex-1 md:px-8 md:first:pl-0">
             <dt className="sr-only">{item.label}</dt>
             <dd>
-              <span className="block text-4xl font-bold tracking-tight text-ink md:text-5xl" style={{ letterSpacing: "-0.04em" }}>
+              <span className="block text-5xl font-bold tabular-nums text-ink md:text-6xl" style={{ letterSpacing: "-0.045em" }}>
                 {item.value}
               </span>
-              <span aria-hidden className="mt-2 block text-sm font-medium text-fg-muted">
+              <span aria-hidden className="mt-2 block text-base text-fg-muted">
                 {item.label}
               </span>
             </dd>
-          </Reveal>
+          </div>
         ))}
       </dl>
     </LpSectionShell>

@@ -6,15 +6,23 @@ import type { Json } from "@/lib/supabase/types";
 // o visual vem de components/lp/.
 
 export type LpImage = { src: string; alt: string };
-/** Botão: href "#formulario" rola até o formulário da LP; link externo abre em nova aba. */
+/** Botão: href vazio (ou "#formulario") rola até o formulário da LP; link externo abre em nova aba. */
 export type LpCta = { label: string; href: string };
 export type LpTitledText = { title: string; text: string };
 
+/**
+ * Variação do topo: "default" (título e botão), "form" (formulário da LP dentro
+ * do hero, ao lado do título) e "confirmation" (página de obrigado).
+ */
+export const lpHeroVariants = ["default", "form", "confirmation"] as const;
+export type LpHeroVariant = (typeof lpHeroVariants)[number];
+
 export type LpHero = {
+  variant: LpHeroVariant;
   eyebrow: string;
   title: string;
   subtitle: string;
-  /** Data/horário do evento (workshop, superaula); vazio não aparece. */
+  /** Data/horário do evento; vazio não aparece. */
   date: string;
   image?: LpImage;
   cta: LpCta;
@@ -38,6 +46,33 @@ export type LpTestimonials = { title: string; items: { name: string; company: st
 export type LpVideo = { title: string; text: string; youtubeId: string; poster?: LpImage };
 export type LpFaq = { title: string; items: { question: string; answer: string }[] };
 export type LpCtaBlock = { title: string; text: string; cta: LpCta };
+/** Contagem regressiva até `target` ("2026-11-20T19:00", horário de Brasília). */
+export type LpCountdown = { title: string; text: string; target: string; expiredText: string; cta: LpCta };
+/** Oferta (vendas/upsell): o botão leva ao formulário; "Não, obrigado" vai para outra página. */
+export type LpOffer = {
+  title: string;
+  name: string;
+  description: string;
+  includes: string[];
+  oldPrice: string;
+  price: string;
+  terms: string;
+  guarantee: string;
+  cta: LpCta;
+  decline: LpCta;
+};
+export type LpComparison = {
+  title: string;
+  subtitle: string;
+  currentLabel: string;
+  upgradeLabel: string;
+  rows: { feature: string; current: string; upgrade: string }[];
+  cta: LpCta;
+};
+export type LpProblem = { title: string; problems: string[]; solutionTitle: string; solution: string; cta: LpCta };
+export type LpGallery = { title: string; subtitle: string; items: { photo?: LpImage; caption: string }[] };
+/** Convite para seguir a Vispe (redes do site) + um botão opcional (ex.: grupo do WhatsApp). */
+export type LpFollow = { title: string; text: string; cta: LpCta };
 
 export const lpFieldKinds = ["name", "email", "phone", "company", "role", "revenue", "segment", "message", "text", "select"] as const;
 export type LpFieldKind = (typeof lpFieldKinds)[number];
@@ -50,6 +85,9 @@ export type LpFormField = {
   /** Opções de "select" (e de "revenue"/"role", quando preenchidas). */
   options: string[];
 };
+/** Depois do envio: mensagem na própria página ou ir para a página de obrigado. */
+export const lpAfterSubmit = ["message", "redirect"] as const;
+export type LpAfterSubmit = (typeof lpAfterSubmit)[number];
 export type LpForm = {
   title: string;
   subtitle: string;
@@ -58,6 +96,9 @@ export type LpForm = {
   /** Texto do aceite (LGPD); vazio usa o padrão do site. */
   consent: string;
   fields: LpFormField[];
+  afterSubmit: LpAfterSubmit;
+  /** Endereço de outra LP (ex.: "obrigado-workshop") ou link completo. */
+  redirectTo: string;
 };
 
 export type LpSectionMap = {
@@ -66,18 +107,24 @@ export type LpSectionMap = {
   benefits: LpBenefits;
   audience: LpAudience;
   steps: LpSteps;
+  problem: LpProblem;
   agenda: LpAgenda;
   speakers: LpSpeakers;
   testimonials: LpTestimonials;
+  gallery: LpGallery;
   video: LpVideo;
+  countdown: LpCountdown;
+  offer: LpOffer;
+  comparison: LpComparison;
   faq: LpFaq;
   form: LpForm;
+  follow: LpFollow;
   cta: LpCtaBlock;
 };
 export type LpSectionType = keyof LpSectionMap;
 export type LpSection = { [T in LpSectionType]: { id: string; type: T; data: LpSectionMap[T] } }[LpSectionType];
 
-export const lpTemplates = ["diagnostico", "workshop", "ma", "superaula"] as const;
+export const lpTemplates = ["captura", "vendas", "prelancamento", "evento", "obrigado", "upsell"] as const;
 export type LpTemplate = (typeof lpTemplates)[number];
 
 /** Textos em inglês: só o que é texto, por id de seção (fotos e links vêm do português). */
@@ -109,5 +156,5 @@ export type LocalizedLandingPage = LandingPage & {
   contentLocale: Locale;
 };
 
-/** Âncora do formulário da LP (CTAs com href "#formulario"). */
+/** Âncora do formulário da LP (CTAs com href vazio ou "#formulario"). */
 export const lpFormAnchor = "formulario";

@@ -12,7 +12,9 @@ export type LpFieldSpec =
   | { kind: "cta"; key: string; label: string }
   | { kind: "strings"; key: string; label: string; max: number; itemLabel: string }
   | { kind: "list"; key: string; label: string; max: number; itemLabel: string; fields: LpFieldSpec[] }
-  | { kind: "formFields"; key: string; label: string };
+  | { kind: "formFields"; key: string; label: string }
+  /** Lista fixa de opções no admin (não se traduz); o primeiro valor é o padrão. */
+  | { kind: "choice"; key: string; label: string; options: readonly (readonly [string, string])[]; hint?: string };
 
 export type LpSectionSpec = {
   /** Nome no admin. */
@@ -33,6 +35,17 @@ export const lpSectionSpecs: Record<LpSectionType, LpSectionSpec> = {
     label: "Hero (topo)",
     description: "Abertura da página: título principal, foto e botão.",
     fields: [
+      {
+        kind: "choice",
+        key: "variant",
+        label: "Formato do topo",
+        options: [
+          ["default", "Título e botão"],
+          ["form", "Título com o formulário ao lado"],
+          ["confirmation", "Confirmação (página de obrigado)"],
+        ],
+        hint: "Com o formulário ao lado, a seção Formulário aparece dentro do topo.",
+      },
       text("eyebrow", "Selo acima do título", { hint: "Curto, ex.: Workshop presencial" }),
       text("title", "Título (h1)"),
       text("subtitle", "Subtítulo", { multiline: true }),
@@ -196,7 +209,95 @@ export const lpSectionSpecs: Record<LpSectionType, LpSectionSpec> = {
       text("submitLabel", "Texto do botão"),
       text("successMessage", "Mensagem depois do envio", { multiline: true }),
       text("consent", "Texto do aceite (LGPD)", { multiline: true, hint: "Vazio usa o texto padrão do site" }),
+      {
+        kind: "choice",
+        key: "afterSubmit",
+        label: "Depois do envio",
+        options: [
+          ["message", "Mostrar a mensagem na própria página"],
+          ["redirect", "Ir para a página de obrigado"],
+        ],
+      },
+      { kind: "plain", key: "redirectTo", label: "Página de obrigado", hint: "Endereço de outra LP (ex.: obrigado-workshop) ou link completo." },
     ],
+  },
+  problem: {
+    label: "Problema e solução",
+    description: "As dores de hoje de um lado, a solução do outro.",
+    fields: [
+      text("title", "Título"),
+      { kind: "strings", key: "problems", label: "Dores (como está hoje)", max: 6, itemLabel: "Dor" },
+      text("solutionTitle", "Título da solução"),
+      text("solution", "Solução", { multiline: true }),
+      { kind: "cta", key: "cta", label: "Botão abaixo da seção (opcional)" },
+    ],
+  },
+  gallery: {
+    label: "Galeria",
+    description: "Fotos de edições anteriores, bastidores ou resultados, com legenda.",
+    fields: [
+      text("title", "Título"),
+      text("subtitle", "Subtítulo", { multiline: true }),
+      {
+        kind: "list",
+        key: "items",
+        label: "Fotos",
+        max: 6,
+        itemLabel: "Foto",
+        fields: [{ kind: "image", key: "photo", label: "Foto" }, text("caption", "Legenda")],
+      },
+    ],
+  },
+  countdown: {
+    label: "Contagem regressiva",
+    description: "Contador até uma data (lançamento, fim das inscrições).",
+    fields: [
+      text("title", "Título"),
+      text("text", "Texto", { multiline: true }),
+      { kind: "plain", key: "target", label: "Data e hora final", hint: "Formato 2026-11-20T19:00 (horário de Brasília)." },
+      text("expiredText", "Texto depois do prazo", { hint: "Ex.: As inscrições foram encerradas." }),
+      { kind: "cta", key: "cta", label: "Botão (opcional)" },
+    ],
+  },
+  offer: {
+    label: "Oferta",
+    description: "O que está sendo oferecido, o que inclui e o valor. O botão leva ao formulário.",
+    fields: [
+      text("title", "Título da seção"),
+      text("name", "Nome da oferta"),
+      text("description", "Descrição", { multiline: true }),
+      { kind: "strings", key: "includes", label: "O que inclui", max: 10, itemLabel: "Item" },
+      text("oldPrice", "Valor 'de' (opcional)", { hint: "Ex.: R$ 4.997" }),
+      text("price", "Valor 'por' (opcional)", { hint: "Ex.: R$ 2.997 ou 'Sob consulta'" }),
+      text("terms", "Condição (opcional)", { hint: "Ex.: em até 12x" }),
+      text("guarantee", "Garantia (opcional)", { multiline: true }),
+      { kind: "cta", key: "cta", label: "Botão principal" },
+      { kind: "cta", key: "decline", label: "Link de recusa (upsell): ex. Não, obrigado → endereço da página de obrigado" },
+    ],
+  },
+  comparison: {
+    label: "Comparação",
+    description: "O que a pessoa já tem × o que ganha com o upgrade.",
+    fields: [
+      text("title", "Título"),
+      text("subtitle", "Subtítulo", { multiline: true }),
+      text("currentLabel", "Nome da coluna atual", { hint: "Ex.: O que você já tem" }),
+      text("upgradeLabel", "Nome da coluna do upgrade", { hint: "Ex.: Com o upgrade" }),
+      {
+        kind: "list",
+        key: "rows",
+        label: "Linhas",
+        max: 10,
+        itemLabel: "Linha",
+        fields: [text("feature", "Item"), text("current", "Atual", { hint: "Ex.: Não incluso" }), text("upgrade", "Upgrade", { hint: "Ex.: Incluso" })],
+      },
+      { kind: "cta", key: "cta", label: "Botão abaixo da seção (opcional)" },
+    ],
+  },
+  follow: {
+    label: "Siga a Vispe",
+    description: "Convite para as redes da Vispe (as do site) e um botão opcional, como o grupo do WhatsApp.",
+    fields: [text("title", "Título"), text("text", "Texto", { multiline: true }), { kind: "cta", key: "cta", label: "Botão extra (opcional)" }],
   },
   cta: {
     label: "Chamada final",

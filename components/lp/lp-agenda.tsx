@@ -1,11 +1,11 @@
 import { CalendarDays, Clock, MapPin } from "lucide-react";
-import { Reveal } from "@/components/motion/reveal";
 import type { LpUi } from "@/content/lp-ui";
 import type { LpAgenda as LpAgendaData } from "@/lib/lp/types";
-import { LpSectionShell, lpCardClass } from "./parts";
+import { LpButton, LpHeading } from "./parts";
 
-/** Programação do evento: data, horário, local e tópicos em linha do tempo. */
+/** Programação: à esquerda o título com data, horário e local; à direita os tópicos em linha do tempo. */
 export function LpAgenda({ id, data, ui }: { id: string; data: LpAgendaData; ui: LpUi }) {
+  const headingId = `${id}-heading`;
   const facts = [
     { icon: CalendarDays, label: ui.date, value: data.date },
     { icon: Clock, label: ui.time, value: data.time },
@@ -13,37 +13,43 @@ export function LpAgenda({ id, data, ui }: { id: string; data: LpAgendaData; ui:
   ].filter((fact) => fact.value);
 
   return (
-    <LpSectionShell id={id} title={data.title} cta={data.cta}>
-      {facts.length > 0 && (
-        <Reveal>
-          <dl className="mx-auto flex max-w-4xl flex-wrap justify-center gap-4">
-            {facts.map(({ icon: Icon, label, value }) => (
-              <div key={label} className={`${lpCardClass} flex items-center gap-3 px-5 py-4`}>
-                <Icon className="h-5 w-5 shrink-0 text-brand-dark" aria-hidden />
-                <div>
-                  <dt className="text-xs font-medium text-fg-muted">{label}</dt>
-                  <dd className="text-base font-semibold text-fg">{value}</dd>
+    <section id={id} aria-labelledby={headingId} className="bg-bg py-20 md:py-28">
+      <div className="mx-auto grid max-w-6xl gap-10 px-6 md:grid-cols-12 md:gap-12">
+        <div className="md:col-span-5">
+          <LpHeading id={headingId}>{data.title}</LpHeading>
+          {facts.length > 0 && (
+            <dl className="mt-8 space-y-4">
+              {facts.map(({ icon: Icon, label, value }) => (
+                <div key={label} className="flex items-start gap-3">
+                  <Icon className="mt-0.5 h-5 w-5 shrink-0 text-brand-dark" aria-hidden />
+                  <div>
+                    <dt className="text-sm text-fg-muted">{label}</dt>
+                    <dd className="text-base font-semibold text-fg">{value}</dd>
+                  </div>
                 </div>
-              </div>
+              ))}
+            </dl>
+          )}
+          {data.cta.label && (
+            <div className="mt-10">
+              <LpButton cta={data.cta} className="w-full sm:w-auto" />
+            </div>
+          )}
+        </div>
+        {data.items.length > 0 && (
+          <ol className="md:col-span-7">
+            {data.items.map((item, index) => (
+              <li key={`${item.title}-${index}`} className="grid gap-1 border-t border-border py-6 last:border-b sm:grid-cols-[7rem_1fr] sm:gap-6">
+                <span className="text-sm font-semibold tabular-nums text-brand-dark">{item.time}</span>
+                <div>
+                  <h3 className="text-lg font-semibold text-ink">{item.title}</h3>
+                  {item.text && <p className="mt-1.5 text-base leading-relaxed text-fg-muted">{item.text}</p>}
+                </div>
+              </li>
             ))}
-          </dl>
-        </Reveal>
-      )}
-
-      {data.items.length > 0 && (
-        <ol className={`mx-auto max-w-3xl ${facts.length ? "mt-10" : ""}`}>
-          {data.items.map((item, index) => (
-            <li key={`${item.title}-${index}`} className="relative border-l-2 border-accent-soft pb-8 pl-8 last:pb-0">
-              <Reveal delay={index * 0.05}>
-                <span aria-hidden className="absolute -left-[7px] top-1.5 h-3 w-3 rounded-full bg-brand" />
-                {item.time && <p className="text-sm font-semibold text-brand-dark">{item.time}</p>}
-                <h3 className="mt-1 text-lg font-semibold text-ink">{item.title}</h3>
-                {item.text && <p className="mt-1.5 text-base leading-relaxed text-fg-muted">{item.text}</p>}
-              </Reveal>
-            </li>
-          ))}
-        </ol>
-      )}
-    </LpSectionShell>
+          </ol>
+        )}
+      </div>
+    </section>
   );
 }

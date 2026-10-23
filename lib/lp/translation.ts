@@ -89,6 +89,7 @@ function walk(fields: LpFieldSpec[], data: Record<string, unknown>, sectionId: s
         }
         break;
       case "plain":
+      case "choice":
         break;
     }
   }

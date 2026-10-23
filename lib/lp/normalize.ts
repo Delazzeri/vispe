@@ -66,6 +66,12 @@ export function normalizeFields(fields: LpFieldSpec[], value: Value): Record<str
       case "formFields":
         out[field.key] = normalizeFormFields(raw);
         break;
+      case "choice": {
+        // Valor fora da lista (ou vazio) vira o primeiro, que é o padrão.
+        const value = asString(raw);
+        out[field.key] = field.options.some(([option]) => option === value) ? value : field.options[0][0];
+        break;
+      }
     }
   }
   return out;

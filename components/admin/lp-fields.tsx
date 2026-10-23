@@ -324,6 +324,18 @@ export function LpFieldsEditor({
               </fieldset>
             );
           }
+          case "choice":
+            return (
+              <Field key={field.key} label={field.label} hint={field.hint}>
+                <select value={String(current ?? field.options[0][0])} onChange={(e) => set(field.key, e.target.value)} className={adminInput}>
+                  {field.options.map(([value, label]) => (
+                    <option key={value} value={value}>
+                      {label}
+                    </option>
+                  ))}
+                </select>
+              </Field>
+            );
           case "formFields":
             return <FormFieldsEditor key={field.key} value={(current as LpFormField[]) ?? []} onChange={(next) => set(field.key, next)} />;
         }

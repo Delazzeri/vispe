@@ -61,6 +61,7 @@ function mergeFields(fields: LpFieldSpec[], base: Record<string, unknown>, overr
         }
         break;
       case "plain":
+      case "choice":
         break;
     }
   }

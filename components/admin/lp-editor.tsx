@@ -115,6 +115,9 @@ function validate(draft: Draft): string[] {
     if (form.data.fields.some((field) => field.kind === "select" && field.options.length < 2)) {
       errors.push("Campos de múltipla escolha precisam de pelo menos duas opções.");
     }
+    if (form.data.afterSubmit === "redirect" && !form.data.redirectTo.trim()) {
+      errors.push("Informe a página de obrigado do formulário (endereço de outra LP ou link).");
+    }
   }
   if (draft.status === "published") {
     const hero = draft.sections.find((section) => section.type === "hero");
@@ -150,7 +153,7 @@ export function LpEditor() {
     let active = true;
     async function load() {
       if (!id) {
-        const template: LpTemplate = lpTemplates.includes(modelo as LpTemplate) ? (modelo as LpTemplate) : "diagnostico";
+        const template: LpTemplate = lpTemplates.includes(modelo as LpTemplate) ? (modelo as LpTemplate) : "captura";
         const info = lpTemplateInfo[template];
         return {
           // Endereço inicial pelo nome do modelo; acompanha o nome até ser editado à mão.
@@ -161,7 +164,7 @@ export function LpEditor() {
           sections: templateSections(template),
           metaTitle: "",
           metaDescription: "",
-          noindex: false,
+          noindex: info.noindex,
           whatsappMessage: info.whatsappMessage,
           status: "draft",
           publishedAt: null,
