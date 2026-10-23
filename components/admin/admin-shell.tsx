@@ -30,6 +30,9 @@ export function AdminShell({ email, children }: { email?: string; children: Reac
               <Link href="/admin/materiais/" className="hover:text-fg">
                 Materiais
               </Link>
+              <Link href="/admin/landing-pages/" className="hover:text-fg">
+                Landing pages
+              </Link>
               <a href="/blog/" target="_blank" rel="noopener" className="hover:text-fg">
                 Ver blog
               </a>

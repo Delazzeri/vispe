@@ -5,7 +5,8 @@
 // Corpo em text/plain de propósito: é uma "simple request" para o navegador,
 // sem a verificação prévia de CORS (OPTIONS) que o Apps Script não responde.
 
-export type SheetName = "diagnostico" | "franquia" | "materiais" | "carreiras";
+// "lp": formulários das landing pages; cada LP grava numa aba própria (lp-<slug>).
+export type SheetName = "diagnostico" | "franquia" | "materiais" | "carreiras" | "lp";
 
 export type FormValues = Record<string, string>;
 
@@ -37,13 +38,19 @@ export async function fileToBase64(file: File): Promise<string> {
   return btoa(binary);
 }
 
-export async function submitToSheet(sheet: SheetName, values: FormValues, file?: FormFile): Promise<SubmitResult> {
+/** extra: campos a mais no corpo (as LPs mandam as colunas da aba: [id, rótulo]). */
+export async function submitToSheet(
+  sheet: SheetName,
+  values: FormValues,
+  file?: FormFile,
+  extra?: Record<string, unknown>,
+): Promise<SubmitResult> {
   if (!endpoint) return "unavailable";
   try {
     const response = await fetch(endpoint, {
       method: "POST",
       headers: { "Content-Type": "text/plain;charset=utf-8" },
-      body: JSON.stringify({ sheet, values, file, page: window.location.href }),
+      body: JSON.stringify({ ...extra, sheet, values, file, page: window.location.href }),
     });
     if (!response.ok) return "unavailable";
     const result: unknown = await response.json();

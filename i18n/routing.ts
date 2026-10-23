@@ -34,6 +34,11 @@ export const routing = defineRouting({
     // Página única dos posts publicados depois do último build (lê o slug da URL).
     "/blog/post": "/blog/post",
     "/blog/[slug]": "/blog/[slug]",
+    // Landing pages do admin (app/[locale]/(lp)): mesmo caminho nos dois idiomas, sem página de índice.
+    "/lp": "/lp",
+    // Página única das LPs publicadas depois do último build (lê o slug da URL).
+    "/lp/pagina": "/lp/pagina",
+    "/lp/[slug]": "/lp/[slug]",
   },
 });
 

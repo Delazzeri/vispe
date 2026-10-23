@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { listArticles } from "@/lib/blog/source";
 import { listMaterials } from "@/lib/materials/source";
+import { listLandingPages } from "@/lib/lp/source";
 import { brand } from "@/content/brand";
 import { localizePath } from "@/i18n/href";
 import { defaultLocale, locales } from "@/i18n/routing";
@@ -10,7 +11,6 @@ type Frequency = NonNullable<MetadataRoute.Sitemap[number]["changeFrequency"]>;
 const url = (path: string) => new URL(path, brand.url).toString();
 
 // Páginas que existem nos dois idiomas (caminho interno → URL de cada idioma).
-// TODO: incluir /produtos/<slug> quando as landing pages existirem.
 const pages: { path: string; changeFrequency: Frequency; priority: number }[] = [
   { path: "/", changeFrequency: "weekly", priority: 1 },
   { path: "/sobre", changeFrequency: "monthly", priority: 0.6 },
@@ -66,5 +66,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     contentRoutes(`/materiais/${material.slug}`, Boolean(material.en), { changeFrequency: "monthly", priority: 0.6 }),
   );
 
-  return [...localized, ...blogRoutes, ...materialRoutes];
+  // Landing pages do admin, menos as marcadas como "não indexar" (páginas de anúncio).
+  const landingRoutes: MetadataRoute.Sitemap = (await listLandingPages())
+    .filter((page) => !page.noindex)
+    .flatMap((page) => contentRoutes(`/lp/${page.slug}`, Boolean(page.en), { changeFrequency: "monthly", priority: 0.6 }));
+
+  return [...localized, ...blogRoutes, ...materialRoutes, ...landingRoutes];
 }

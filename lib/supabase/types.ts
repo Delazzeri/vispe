@@ -77,6 +77,30 @@ type ProfileRow = {
   created_at: string;
 };
 
+export type LandingPageStatus = "draft" | "published";
+
+/** Landing page do admin (0010); seções e textos em inglês descritos em lib/lp/types.ts. */
+type LandingPageRow = {
+  id: string;
+  slug: string;
+  /** Modelo de origem (diagnostico, workshop, ma, superaula). */
+  template: string;
+  /** Nome interno: lista do admin e aba da planilha. */
+  name: string;
+  sections: Json;
+  meta_title: string | null;
+  meta_description: string | null;
+  og_image_url: string | null;
+  noindex: boolean;
+  /** Mensagem do botão de WhatsApp (0011); vazia usa a do site. */
+  whatsapp_message: string | null;
+  en: Json | null;
+  status: LandingPageStatus;
+  published_at: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
 export type Database = {
   public: {
     Tables: {
@@ -106,6 +130,12 @@ export type Database = {
         Update: Partial<MaterialFormatRow>;
         Relationships: [];
       };
+      landing_pages: {
+        Row: LandingPageRow;
+        Insert: Partial<Omit<LandingPageRow, "slug" | "name" | "template">> & Pick<LandingPageRow, "slug" | "name" | "template">;
+        Update: Partial<LandingPageRow>;
+        Relationships: [];
+      };
       profiles: {
         Row: ProfileRow;
         Insert: Partial<Omit<ProfileRow, "id">> & Pick<ProfileRow, "id">;
@@ -123,3 +153,4 @@ export type Database = {
 export type ArticleRecord = ArticleRow;
 export type MaterialRecord = MaterialRow;
 export type MaterialFormatRecord = MaterialFormatRow;
+export type LandingPageRecord = LandingPageRow;

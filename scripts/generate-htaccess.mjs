@@ -149,6 +149,7 @@ add(
 const liveSections = [
   { internal: "blog", page: "post", label: "posts do blog" },
   { internal: "materiais", page: "item", label: "materiais gratuitos" },
+  { internal: "lp", page: "pagina", label: "landing pages" },
 ];
 
 for (const [prefix, folder, label] of [

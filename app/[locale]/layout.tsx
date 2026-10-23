@@ -7,13 +7,7 @@ import { isLocale, locales, resolveLocale, type Locale } from "@/i18n/routing";
 import { fontVariables } from "@/lib/fonts";
 import { buildMetadata, organizationJsonLd, websiteJsonLd } from "@/lib/seo";
 import { motionInitScript } from "@/lib/motion-preference";
-import { Header } from "@/components/sections/header";
-import { Footer } from "@/components/sections/footer";
-import { localizeArticle } from "@/lib/blog/localize";
-import { listArticles } from "@/lib/blog/source";
 import { CookieConsent } from "@/components/ui/cookie-consent";
-import { WhatsAppButton } from "@/components/ui/whatsapp-button";
-import { LanguageSwitcher } from "@/components/ui/language-switcher";
 import { brand, getSite } from "@/content/site";
 import "../globals.css";
 
@@ -64,15 +58,8 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
         />
         <NextIntlClientProvider>
           <MotionProvider>
-            {/* Só no topo: absoluto (rola com a página), ao contrário do header sticky.
-                No celular o header ocupa a largura toda, então o seletor vai para o menu. */}
-            <LanguageSwitcher className="absolute top-6 right-6 z-40 hidden md:flex" />
-            <Header />
-            <main id="main-content" className="flex-1">
-              {children}
-            </main>
-            <Footer posts={(await listArticles()).map((article) => localizeArticle(article, locale))} />
-            <WhatsAppButton labels={getSite(locale).ui.whatsappFloat} />
+            {/* Cabeçalho, rodapé e <main>: (site)/layout.tsx no site; as LPs têm layout próprio, sem eles. */}
+            {children}
             <CookieConsent labels={getSite(locale).ui.cookies} />
           </MotionProvider>
         </NextIntlClientProvider>
