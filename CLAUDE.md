@@ -50,7 +50,7 @@ app/
   (site)/                  # páginas institucionais
     page.tsx               # home
     sobre/  contato/  ...
-  (lp)/produtos/[slug]/    # landing pages de produto (template único)
+  [locale]/(lp)/lp/[slug]/ # landing pages do admin (sem cabeçalho/rodapé; ver seção 12)
   sitemap.ts  robots.ts  opengraph-image.tsx  layout.tsx  globals.css
 components/
   sections/                # seções de página (Hero, FeatureGrid, Pricing, FAQ...)
@@ -66,7 +66,7 @@ public/media/              # imagens otimizadas (ver regras de mídia)
 docs/                      # documentação de referência (importada acima)
 ```
 
-**Princípio das LPs:** uma LP de produto = um arquivo em `content/products/` + template em `(lp)/produtos/[slug]`. Seções são componentes reutilizáveis que recebem dados por props. Nenhum texto hardcoded dentro de `components/sections/`.
+**Princípio das LPs:** as landing pages são montadas no admin (tabela `landing_pages`) a partir de seções de `components/lp/`, que recebem todo o conteúdo por props. Seções novas: tipo em `lib/lp/types.ts`, campos em `lib/lp/schema.ts` (o editor e a tradução saem daí) e componente em `components/lp/` ligado em `lp-page.tsx`. Os arquivos da home (`components/sections/`, `content/*/site.ts`) não são usados nem alterados pelas LPs.
 
 ## 5. Regras de componentes
 
@@ -141,5 +141,6 @@ O site é gerado com `output: 'export'` em `out/` e sobe no `public_html`. Não 
 - Formatos dos materiais: tabela `material_formats` (0009), cadastrada no admin (`/admin/materiais/formatos/`); `materials.format` aponta para o slug e `materials.type` é só espelho do nome em pt. O catálogo filtra por formato (`?formato=`), com os nomes de `format_info` (pt/en).
 - Conteúdo do admin em inglês: coluna `en` (jsonb) em articles/materials; `lib/blog/localize.ts` e `lib/materials/localize.ts` trocam para o inglês em /en quando há tradução (senão, português + aviso e canonical pt). Componentes recebem o item já localizado (`contentLocale` diz o idioma real do texto).
 - Episódios do Equity Talks (carrossel da home): playlist do YouTube lida no build (`lib/episodes/youtube.ts`, feed público, derruba o build se falhar) e atualizada no navegador pela Edge Function `youtube-episodes`. Thumbnails vêm do `i.ytimg.com`; nada de imagem local de episódio.
+- Landing pages: tabela `landing_pages` (0010, 0011) e bucket `lp-images`; `lib/lp/source.ts` no build, `/lp/pagina/` para as publicadas depois (slug `pagina` reservado). Ficam em `app/[locale]/(lp)` sem cabeçalho e rodapé (esses estão em `(site)/layout.tsx`); WhatsApp com a mensagem de cada LP. Formulário de cada LP → aba `lp-<slug>` (colunas ligadas ao id do campo pela nota do cabeçalho). Inglês em `landing_pages.en` (textos por seção + `source` para saber o que mudou), traduzido pela tarefa `translate-texts` do `seo-assistant`.
 - Admin em `/admin` (fora de `[locale]`, root layout próprio, `noindex`): rotas estáticas, ids por query string (`/admin/editor/?id=`).
 - Publicar: `pnpm release` (confere a configuração, gera `out/` + `.htaccess` e o .zip); conferir com `pnpm preview`. Originais de mídia ficam em `originais/` (fora de `public/` e do Git).

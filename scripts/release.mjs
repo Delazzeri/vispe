@@ -67,6 +67,12 @@ if (!supabaseUrl || !supabaseKey) {
     });
     if (formats.ok) ok("Supabase: formatos dos materiais (0009) disponíveis.");
     else warn("Rode a migration 0009_material_formats.sql antes de publicar: sem ela o build não lê os materiais do banco.");
+    const landing = await fetch(`${supabaseUrl}/rest/v1/landing_pages?select=slug,whatsapp_message&limit=1`, {
+      headers: { apikey: supabaseKey, Authorization: `Bearer ${supabaseKey}` },
+      signal: AbortSignal.timeout(10_000),
+    });
+    if (landing.ok) ok("Supabase: landing pages (0010 e 0011) disponíveis.");
+    else warn("Rode as migrations 0010_landing_pages.sql e 0011_landing_pages_whatsapp.sql antes de publicar: sem elas o build para.");
   } catch {
     warn("Supabase não responde (projeto inexistente ou pausado?): o build usará os artigos de content/blog.ts.");
   }

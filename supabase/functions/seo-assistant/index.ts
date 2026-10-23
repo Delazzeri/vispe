@@ -3,7 +3,8 @@
 // Gemini; com { task: "faq" }, gera as perguntas frequentes do artigo; com
 // { kind: "material", filePath }, lê o arquivo do material (PDF, planilha, Word,
 // PowerPoint) e escreve a página e o FAQ a partir dele; com
-// { task: "translate" }, traduz um artigo ou material para o inglês (site /en).
+// { task: "translate" }, traduz um artigo ou material para o inglês (site /en);
+// com { task: "translate-texts", texts }, traduz textos soltos (landing pages).
 // Roda no servidor do Supabase para a chave do Gemini nunca ir para o
 // site (que é estático); só atende quem está logado no admin E é staff.
 //
@@ -473,6 +474,33 @@ Deno.serve(async (req) => {
     const models = fallback && fallback !== primary ? [primary, fallback] : [primary];
 
     const body = await req.json();
+
+    // Landing pages: textos soltos por chave (seções do admin). Devolve as mesmas chaves.
+    if (body.task === "translate-texts") {
+      const input = body.texts && typeof body.texts === "object" ? (body.texts as Record<string, unknown>) : {};
+      const entries = Object.entries(input).filter(([, value]) => text(value)).slice(0, 250);
+      if (!entries.length) return json({});
+      if (JSON.stringify(entries).length > 60_000) return json({ error: "Textos longos demais para traduzir de uma vez." }, 400);
+      // Chaves curtas e seguras para o schema do Gemini (t0, t1…); voltam às originais no fim.
+      const fields: Record<string, string> = {};
+      entries.forEach(([, value], index) => (fields[`t${index}`] = text(value)));
+      try {
+        const properties: Record<string, unknown> = {};
+        for (const key of Object.keys(fields)) properties[key] = { type: "STRING" };
+        const responseSchema = { type: "OBJECT", properties, required: Object.keys(fields) };
+        const system = `${TRANSLATE_SYSTEM}
+- São textos curtos de uma landing page (títulos, botões, perguntas de formulário): traduza cada um isoladamente, mantendo o tom de chamada para ação.`;
+        const data = await askGemini(apiKey, models, system, JSON.stringify(fields), responseSchema);
+        const translated: Record<string, string> = {};
+        entries.forEach(([key], index) => {
+          const value = text(data[`t${index}`]);
+          if (value) translated[key] = value;
+        });
+        return json(translated);
+      } catch (error) {
+        return json({ error: geminiError(error) }, 502);
+      }
+    }
 
     if (body.task === "translate") {
       const input = body.fields && typeof body.fields === "object" ? body.fields : {};

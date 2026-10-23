@@ -119,6 +119,11 @@ export function translateToEnglish(fields: Record<string, unknown>): Promise<Rec
   return invokeAssistant<Record<string, unknown>>({ task: "translate", fields });
 }
 
+/** Textos soltos das landing pages (tarefa "translate-texts"): devolve as mesmas chaves, traduzidas. */
+export function translateTexts(texts: Record<string, string>): Promise<Record<string, string>> {
+  return invokeAssistant<Record<string, string>>({ task: "translate-texts", texts });
+}
+
 function Row({
   label,
   hint,

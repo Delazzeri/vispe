@@ -133,6 +133,28 @@ Publicar (uma vez): Edge Functions → Deploy a new function → Via Editor → 
 **desligue "Verify JWT"** → Deploy. Não tem segredo. Se a função não estiver publicada, o
 carrossel fica com a lista do último build.
 
+## Landing pages (/lp/<endereço>/)
+
+Criadas em **Admin → Landing pages** a partir de um modelo (diagnóstico financeiro,
+workshop, M&A, superaula). Cada LP é uma lista de seções prontas com o visual do site;
+no admin dá para editar textos, fotos, botões e o formulário, reordenar e acrescentar
+seções. Publicada, abre na hora em `/lp/<endereço>/` (inglês em `/en/lp/<endereço>/`) e
+vira página estática no próximo `pnpm release`. "Não indexar" deixa a LP fora do
+Google e do sitemap (páginas só de anúncio).
+
+Projeto que já tem o banco (0001–0009) — uma vez: SQL Editor →
+`supabase/migrations/0010_landing_pages.sql` → Run e depois
+`supabase/migrations/0011_landing_pages_whatsapp.sql` → Run (tabela, fotos no bucket
+`lp-images` e a mensagem do WhatsApp de cada LP).
+
+- **Formulário:** cada LP grava na aba `lp-<endereço>` da planilha, criada no primeiro
+  envio (colunas: os campos da LP + UTMs + idioma + página). Precisa do
+  `integrations/google-sheets/Code.gs` atual: cole no Apps Script e publique uma
+  **nova versão** (Implantar → Gerenciar implantações → editar → Nova versão).
+- **Inglês:** aba "Inglês" do editor, com tradução automática pela função
+  `seo-assistant` (tarefa `translate-texts`): publique a versão atual de
+  `supabase/functions/seo-assistant/index.ts` (Edge Functions → seo-assistant → Code).
+
 ## No dia a dia
 
 - Publicar no admin já mostra o post no site (página única `/blog/post/`, lida no navegador).

@@ -2,13 +2,15 @@
 
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { optimizeImage } from "@/lib/admin/optimize-image";
 import { cn } from "@/lib/cn";
 import { normalizeFields, normalizeSections } from "@/lib/lp/normalize";
 import { lpSectionSpecs, lpSectionTypes } from "@/lib/lp/schema";
+import { translationFromJson } from "@/lib/lp/rows";
 import { lpTemplateInfo, templateSections } from "@/lib/lp/templates";
+import { englishFromJson, englishToJson, lpTexts, pageTexts, pendingTexts, type LpEnglish, type LpTextEntry } from "@/lib/lp/translation";
 import { lpTemplates, type LandingPage, type LpImage, type LpSection, type LpSectionType, type LpTemplate } from "@/lib/lp/types";
 import { slugify } from "@/lib/slugify";
 import { getSupabase } from "@/lib/supabase/client";
@@ -17,7 +19,9 @@ import { adminInput, adminPrimary, adminSecondary } from "./admin-shell";
 import { Field } from "./form-parts";
 import { ImageField, ItemControls, LpFieldsEditor, move } from "./lp-fields";
 import { lpStatusLabel } from "./lp-list";
+import { LpEnglishPanel } from "./lp-english";
 import { LpPreview } from "./lp-preview";
+import { translateTexts } from "./seo-assistant";
 
 // Editor de landing page: configurações (nome, endereço, SEO, WhatsApp, status)
 // e a lista de seções, com os campos gerados pelo esquema (lib/lp/schema.ts).
@@ -36,11 +40,16 @@ type Draft = {
   whatsappMessage: string;
   status: LandingPageStatus;
   publishedAt: string | null;
-  /** Tradução: preservada ao salvar (editada na aba em inglês). */
-  en: Json | null;
+  /** Versão em inglês (aba "Inglês"), salva em landing_pages.en. */
+  english: LpEnglish;
 };
 
-type Tab = "content" | "settings" | "preview";
+type Tab = "content" | "settings" | "english" | "preview";
+
+/** Pausa nas mudanças do português antes da tradução automática. */
+const AUTO_TRANSLATE_MS = 3000;
+/** Textos por pedido de tradução (a função limita o tamanho). */
+const TRANSLATE_CHUNK = 120;
 
 /** Seções que só podem aparecer uma vez (um h1 e uma âncora #formulario por página). */
 const singleSections: LpSectionType[] = ["hero", "form"];
@@ -85,6 +94,7 @@ function draftToPage(draft: Draft): LandingPage {
     sections: draft.sections,
     noindex: draft.noindex,
     whatsappMessage: draft.whatsappMessage || undefined,
+    en: translationFromJson(englishToJson(draft.english, draft.sections)),
   };
 }
 
@@ -130,6 +140,10 @@ export function LpEditor() {
   const [adding, setAdding] = useState<LpSectionType>("benefits");
   // Id já carregado no editor: depois de salvar uma LP nova, a URL ganha ?id= sem recarregar.
   const loadedId = useRef<string | null>(null);
+  const [translating, setTranslating] = useState(false);
+  const [translateError, setTranslateError] = useState<string>();
+  const [autoTranslate, setAutoTranslate] = useState(true);
+  const [previewLocale, setPreviewLocale] = useState<"pt-BR" | "en-US">("pt-BR");
 
   useEffect(() => {
     if (id && loadedId.current === id) return;
@@ -139,7 +153,8 @@ export function LpEditor() {
         const template: LpTemplate = lpTemplates.includes(modelo as LpTemplate) ? (modelo as LpTemplate) : "diagnostico";
         const info = lpTemplateInfo[template];
         return {
-          slug: "",
+          // Endereço inicial pelo nome do modelo; acompanha o nome até ser editado à mão.
+          slug: slugify(info.label, 60),
           slugTouched: false,
           name: info.label,
           template,
@@ -150,7 +165,11 @@ export function LpEditor() {
           whatsappMessage: info.whatsappMessage,
           status: "draft",
           publishedAt: null,
-          en: null,
+          // Mensagem do WhatsApp em inglês já vem do modelo.
+          english: {
+            texts: { "page::whatsappMessage": info.whatsappMessageEn },
+            source: { "page::whatsappMessage": info.whatsappMessage },
+          },
         } satisfies Draft;
       }
       const supabase = getSupabase();
@@ -158,13 +177,14 @@ export function LpEditor() {
       const { data, error } = await supabase.from("landing_pages").select("*").eq("id", id).maybeSingle();
       if (error) throw error;
       if (!data) throw new Error("Landing page não encontrada.");
+      const sections = normalizeSections(data.sections);
       return {
         id: data.id,
         slug: data.slug,
         slugTouched: true,
         name: data.name,
         template: data.template,
-        sections: normalizeSections(data.sections),
+        sections,
         metaTitle: data.meta_title ?? "",
         metaDescription: data.meta_description ?? "",
         ogImage: data.og_image_url ? { src: data.og_image_url, alt: "" } : undefined,
@@ -172,7 +192,7 @@ export function LpEditor() {
         whatsappMessage: data.whatsapp_message ?? "",
         status: data.status,
         publishedAt: data.published_at,
-        en: data.en,
+        english: englishFromJson(data.en, sections),
       } satisfies Draft;
     }
     load()
@@ -246,7 +266,7 @@ export function LpEditor() {
       og_image_url: draft.ogImage?.src ?? null,
       noindex: draft.noindex,
       whatsapp_message: draft.whatsappMessage.trim() || null,
-      en: draft.en,
+      en: englishToJson(draft.english, draft.sections),
       status: draft.status,
       published_at: publishing ? (draft.publishedAt ?? new Date().toISOString()) : draft.publishedAt,
     };
@@ -269,6 +289,72 @@ export function LpEditor() {
     }
   }
 
+  // Textos em português que têm versão em inglês (seções + SEO e WhatsApp).
+  const entries = useMemo<LpTextEntry[]>(
+    () =>
+      draft
+        ? [
+            ...lpTexts(draft.sections),
+            ...pageTexts({ metaTitle: draft.metaTitle, metaDescription: draft.metaDescription, whatsappMessage: draft.whatsappMessage }),
+          ]
+        : [],
+    [draft],
+  );
+  const pending = useMemo(() => (draft ? pendingTexts(entries, draft.english) : []), [entries, draft]);
+
+  const translate = useCallback(async (list: LpTextEntry[]) => {
+    if (!list.length) return;
+    setTranslating(true);
+    setTranslateError(undefined);
+    try {
+      for (let start = 0; start < list.length; start += TRANSLATE_CHUNK) {
+        const chunk = list.slice(start, start + TRANSLATE_CHUNK);
+        const result = await translateTexts(Object.fromEntries(chunk.map((entry) => [entry.key, entry.value])));
+        setDirty(true);
+        setDraft((current) => {
+          if (!current) return current;
+          const texts = { ...current.english.texts };
+          const source = { ...current.english.source };
+          // source = o português traduzido (se ele mudar de novo, a chave volta a ficar pendente).
+          for (const entry of chunk) {
+            if (typeof result[entry.key] === "string" && result[entry.key].trim()) {
+              texts[entry.key] = result[entry.key];
+              source[entry.key] = entry.value;
+            }
+          }
+          return { ...current, english: { texts, source } };
+        });
+      }
+    } catch (problem) {
+      setTranslateError(problem instanceof Error ? problem.message : String(problem));
+    } finally {
+      setTranslating(false);
+    }
+  }, []);
+
+  // Automático: depois de uma pausa nas mudanças, traduz só o que falta ou mudou.
+  const pendingKey = pending.map((entry) => `${entry.key}=${entry.value}`).join("\n");
+  useEffect(() => {
+    if (!autoTranslate || !pendingKey || translating) return;
+    const timer = setTimeout(() => translate(pending), AUTO_TRANSLATE_MS);
+    return () => clearTimeout(timer);
+    // pendingKey resume `pending`; uma falha não repete sozinha (só quando o português mudar de novo).
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pendingKey, autoTranslate]);
+
+  /** Edição à mão: vale para o português atual daquele texto. */
+  function editEnglish(key: string, value: string) {
+    const from = entries.find((entry) => entry.key === key)?.value;
+    setDirty(true);
+    setSaved(undefined);
+    setDraft((current) => {
+      if (!current) return current;
+      const source = { ...current.english.source };
+      if (from !== undefined) source[key] = from;
+      return { ...current, english: { texts: { ...current.english.texts, [key]: value }, source } };
+    });
+  }
+
   if (loadError) {
     return (
       <p role="alert" className="text-sm font-medium text-brand-dark">
@@ -283,6 +369,7 @@ export function LpEditor() {
   const tabs: { id: Tab; label: string }[] = [
     { id: "content", label: "Seções" },
     { id: "settings", label: "Configurações" },
+    { id: "english", label: pending.length ? `Inglês (${pending.length})` : "Inglês" },
     { id: "preview", label: "Pré-visualização" },
   ];
 
@@ -457,10 +544,40 @@ export function LpEditor() {
         </div>
       )}
 
+      {tab === "english" && (
+        <LpEnglishPanel
+          entries={entries}
+          pending={pending}
+          english={draft.english}
+          onChange={editEnglish}
+          translating={translating}
+          error={translateError}
+          auto={autoTranslate}
+          onAutoChange={setAutoTranslate}
+          onTranslatePending={() => translate(pending)}
+          onTranslateAll={() => translate(entries)}
+        />
+      )}
+
       {tab === "preview" && (
         <div className="mt-6">
-          <p className="mb-3 text-xs text-fg-muted">Prévia com o conteúdo atual (ainda não salvo inclusive). O formulário não envia nada daqui.</p>
-          <LpPreview page={draftToPage(draft)} locale="pt-BR" />
+          <div className="mb-3 flex flex-wrap items-center gap-3">
+            <div role="group" aria-label="Idioma da prévia" className="flex gap-1">
+              {(["pt-BR", "en-US"] as const).map((locale) => (
+                <button
+                  key={locale}
+                  type="button"
+                  aria-pressed={previewLocale === locale}
+                  onClick={() => setPreviewLocale(locale)}
+                  className={cn(adminSecondary, previewLocale === locale && "border-ink bg-ink text-paper hover:bg-fg")}
+                >
+                  {locale === "pt-BR" ? "Português" : "Inglês"}
+                </button>
+              ))}
+            </div>
+            <p className="text-xs text-fg-muted">Prévia com o conteúdo atual (ainda não salvo inclusive). O formulário não envia nada daqui.</p>
+          </div>
+          <LpPreview page={draftToPage(draft)} locale={previewLocale} />
         </div>
       )}
     </div>

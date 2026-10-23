@@ -50,10 +50,12 @@ function mergeFields(fields: LpFieldSpec[], base: Record<string, unknown>, overr
             const translated = asObject(raw[index] ?? null);
             if (!translated) return item;
             const label = typeof translated.label === "string" && translated.label.trim() ? translated.label : item.label;
-            const options =
-              Array.isArray(translated.options) && translated.options.length === item.options.length
-                ? translated.options.map((option: Json, i: number) => (typeof option === "string" && option.trim() ? option : item.options[i]))
-                : item.options;
+            // Opção sem tradução (ou lista mais curta) mantém o português daquela posição.
+            const translatedOptions = Array.isArray(translated.options) ? translated.options : [];
+            const options = item.options.map((option: string, i: number) => {
+              const value = translatedOptions[i];
+              return typeof value === "string" && value.trim() ? value : option;
+            });
             return { ...item, label, options };
           });
         }

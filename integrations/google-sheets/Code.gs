@@ -6,7 +6,8 @@
  *
  * Instalação (uma vez):
  *  1. Crie a planilha. As abas "diagnostico", "franquia", "materiais" e
- *     "carreiras" são criadas sozinhas, com cabeçalho, no primeiro envio.
+ *     "carreiras" são criadas sozinhas, com cabeçalho, no primeiro envio; cada
+ *     landing page ganha a aba "lp-<endereço>" no primeiro envio dela.
  *  2. Extensões → Apps Script → cole este arquivo inteiro em Code.gs.
  *  3. Configurações do projeto (engrenagem) → Propriedades do script → adicione:
  *       RESUME_FOLDER_ID      ID da pasta do Drive dos currículos (trecho da URL
@@ -117,6 +118,8 @@ const MAX_RESUME_BYTES = 4 * 1024 * 1024;
 function doPost(e) {
   try {
     const body = JSON.parse(e.postData.contents);
+    // Landing pages: cada LP grava na própria aba, com as colunas que ela manda.
+    if (body.sheet === "lp") return json(saveLanding(body));
     const columns = SHEETS[body.sheet];
     if (!columns) return json({ ok: false, error: "formulário desconhecido" });
     const values = body.values || {};
@@ -167,6 +170,93 @@ function sheetFor(name, columns) {
     sheet.getRange(1, 1, 1, header.length).setValues([header]).setFontWeight("bold");
     sheet.setFrozenRows(1);
   }
+  return sheet;
+}
+
+// ─────────────────────────────────────────────────────────────
+// Landing pages (/lp/<slug>/): aba "lp-<slug>" criada no primeiro envio. Cada
+// coluna guarda na nota do cabeçalho o id do campo ("campo:email"), então
+// renomear um campo no admin só troca o título e campo novo entra no fim —
+// as linhas antigas nunca desalinham.
+// ─────────────────────────────────────────────────────────────
+
+const LP_MAX_COLUMNS = 30;
+/** Colunas fixas de toda LP: [id, título]. */
+const LP_FIXED_START = [["_recebido", "Recebido em"]];
+const LP_FIXED_END = [
+  ["utm_source", "UTM source"],
+  ["utm_medium", "UTM medium"],
+  ["utm_campaign", "UTM campaign"],
+  ["utm_content", "UTM content"],
+  ["utm_term", "UTM term"],
+  ["locale", "Idioma"],
+  ["_pagina", "Página"],
+];
+
+function saveLanding(body) {
+  const values = body.values || {};
+  const lp = body.lp || {};
+  if (values.consent !== "on") return { ok: false, error: "sem consentimento" };
+  if (typeof lp.slug !== "string" || !/^[a-z0-9]+(-[a-z0-9]+)*$/.test(lp.slug) || lp.slug.length > 80) {
+    return { ok: false, error: "landing page inválida" };
+  }
+  const fields = (Array.isArray(body.columns) ? body.columns : [])
+    .filter((column) => Array.isArray(column) && /^[a-z0-9_]{1,40}$/i.test(String(column[0])))
+    .slice(0, LP_MAX_COLUMNS)
+    .map((column) => [String(column[0]), String(column[1] || column[0]).slice(0, 100)]);
+  if (!fields.length) return { ok: false, error: "sem campos" };
+
+  const columns = [...LP_FIXED_START, ...fields, ...LP_FIXED_END];
+  const row = Object.assign({}, values, { _recebido: new Date(), _pagina: body.page });
+
+  const lock = LockService.getScriptLock();
+  lock.waitLock(20000);
+  try {
+    const sheet = landingSheetFor(lp.slug, columns);
+    const positions = landingColumnPositions(sheet);
+    const line = new Array(sheet.getLastColumn()).fill("");
+    for (const [id] of columns) {
+      const index = positions[id];
+      if (index !== undefined) line[index] = id === "_recebido" ? row[id] : clean(row[id]);
+    }
+    sheet.appendRow(line);
+  } finally {
+    lock.releaseLock();
+  }
+  return { ok: true };
+}
+
+/** id do campo → índice da coluna (lido das notas do cabeçalho). */
+function landingColumnPositions(sheet) {
+  const last = sheet.getLastColumn();
+  const positions = {};
+  if (!last) return positions;
+  sheet.getRange(1, 1, 1, last).getNotes()[0].forEach((note, index) => {
+    const match = String(note).match(/^campo:(.+)$/);
+    if (match) positions[match[1]] = index;
+  });
+  return positions;
+}
+
+/** Aba da LP com todas as colunas: as que faltam entram no fim; títulos acompanham o admin. */
+function landingSheetFor(slug, columns) {
+  const book = SpreadsheetApp.getActiveSpreadsheet();
+  const name = ("lp-" + slug).slice(0, 99);
+  const sheet = book.getSheetByName(name) || book.insertSheet(name);
+  const positions = landingColumnPositions(sheet);
+  let next = sheet.getLastColumn();
+  for (const [id, title] of columns) {
+    let index = positions[id];
+    if (index === undefined) {
+      index = next++;
+      positions[id] = index;
+      sheet.getRange(1, index + 1).setNote("campo:" + id);
+    }
+    const cell = sheet.getRange(1, index + 1);
+    if (cell.getValue() !== title) cell.setValue(title);
+  }
+  sheet.getRange(1, 1, 1, sheet.getLastColumn()).setFontWeight("bold");
+  sheet.setFrozenRows(1);
   return sheet;
 }
 

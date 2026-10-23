@@ -24,7 +24,8 @@ export type PublicLandingPageRow = Pick<
   | "updated_at"
 >;
 
-function translationFromJson(value: LandingPageRecord["en"]): LpTranslation | undefined {
+/** landing_pages.en → tradução usada no site (sem textos de seção, não há versão em inglês). */
+export function translationFromJson(value: LandingPageRecord["en"]): LpTranslation | undefined {
   const en = asObject(value);
   const sections = en && asObject(en.sections ?? null);
   if (!en || !sections || Object.keys(sections).length === 0) return undefined;
