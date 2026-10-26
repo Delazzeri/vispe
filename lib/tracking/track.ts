@@ -1,14 +1,17 @@
 // Ponto único de medição: track() manda o evento para as plataformas já
-// carregadas (com consentimento). Antes da escolha no banner, nada é enviado.
+// carregadas (com consentimento). Antes da escolha no banner, nada vai para os
+// pixels; só a contagem anônima do Umami, que não depende do banner.
 
 import { readConsent, type Consent, type ConsentCategory } from "@/lib/consent";
 import { contentFromPath, metaEventName, newEventId, type Conversion, type TrackEvent } from "./events";
 import { loadGoogle, platforms, type Platform } from "./platforms";
+import { trackUmami } from "./umami";
 
 const active = new Set<Platform>();
 let granted: Record<ConsentCategory, boolean> = { analytics: false, marketing: false };
 
 export function track(event: TrackEvent) {
+  trackUmami(event);
   for (const platform of active) platform.track(event);
 }
 

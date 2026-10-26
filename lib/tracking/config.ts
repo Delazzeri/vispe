@@ -2,13 +2,22 @@
 // docs/marketing-tracking.md). Sem o ID, a plataforma não carrega.
 // process.env.NEXT_PUBLIC_* escrito por extenso: é assim que o Next inclui no bundle.
 
+import { brand } from "@/content/brand";
 import type { Conversion } from "./events";
 
 const env = (value: string | undefined) => value?.trim() || undefined;
 
 type ConversionIds = Partial<Record<Conversion, string>>;
 
+/** Domínio de produção com e sem www (o Umami só conta visitas neles). */
+const siteHost = new URL(brand.url).hostname.replace(/^www\./, "");
+
 export const trackingConfig = {
+  umami: {
+    /** Umami Cloud → Settings → Websites → o site → Edit → Website ID. Sem consentimento: é anônimo e sem cookies. */
+    websiteId: env(process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID),
+    domains: env(process.env.NEXT_PUBLIC_UMAMI_DOMAINS) ?? `${siteHost},www.${siteHost}`,
+  },
   meta: {
     pixelId: env(process.env.NEXT_PUBLIC_META_PIXEL_ID),
     /** Meta tag de verificação do domínio (alternativa ao registro DNS). */

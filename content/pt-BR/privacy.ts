@@ -26,6 +26,7 @@ export const privacy = {
       paragraphs: [
         "Coletamos apenas os dados necessários para cada finalidade. Quando você preenche um formulário no site, seja para pedir um diagnóstico, baixar um material gratuito, falar sobre franquias ou se candidatar a uma vaga, recebemos as informações que você mesmo informa, como nome, e-mail, telefone, empresa, cargo, faixa de faturamento, segmento e a mensagem enviada. No formulário de carreiras, recebemos também o currículo anexado.",
         "Se você permitir o uso de cookies de análise e de marketing, também coletamos informações sobre a sua navegação, como as páginas visitadas, a origem da visita (por exemplo, um anúncio ou uma busca), os parâmetros de campanha presentes no link, o tipo de aparelho e de navegador e a localização aproximada obtida a partir do endereço IP, além de identificadores de cookies e de cliques em anúncios das plataformas descritas nesta política. Sem o seu consentimento, esses dados não são coletados.",
+        "Independentemente dessa escolha, o site conta as visitas de forma anônima com o Umami, uma ferramenta de estatísticas que não usa cookies. Ela registra apenas números agregados, como as páginas vistas, a origem da visita, o país e a cidade aproximados, o tipo de aparelho, o navegador e o sistema, além da quantidade de formulários enviados e de cliques no WhatsApp, sem o conteúdo deles e sem identificar quem visitou.",
       ],
     },
     {
@@ -40,7 +41,7 @@ export const privacy = {
       id: "cookies",
       title: "Uso de cookies",
       paragraphs: [
-        "Cookies são pequenos arquivos guardados no seu navegador que permitem ao site lembrar informações sobre a sua visita. Usamos cookies essenciais, que estão sempre ativos porque sem eles o site não funciona corretamente: eles guardam a sua escolha sobre cookies e o idioma selecionado.",
+        "Cookies são pequenos arquivos guardados no seu navegador que permitem ao site lembrar informações sobre a sua visita. Usamos cookies essenciais, que estão sempre ativos porque sem eles o site não funciona corretamente: eles guardam a sua escolha sobre cookies e o idioma selecionado. A contagem anônima de visitas feita pelo Umami não usa cookies.",
         "Os cookies de análise (Google Analytics) e de marketing (Meta Pixel, do Facebook e do Instagram, LinkedIn Insight Tag e Google Ads) só são ativados se você permitir no aviso exibido na primeira visita. Quando o marketing está permitido e você envia um formulário, o seu e-mail, telefone e nome também podem ser enviados à Meta de forma criptografada (hash), apenas para relacionar o envio ao anúncio que o originou. Você pode rever a sua escolha a qualquer momento pelo botão abaixo ou pelo link no rodapé do site.",
       ],
     },
@@ -55,7 +56,7 @@ export const privacy = {
       id: "compartilhamento",
       title: "Compartilhamento de dados",
       paragraphs: [
-        "A Vispe Capital não vende dados pessoais. Compartilhamos dados apenas com fornecedores que nos ajudam a operar o site e os nossos serviços, sempre na medida do necessário para a finalidade de cada um: a Hostinger, que hospeda o site; o Google, cujas ferramentas (Planilhas, Drive e Gmail) usamos para registrar os formulários, guardar currículos e enviar e-mails; e a Supabase, que mantém o banco de dados e os arquivos do site. As plataformas de análise e de anúncios (Meta, LinkedIn e Google) recebem dados somente com o seu consentimento.",
+        "A Vispe Capital não vende dados pessoais. Compartilhamos dados apenas com fornecedores que nos ajudam a operar o site e os nossos serviços, sempre na medida do necessário para a finalidade de cada um: a Hostinger, que hospeda o site; o Google, cujas ferramentas (Planilhas, Drive e Gmail) usamos para registrar os formulários, guardar currículos e enviar e-mails; a Supabase, que mantém o banco de dados e os arquivos do site; e o Umami, que faz a contagem anônima de visitas. As plataformas de análise e de anúncios (Meta, LinkedIn e Google) recebem dados somente com o seu consentimento.",
         "Também poderemos compartilhar dados com autoridades públicas quando houver obrigação legal ou ordem judicial nesse sentido.",
       ],
     },

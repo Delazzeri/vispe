@@ -162,3 +162,30 @@ Projeto que já tem o banco (0001–0009) — uma vez: SQL Editor →
   gere o build e suba `out/` de novo.
 - Tirar alguém do admin: `delete from public.profiles where id = '<uuid>';` (e, se quiser,
   apague o usuário em Authentication → Users).
+
+## Métricas do site no admin (Umami Cloud)
+
+A área **Métricas** do admin (`/admin/metricas/`) mostra visitantes, visitas, páginas vistas,
+taxa de rejeição, tempo por visita, quem está online, a série no tempo, páginas, origens
+(canais, sites e UTM), país/estado/cidade, aparelhos e as conversões (formulários e cliques
+no WhatsApp). Os números vêm do **Umami Cloud**, que conta as visitas de forma anônima e sem
+cookies (por isso carrega para todos, sem depender do banner). A Edge Function
+`site-analytics` lê a API do Umami com a chave guardada no Supabase e só atende staff.
+
+1. **Conta no Umami:** crie a conta em umami.is (de preferência com um e-mail da empresa) →
+   Add website → nome "Vispe Capital" e o domínio `vispecapital.com`.
+2. **Website ID:** Websites → o site → Edit → copie o Website ID para
+   `NEXT_PUBLIC_UMAMI_WEBSITE_ID` no `.env.local` (ver `.env.example`).
+3. **Chave da API:** Settings → API keys → Create key → copie a chave.
+4. **Segredos no Supabase:** Edge Functions → Secrets → `UMAMI_API_KEY` = a chave e
+   `UMAMI_WEBSITE_ID` = o mesmo Website ID. (Opcional: `UMAMI_API_URL`, para um Umami
+   próprio em vez do Cloud; padrão `https://api.umami.is/v1`.)
+5. **Publicar a função:** Edge Functions → Deploy a new function → Via Editor → nome
+   **`site-analytics`** → cole todo o `supabase/functions/site-analytics/index.ts` → Deploy.
+   Deixe ligada a opção de exigir JWT (Verify JWT), que é o padrão.
+6. Rode `pnpm release` e suba o pacote. As visitas começam a contar com o site no ar, só no
+   domínio de produção (dev e `pnpm preview` não entram nos números).
+
+As conversões chegam ao Umami como eventos `lead`, `registration`, `application` e `contact`,
+com a origem (aba da planilha, `lp-<slug>` ou `whatsapp`) e nenhum dado do formulário.
+O painel guarda cada período por 5 minutos; erros aparecem em Edge Functions → site-analytics → Logs.

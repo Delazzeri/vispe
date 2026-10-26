@@ -27,6 +27,7 @@ export const privacy: PrivacyContent = {
       paragraphs: [
         "We only collect the data each purpose requires. When you fill in a form on the website, whether to request an assessment, download a free material, ask about franchising or apply for a job, we receive the information you provide, such as your name, e-mail, phone, company, role, revenue range, industry and message. In the careers form, we also receive the attached résumé.",
         "If you allow analytics and marketing cookies, we also collect information about your browsing, such as pages visited, where the visit came from (for example, an ad or a search), campaign parameters in the link, device and browser type and approximate location based on your IP address, as well as cookie and ad-click identifiers from the platforms described in this policy. Without your consent, this data is not collected.",
+        "Regardless of that choice, the website counts visits anonymously with Umami, an analytics tool that does not use cookies. It only records aggregate numbers, such as pages viewed, where the visit came from, approximate country and city, device type, browser and operating system, plus the number of forms submitted and WhatsApp clicks, without their content and without identifying who visited.",
       ],
     },
     {
@@ -41,7 +42,7 @@ export const privacy: PrivacyContent = {
       id: "cookies",
       title: "Use of cookies",
       paragraphs: [
-        "Cookies are small files stored in your browser that let the website remember information about your visit. We use essential cookies, which are always on because the website does not work properly without them: they store your cookie choice and the selected language.",
+        "Cookies are small files stored in your browser that let the website remember information about your visit. We use essential cookies, which are always on because the website does not work properly without them: they store your cookie choice and the selected language. Umami's anonymous visit count does not use cookies.",
         "Analytics cookies (Google Analytics) and marketing cookies (Meta Pixel, for Facebook and Instagram, LinkedIn Insight Tag and Google Ads) are only enabled if you allow them in the notice shown on your first visit. When marketing is allowed and you submit a form, your e-mail, phone and name may also be sent to Meta in encrypted (hashed) form, only to match the submission to the ad that led to it. You can review your choice at any time using the button below or the link in the website footer.",
       ],
     },
@@ -56,7 +57,7 @@ export const privacy: PrivacyContent = {
       id: "sharing",
       title: "Data sharing",
       paragraphs: [
-        "Vispe Capital does not sell personal data. We only share data with providers that help us run the website and our services, always to the extent each one needs: Hostinger, which hosts the website; Google, whose tools (Sheets, Drive and Gmail) we use to record forms, store résumés and send e-mails; and Supabase, which runs the website's database and files. Analytics and advertising platforms (Meta, LinkedIn and Google) only receive data with your consent.",
+        "Vispe Capital does not sell personal data. We only share data with providers that help us run the website and our services, always to the extent each one needs: Hostinger, which hosts the website; Google, whose tools (Sheets, Drive and Gmail) we use to record forms, store résumés and send e-mails; Supabase, which runs the website's database and files; and Umami, which counts visits anonymously. Analytics and advertising platforms (Meta, LinkedIn and Google) only receive data with your consent.",
         "We may also share data with public authorities when required by law or court order.",
       ],
     },
