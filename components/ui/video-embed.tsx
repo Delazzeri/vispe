@@ -378,20 +378,11 @@ export function VideoEmbed({ youtubeId, title, poster, autoplay = false, classNa
           aria-hidden={!showPoster}
           tabIndex={showPoster ? 0 : -1}
           className={cn(
-            "group/poster absolute inset-0 z-20 flex cursor-pointer items-center justify-center transition-opacity duration-500 focus-visible:outline-none",
+            "absolute inset-0 z-20 cursor-pointer transition-opacity duration-500 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-brand focus-visible:ring-inset",
             showPoster ? "opacity-100" : "pointer-events-none opacity-0",
           )}
         >
           <Image src={poster} alt="" fill sizes="(min-width: 1152px) 1104px, 100vw" className="object-cover" />
-          <span
-            className={cn(
-              "relative flex h-16 w-16 items-center justify-center rounded-full bg-brand text-brand-fg shadow-lg ring-4 ring-paper/20 transition-transform duration-200 group-hover:scale-105 md:h-20 md:w-20",
-              phase === "loading" && "motion-safe:animate-pulse",
-              "group-focus-visible/poster:ring-brand",
-            )}
-          >
-            <Play className="h-7 w-7 translate-x-0.5 md:h-8 md:w-8" aria-hidden fill="currentColor" />
-          </span>
         </button>
 
         {active && (
