@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+import { useReducedMotion } from "motion/react";
 import { Maximize, Minimize, Pause, Play, Volume2, VolumeX } from "lucide-react";
 import { useSite } from "@/content/site";
 import { format } from "@/content/types";
@@ -85,6 +86,8 @@ type VideoEmbedProps = {
   title: string;
   /** Capa local com largura no nome (ex.: "/media/video/x-1280.webp"). */
   poster: string;
+  /** Começa sozinho, sem som, quando aparece na tela (não com movimento reduzido). */
+  autoplay?: boolean;
   className?: string;
 };
 
@@ -94,8 +97,11 @@ type VideoEmbedProps = {
  * andamento, som, tela cheia). O iframe fica mais alto que a moldura e sem
  * eventos de ponteiro, então título, logo e sugestões do YouTube ficam fora da
  * área visível; ao pausar, um véu desfocado cobre o quadro.
+ *
+ * Com `autoplay`: toca mudo quando metade dele está na tela e pausa ao sair,
+ * até a pessoa interagir; "Ativar som" fica no canto enquanto está mudo.
  */
-export function VideoEmbed({ youtubeId, title, poster, className }: VideoEmbedProps) {
+export function VideoEmbed({ youtubeId, title, poster, autoplay = false, className }: VideoEmbedProps) {
   const { ui } = useSite();
   const labels = ui.video;
   const wrapperRef = useRef<HTMLDivElement>(null);
@@ -107,8 +113,20 @@ export function VideoEmbed({ youtubeId, title, poster, className }: VideoEmbedPr
   const [fullscreen, setFullscreen] = useState(false);
   const [bezel, setBezel] = useState(false);
   const bezelTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const reduceMotion = useReducedMotion();
+  /** Player criado pelo autoplay: nasce mudo. */
+  const startMuted = useRef(false);
+  /** A pessoa já mexeu no vídeo: o autoplay deixa de pausar/retomar sozinho. */
+  const engaged = useRef(false);
+  /** Espelho de `engaged` para a renderização (rótulos e botão de som). */
+  const [interacted, setInteracted] = useState(false);
 
-  // Cria o player depois do primeiro clique.
+  function engage() {
+    engaged.current = true;
+    setInteracted(true);
+  }
+
+  // Cria o player depois do primeiro clique (ou quando o autoplay pede).
   useEffect(() => {
     if (phase !== "loading" || playerRef.current) return;
     const host = hostRef.current;
@@ -135,6 +153,7 @@ export function VideoEmbed({ youtubeId, title, poster, className }: VideoEmbedPr
             rel: 0,
             playsinline: 1,
             cc_load_policy: 0,
+            mute: startMuted.current ? 1 : 0,
             origin: window.location.origin,
           },
           events: {
@@ -199,6 +218,29 @@ export function VideoEmbed({ youtubeId, title, poster, className }: VideoEmbedPr
     return () => clearInterval(timer);
   }, [phase]);
 
+  // Autoplay mudo: toca com metade na tela, pausa ao sair (até a pessoa interagir).
+  useEffect(() => {
+    if (!autoplay || reduceMotion) return;
+    const wrapper = wrapperRef.current;
+    if (!wrapper) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (engaged.current) return;
+        const player = playerRef.current;
+        if (!entry.isIntersecting) player?.pauseVideo();
+        else if (player) player.playVideo();
+        else {
+          startMuted.current = true;
+          setMuted(true);
+          setPhase((current) => (current === "idle" ? "loading" : current));
+        }
+      },
+      { threshold: 0.5 },
+    );
+    observer.observe(wrapper);
+    return () => observer.disconnect();
+  }, [autoplay, reduceMotion]);
+
   useEffect(() => {
     const onChange = () => setFullscreen(document.fullscreenElement === wrapperRef.current);
     document.addEventListener("fullscreenchange", onChange);
@@ -206,6 +248,7 @@ export function VideoEmbed({ youtubeId, title, poster, className }: VideoEmbedPr
   }, []);
 
   function start() {
+    engage();
     const player = playerRef.current;
     if (!player) {
       setPhase("loading");
@@ -216,6 +259,7 @@ export function VideoEmbed({ youtubeId, title, poster, className }: VideoEmbedPr
   }
 
   function toggle() {
+    engage();
     if (phase === "playing") playerRef.current?.pauseVideo();
     else start();
   }
@@ -223,6 +267,7 @@ export function VideoEmbed({ youtubeId, title, poster, className }: VideoEmbedPr
   function toggleMute() {
     const player = playerRef.current;
     if (!player) return;
+    engage();
     if (muted) player.unMute();
     else player.mute();
     setMuted(!muted);
@@ -232,6 +277,7 @@ export function VideoEmbed({ youtubeId, title, poster, className }: VideoEmbedPr
     const player = playerRef.current;
     const duration = player?.getDuration() ?? 0;
     if (!player || duration <= 0) return;
+    engage();
     player.seekTo(value * duration, true);
     setProgress(value);
   }
@@ -241,7 +287,16 @@ export function VideoEmbed({ youtubeId, title, poster, className }: VideoEmbedPr
     else void wrapperRef.current?.requestFullscreen();
   }
 
+  /** Clique no vídeo: no autoplay mudo, liga o som; depois, pausa/continua. */
+  function onSurface() {
+    if (muted && !engaged.current) toggleMute();
+    else toggle();
+  }
+
   const active = phase === "playing" || phase === "paused";
+  const unmuteFirst = muted && !interacted;
+  const pill =
+    "flex items-center gap-2 rounded-full bg-ink/80 font-semibold text-paper ring-1 ring-paper/20 backdrop-blur-sm transition-colors hover:bg-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand";
   const showPoster = !active;
   const iconButton =
     "flex h-9 w-9 items-center justify-center rounded-full text-paper transition-colors hover:bg-paper/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand";
@@ -264,21 +319,47 @@ export function VideoEmbed({ youtubeId, title, poster, className }: VideoEmbedPr
         {active && (
           <button
             type="button"
-            onClick={toggle}
-            aria-label={phase === "playing" ? labels.pause : labels.resume}
+            onClick={onSurface}
+            aria-label={unmuteFirst ? labels.unmute : phase === "playing" ? labels.pause : labels.resume}
             className="absolute inset-0 z-10 cursor-pointer focus-visible:outline-none"
           />
         )}
 
-        <span
-          aria-hidden
-          className={cn(
-            "pointer-events-none absolute top-1/2 left-1/2 z-10 flex h-18 w-18 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-ink/80 text-paper ring-1 ring-paper/20 backdrop-blur-sm transition-opacity duration-300",
-            phase === "playing" && bezel ? "opacity-100" : "opacity-0",
-          )}
-        >
-          <Pause className="h-6 w-6" aria-hidden fill="currentColor" />
-        </span>
+        {/* Centro nos primeiros segundos (cobre o ícone do YouTube): "Ativar som" se está mudo. */}
+        {muted ? (
+          <button
+            type="button"
+            onClick={toggleMute}
+            tabIndex={phase === "playing" && bezel ? 0 : -1}
+            aria-hidden={!(phase === "playing" && bezel)}
+            className={cn(
+              pill,
+              "absolute top-1/2 left-1/2 z-20 h-16 -translate-x-1/2 -translate-y-1/2 px-6 text-sm transition-opacity duration-300 md:text-base",
+              phase === "playing" && bezel ? "opacity-100" : "pointer-events-none opacity-0",
+            )}
+          >
+            <VolumeX className="h-5 w-5" aria-hidden />
+            {labels.enableSound}
+          </button>
+        ) : (
+          <span
+            aria-hidden
+            className={cn(
+              "pointer-events-none absolute top-1/2 left-1/2 z-10 flex h-18 w-18 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-ink/80 text-paper ring-1 ring-paper/20 backdrop-blur-sm transition-opacity duration-300",
+              phase === "playing" && bezel ? "opacity-100" : "opacity-0",
+            )}
+          >
+            <Pause className="h-6 w-6" aria-hidden fill="currentColor" />
+          </span>
+        )}
+
+        {/* Depois, "Ativar som" fica no canto enquanto o vídeo está mudo. */}
+        {active && muted && !(phase === "playing" && bezel) && (
+          <button type="button" onClick={toggleMute} className={cn(pill, "absolute top-3 left-3 z-30 h-10 px-4 text-xs md:top-4 md:left-4 md:text-sm")}>
+            <VolumeX className="h-4 w-4" aria-hidden />
+            {labels.enableSound}
+          </button>
+        )}
 
         {phase === "paused" && (
           <div className="pointer-events-none absolute inset-0 z-10 flex items-center justify-center bg-ink/45 backdrop-blur-md">

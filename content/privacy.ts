@@ -3,7 +3,7 @@ import type { Widen } from "./types";
 import { privacy as enUS } from "./en-US/privacy";
 import { privacy as ptBR } from "./pt-BR/privacy";
 
-// Texto da Política de Privacidade (/privacidade e /en/privacy).
+// Texto da Política de Privacidade (/politica-de-privacidade e /en/privacy-policy).
 
 export type PrivacyContent = Widen<typeof ptBR>;
 

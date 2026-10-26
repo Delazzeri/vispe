@@ -84,7 +84,7 @@ export function FeatureChips({ id }: { id?: string }) {
 
       <Reveal delay={0.15} className="mx-auto mt-14 max-w-[1104px] px-6">
         {video.youtubeId ? (
-          <VideoEmbed youtubeId={video.youtubeId} title={video.title} poster={video.poster} />
+          <VideoEmbed youtubeId={video.youtubeId} title={video.title} poster={video.poster} autoplay />
         ) : (
           <VideoPlaceholder title={video.title} />
         )}

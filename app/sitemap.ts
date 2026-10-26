@@ -21,7 +21,7 @@ const pages: { path: string; changeFrequency: Frequency; priority: number }[] = 
   { path: "/franquia/financeira", changeFrequency: "monthly", priority: 0.6 },
   { path: "/materiais", changeFrequency: "weekly", priority: 0.7 },
   { path: "/blog", changeFrequency: "weekly", priority: 0.7 },
-  { path: "/privacidade", changeFrequency: "yearly", priority: 0.2 },
+  { path: "/politica-de-privacidade", changeFrequency: "yearly", priority: 0.2 },
 ];
 
 export const dynamic = "force-static";
