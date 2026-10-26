@@ -23,10 +23,10 @@ export default async function PoliticaDePrivacidadePage({ params }: PageProps<"/
   const { ui } = getSite(locale);
 
   return (
-    <div className="text-fg">
-      {/* Branco atrás de tudo (inclusive da faixa do menu), só nesta página. */}
-      <div aria-hidden className="fixed inset-0 -z-10 bg-surface" />
-      <article aria-labelledby="privacy-heading" className="mx-auto max-w-3xl px-6 pt-36 pb-24 text-sm leading-relaxed md:pt-44 md:pb-32">
+    <div className="bg-surface text-fg">
+      {/* Branco também na faixa atrás do menu, que fica acima do <main>. */}
+      <div aria-hidden className="absolute inset-x-0 top-0 -z-10 h-40 bg-surface" />
+      <article aria-labelledby="privacy-heading" className="mx-auto max-w-3xl px-6 pt-36 pb-12 text-sm leading-relaxed md:pt-44 md:pb-16">
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -65,6 +65,8 @@ export default async function PoliticaDePrivacidadePage({ params }: PageProps<"/
         <p className="mt-10 font-bold">{privacy.closing}</p>
         <p className="mt-6 text-xs text-fg-muted">{privacy.updated}</p>
       </article>
+      {/* Degradê do branco para o fundo do rodapé. */}
+      <div aria-hidden className="h-24 bg-linear-to-b from-surface to-bg md:h-32" />
     </div>
   );
 }
