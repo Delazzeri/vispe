@@ -14,17 +14,55 @@ type PopupCardProps = {
   closeLabel: string;
   onClose?: () => void;
   onCta?: () => void;
+  /** Prévia do admin: mesmo visual, mas o clique não sai da página. */
+  preview?: boolean;
 };
 
 /**
  * Visual do pop-up (o mesmo no site e na prévia do admin): imagem, título,
- * texto e botão, com o X de fechar no canto. Quem posiciona é quem usa.
+ * texto e botão, com o X de fechar no canto. Com link, o pop-up inteiro é
+ * clicável (imagem, texto e botão levam ao mesmo lugar); o botão é opcional.
+ * Quem posiciona é quem usa.
  */
-export function PopupCard({ popup, headingId, closeLabel, onClose, onCta }: PopupCardProps) {
+export function PopupCard({ popup, headingId, closeLabel, onClose, onCta, preview = false }: PopupCardProps) {
   const corner = popup.layout === "corner";
-  const hasText = Boolean(popup.title || popup.body || popup.cta_label);
+  const linked = Boolean(popup.cta_url);
+  const hasText = Boolean(popup.title || popup.body || (popup.cta_label && linked));
   const width = popup.image_width ?? 1200;
   const height = popup.image_height ?? 630;
+
+  const content = (
+    <>
+      {popup.image_url && (
+        <div className="overflow-hidden">
+          <Image
+            src={popup.image_url}
+            alt={popup.image_alt}
+            width={width}
+            height={height}
+            sizes="(min-width: 640px) 448px, 100vw"
+            className={cn("h-auto w-full", linked && "transition-transform duration-500 ease-out motion-safe:group-hover:scale-102")}
+          />
+        </div>
+      )}
+      {hasText && (
+        <div className={corner ? "p-5" : "p-6"}>
+          {popup.title && (
+            <h2 id={headingId} className={cn("pr-8 font-bold tracking-tight text-fg", corner ? "text-lg" : "text-xl md:text-2xl")}>
+              {popup.title}
+            </h2>
+          )}
+          {popup.body && <p className="mt-2 whitespace-pre-line text-sm leading-relaxed text-fg-muted">{popup.body}</p>}
+          {popup.cta_label && linked && (
+            // Parte do link do pop-up (não é um segundo link): só o visual de botão.
+            <span className="mt-5 inline-flex items-center justify-center rounded-full bg-brand px-5 py-2.5 text-sm font-semibold text-brand-fg transition-colors group-hover:bg-accent-soft">
+              {popup.cta_label}
+            </span>
+          )}
+        </div>
+      )}
+    </>
+  );
 
   return (
     <div
@@ -33,42 +71,18 @@ export function PopupCard({ popup, headingId, closeLabel, onClose, onCta }: Popu
         corner ? "w-full max-w-sm" : "w-full max-w-md",
       )}
     >
-      {popup.image_url &&
-        (popup.cta_url && !hasText ? (
-          // Pop-up só de imagem: a imagem inteira é o link.
-          <a
-            href={popup.cta_url}
-            target={popup.cta_new_tab ? "_blank" : undefined}
-            rel={popup.cta_new_tab ? "noopener" : undefined}
-            onClick={onCta}
-            className="block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-brand-dark"
-          >
-            <Image src={popup.image_url} alt={popup.image_alt} width={width} height={height} sizes="(min-width: 640px) 448px, 100vw" className="h-auto w-full" />
-          </a>
-        ) : (
-          <Image src={popup.image_url} alt={popup.image_alt} width={width} height={height} sizes="(min-width: 640px) 448px, 100vw" className="h-auto w-full" />
-        ))}
-
-      {hasText && (
-        <div className={cn(corner ? "p-5" : "p-6")}>
-          {popup.title && (
-            <h2 id={headingId} className={cn("pr-8 font-bold tracking-tight text-fg", corner ? "text-lg" : "text-xl md:text-2xl")}>
-              {popup.title}
-            </h2>
-          )}
-          {popup.body && <p className="mt-2 whitespace-pre-line text-sm leading-relaxed text-fg-muted">{popup.body}</p>}
-          {popup.cta_label && popup.cta_url && (
-            <a
-              href={popup.cta_url}
-              target={popup.cta_new_tab ? "_blank" : undefined}
-              rel={popup.cta_new_tab ? "noopener" : undefined}
-              onClick={onCta}
-              className="mt-5 inline-flex items-center justify-center rounded-full bg-brand px-5 py-2.5 text-sm font-semibold text-brand-fg transition-colors hover:bg-accent-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-dark focus-visible:ring-offset-2"
-            >
-              {popup.cta_label}
-            </a>
-          )}
-        </div>
+      {linked && !preview ? (
+        <a
+          href={popup.cta_url}
+          target={popup.cta_new_tab ? "_blank" : undefined}
+          rel={popup.cta_new_tab ? "noopener" : undefined}
+          onClick={onCta}
+          className="group block rounded-3xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-brand-dark"
+        >
+          {content}
+        </a>
+      ) : (
+        <div className={cn(linked && "group cursor-pointer")}>{content}</div>
       )}
 
       <button

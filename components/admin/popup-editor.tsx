@@ -154,11 +154,9 @@ function validate(draft: Draft): string[] {
   if (!draft.name.trim()) errors.push("Dê um nome interno ao pop-up.");
   if (!draft.imageUrl && !draft.title.trim() && !draft.body.trim()) errors.push("Coloque uma imagem, um título ou um texto.");
   if (draft.imageUrl && !draft.imageAlt.trim()) errors.push("Descreva a imagem (texto alternativo), para quem usa leitor de tela.");
-  if (draft.ctaLabel.trim() && !draft.ctaUrl.trim()) errors.push("O botão precisa de um link.");
-  if (!draft.ctaLabel.trim() && draft.ctaUrl.trim() && (!draft.imageUrl || draft.title.trim() || draft.body.trim()))
-    errors.push("Dê um texto ao botão (só o pop-up de imagem, sem título e texto, usa o link sem botão).");
+  if (draft.ctaLabel.trim() && !draft.ctaUrl.trim()) errors.push("O botão precisa do link do pop-up (o botão leva para ele).");
   if (draft.ctaUrl.trim() && !/^(https?:\/\/|\/|mailto:|tel:)/.test(draft.ctaUrl.trim()))
-    errors.push("O link do botão deve começar com / (página do site), https:// , mailto: ou tel:.");
+    errors.push("O link deve começar com / (página do site), https:// , mailto: ou tel:.");
   if (draft.pageRule !== "all") {
     const paths = splitPaths(draft.paths);
     if (!paths.length) errors.push("Liste ao menos uma página (ou escolha “Todas as páginas”).");
@@ -353,7 +351,7 @@ export function PopupEditor() {
             />
             <div>
               <p className="text-sm font-medium text-fg">Imagem (opcional)</p>
-              <p className="text-xs text-fg-muted">JPG, PNG ou WebP até 5 MB; vira WebP de até 1200 px. Sem título e texto, a imagem inteira vira o link do botão.</p>
+              <p className="text-xs text-fg-muted">JPG, PNG ou WebP até 5 MB; vira WebP de até 1200 px.</p>
               <div className="mt-2 flex flex-wrap items-center gap-3">
                 <label className={cn(adminSecondary, "cursor-pointer")}>
                   {uploading ? "Enviando…" : draft.imageUrl ? "Trocar imagem" : "Enviar imagem"}
@@ -380,11 +378,11 @@ export function PopupEditor() {
               <textarea value={draft.body} rows={3} onChange={(e) => update({ body: e.target.value })} className={adminInput} />
             </Field>
             <div className="grid gap-4 sm:grid-cols-2">
-              <Field label="Texto do botão">
-                <input value={draft.ctaLabel} onChange={(e) => update({ ctaLabel: e.target.value })} className={adminInput} placeholder="Ex.: Quero participar" />
-              </Field>
-              <Field label="Link do botão" hint="Página do site (/lp/workshop) ou endereço completo.">
+              <Field label="Link (opcional)" hint="Clicar em qualquer parte do pop-up leva para cá. Página do site (/lp/workshop) ou endereço completo.">
                 <input value={draft.ctaUrl} onChange={(e) => update({ ctaUrl: e.target.value })} className={adminInput} placeholder="/lp/…" />
+              </Field>
+              <Field label="Texto do botão (opcional)" hint="Vazio: sem botão; o pop-up continua clicável pelo link.">
+                <input value={draft.ctaLabel} onChange={(e) => update({ ctaLabel: e.target.value })} className={adminInput} placeholder="Ex.: Quero participar" />
               </Field>
             </div>
             <label className="flex items-center gap-2 text-sm text-fg">
@@ -501,7 +499,7 @@ export function PopupEditor() {
               {draft.layout === "modal" && <div aria-hidden className="absolute inset-0 bg-ink/50" />}
               <div className="relative w-full max-w-md">
                 {draft.imageUrl || draft.title || draft.body ? (
-                  <PopupCard popup={previewContent} headingId="popup-preview" closeLabel="Fechar" />
+                  <PopupCard popup={previewContent} headingId="popup-preview" closeLabel="Fechar" preview />
                 ) : (
                   <p className="rounded-2xl bg-surface p-6 text-center text-sm text-fg-muted">Coloque uma imagem, um título ou um texto para ver a prévia.</p>
                 )}

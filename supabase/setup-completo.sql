@@ -1115,7 +1115,7 @@ create table public.popups (
   updated_at      timestamptz not null default now(),
   constraint popups_has_content check (image_url is not null or title <> '' or body <> ''),
   constraint popups_period check (starts_at is null or ends_at is null or starts_at < ends_at),
-  -- Botão com texto precisa de link; link sem texto vale para pop-up só de imagem (a imagem vira o link).
+  -- Botão com texto precisa de link; link sem botão vale (o pop-up inteiro é clicável).
   constraint popups_cta_needs_url check (cta_label = '' or cta_url <> '')
 );
 
