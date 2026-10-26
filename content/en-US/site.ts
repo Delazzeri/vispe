@@ -56,7 +56,8 @@ export const site: SiteContent = {
     ],
     video: {
       title: "How Vispe Capital works",
-      embedUrl: undefined,
+      youtubeId: "qFf4PULIxrw",
+      poster: "/media/video/vispe-overview-poster-1280.webp",
     },
   },
 
@@ -561,6 +562,16 @@ export const site: SiteContent = {
     pillar: "Pillar {n}",
     rating: "Rated {rating} out of 5 stars",
     videoPlaceholder: "Video in production (placeholder)",
+    video: {
+      play: "Watch the video: {title}",
+      pause: "Pause",
+      resume: "Play",
+      mute: "Mute",
+      unmute: "Unmute",
+      fullscreen: "Full screen",
+      exitFullscreen: "Exit full screen",
+      progress: "Video progress",
+    },
     dashboardSrc: "/media/hero/tela-mac-us-2600.webp",
     dashboardAlt:
       "Vispe Capital's CFO as a Service dashboard, showing recurring revenue, CAC, LTV/CAC, churn, sales funnel and revenue by product",

@@ -4,6 +4,7 @@ import * as m from "motion/react-m";
 import { useReducedMotion, type Variants } from "motion/react";
 import { stagger } from "@/components/motion/presets";
 import { Reveal } from "@/components/motion/reveal";
+import { VideoEmbed } from "@/components/ui/video-embed";
 import { VideoPlaceholder } from "@/components/ui/video-placeholder";
 import { FeaturedTestimonial } from "@/components/ui/featured-testimonial";
 import { useSite } from "@/content/site";
@@ -82,7 +83,11 @@ export function FeatureChips({ id }: { id?: string }) {
       </div>
 
       <Reveal delay={0.15} className="mx-auto mt-14 max-w-[1104px] px-6">
-        <VideoPlaceholder title={video.title} />
+        {video.youtubeId ? (
+          <VideoEmbed youtubeId={video.youtubeId} title={video.title} poster={video.poster} />
+        ) : (
+          <VideoPlaceholder title={video.title} />
+        )}
       </Reveal>
 
       <Reveal delay={0.2} className="mx-auto mt-40 max-w-4xl px-6">

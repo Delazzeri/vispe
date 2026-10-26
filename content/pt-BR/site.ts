@@ -54,11 +54,12 @@ export const site = {
       "BPO financeiro",
       "Partnership",
     ],
-    // TODO(content): vídeo overview real (YouTube/Vimeo), poster e id/URL do embed.
+    // Vídeo não listado no YouTube, tocado com controles próprios (components/ui/video-embed.tsx).
+    // Capa: thumbnail do vídeo em public/media/video/ (original em originais/video/).
     video: {
       title: "Como funciona a Vispe Capital",
-      // TODO(content): id real do vídeo no YouTube/Vimeo.
-      embedUrl: undefined as string | undefined,
+      youtubeId: "qFf4PULIxrw" as string | undefined,
+      poster: "/media/video/vispe-overview-poster-1280.webp",
     },
   },
 
@@ -577,6 +578,16 @@ export const site = {
     pillar: "Pilar {n}",
     rating: "Avaliação {rating} de 5 estrelas",
     videoPlaceholder: "Vídeo em produção (placeholder)",
+    video: {
+      play: "Assistir ao vídeo: {title}",
+      pause: "Pausar",
+      resume: "Continuar",
+      mute: "Tirar o som",
+      unmute: "Ligar o som",
+      fullscreen: "Tela cheia",
+      exitFullscreen: "Sair da tela cheia",
+      progress: "Andamento do vídeo",
+    },
     dashboardSrc: "/media/hero/tela-mac-3-2600.webp",
     dashboardAlt:
       "Painel CFO as Service da Vispe Capital, exibindo receita recorrente, CAC, LTV/CAC, churn, funil comercial e receita por produto",
