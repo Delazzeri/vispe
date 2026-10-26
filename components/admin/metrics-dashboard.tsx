@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowDownRight, ArrowUpRight, RefreshCw } from "lucide-react";
+import { ArrowDownRight, ArrowUpRight, ExternalLink, RefreshCw } from "lucide-react";
 import { useCallback, useEffect, useMemo, useState, type ReactNode } from "react";
 import {
   change,
@@ -13,6 +13,7 @@ import {
   type ListName,
   type MetricRange,
   type SiteAnalytics,
+  umamiShareUrl,
 } from "@/lib/analytics/metrics";
 import { cn } from "@/lib/cn";
 import { adminSecondary } from "./admin-shell";
@@ -56,6 +57,8 @@ export function MetricsDashboard() {
 
   const data = load.status === "ready" ? load.data : null;
   const previousLabel = metricRanges.find((item) => item.id === range)?.previous ?? "";
+  // Sem a API do Umami (plano gratuito, sem chave ou função não publicada): painel do próprio Umami pelo link de compartilhamento.
+  const shared = load.status === "error" && umamiShareUrl ? umamiShareUrl : null;
 
   return (
     <div>
@@ -67,30 +70,64 @@ export function MetricsDashboard() {
             {data && ` Atualizado às ${new Date(data.generatedAt).toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}.`}
           </p>
         </div>
-        <div className="flex flex-wrap items-center gap-2">
-          <div role="group" aria-label="Período" className="flex rounded-xl border border-border bg-surface p-1">
-            {metricRanges.map((item) => (
-              <button
-                key={item.id}
-                type="button"
-                aria-pressed={range === item.id}
-                onClick={() => chooseRange(item.id)}
-                className={cn(
-                  "whitespace-nowrap rounded-lg px-2.5 py-1.5 text-sm font-medium sm:px-3 text-fg-muted transition-colors hover:text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-dark",
-                  range === item.id && "bg-ink text-paper hover:text-paper",
-                )}
-              >
-                {item.label}
-              </button>
-            ))}
+        {shared ? (
+          <a href={shared} target="_blank" rel="noopener" className={adminSecondary}>
+            Abrir no Umami
+            <ExternalLink aria-hidden className="h-4 w-4" />
+          </a>
+        ) : (
+          <div className="flex flex-wrap items-center gap-2">
+            <div role="group" aria-label="Período" className="flex rounded-xl border border-border bg-surface p-1">
+              {metricRanges.map((item) => (
+                <button
+                  key={item.id}
+                  type="button"
+                  aria-pressed={range === item.id}
+                  onClick={() => chooseRange(item.id)}
+                  className={cn(
+                    "whitespace-nowrap rounded-lg px-2.5 py-1.5 text-sm font-medium sm:px-3 text-fg-muted transition-colors hover:text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-dark",
+                    range === item.id && "bg-ink text-paper hover:text-paper",
+                  )}
+                >
+                  {item.label}
+                </button>
+              ))}
+            </div>
+            <button type="button" onClick={() => refresh(range)} className={adminSecondary} aria-label="Atualizar" title="Atualizar">
+              <RefreshCw aria-hidden className={cn("h-4 w-4", load.status === "loading" && "animate-spin")} />
+            </button>
+            {umamiShareUrl && (
+              <a href={umamiShareUrl} target="_blank" rel="noopener" className={adminSecondary} title="Painel completo no Umami">
+                Umami
+                <ExternalLink aria-hidden className="h-4 w-4" />
+              </a>
+            )}
           </div>
-          <button type="button" onClick={() => refresh(range)} className={adminSecondary} aria-label="Atualizar" title="Atualizar">
-            <RefreshCw aria-hidden className={cn("h-4 w-4", load.status === "loading" && "animate-spin")} />
-          </button>
-        </div>
+        )}
       </div>
 
-      {load.status === "error" && (
+      {shared && load.status === "error" && (
+        <section aria-label="Painel do Umami" className="mt-8">
+          <iframe
+            src={shared}
+            title="Painel de métricas do Umami"
+            loading="lazy"
+            className="h-screen min-h-160 w-full rounded-2xl border border-border bg-surface"
+          />
+          <details className="mt-3 text-xs text-fg-muted">
+            <summary className="cursor-pointer rounded-sm hover:text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-dark">
+              Por que este é o painel do Umami?
+            </summary>
+            <p className="mt-2 max-w-3xl">
+              O painel próprio do admin lê os números pela API do Umami, que só existe no plano Pro. Enquanto isso, mostramos o painel de
+              compartilhamento do Umami (plano gratuito). Com o Pro e a função site-analytics publicada, o painel do admin aparece aqui
+              sozinho, sem mudar o site. Detalhe técnico: {load.message}
+            </p>
+          </details>
+        </section>
+      )}
+
+      {!shared && load.status === "error" && (
         <div role="alert" className="mt-8 rounded-2xl border border-border bg-surface p-6 text-sm">
           <p className="font-semibold text-fg">Não foi possível carregar as métricas.</p>
           <p className="mt-1 text-fg-muted">{load.message}</p>

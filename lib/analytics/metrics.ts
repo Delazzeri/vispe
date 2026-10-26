@@ -5,6 +5,12 @@
 import { FunctionsHttpError } from "@supabase/supabase-js";
 import { getSupabase } from "@/lib/supabase/client";
 
+/**
+ * Link de compartilhamento do painel do Umami (Websites → o site → Edit → Share URL).
+ * Mostrado no lugar do painel próprio enquanto a API não está disponível (plano gratuito).
+ */
+export const umamiShareUrl = process.env.NEXT_PUBLIC_UMAMI_SHARE_URL?.trim() || undefined;
+
 export const metricRanges = [
   { id: "24h", label: "24 horas", previous: "Em relação às 24 horas anteriores" },
   { id: "7d", label: "7 dias", previous: "Em relação aos 7 dias anteriores" },

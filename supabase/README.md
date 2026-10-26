@@ -165,27 +165,43 @@ Projeto que já tem o banco (0001–0009) — uma vez: SQL Editor →
 
 ## Métricas do site no admin (Umami Cloud)
 
-A área **Métricas** do admin (`/admin/metricas/`) mostra visitantes, visitas, páginas vistas,
-taxa de rejeição, tempo por visita, quem está online, a série no tempo, páginas, origens
-(canais, sites e UTM), país/estado/cidade, aparelhos e as conversões (formulários e cliques
-no WhatsApp). Os números vêm do **Umami Cloud**, que conta as visitas de forma anônima e sem
-cookies (por isso carrega para todos, sem depender do banner). A Edge Function
-`site-analytics` lê a API do Umami com a chave guardada no Supabase e só atende staff.
+O site conta as visitas com o **Umami Cloud**, de forma anônima e sem cookies (por isso carrega
+para todos, sem depender do banner). A área **Métricas** do admin (`/admin/metricas/`) funciona
+de dois jeitos, conforme o plano do Umami:
+
+- **Plano gratuito (Hobby):** mostra o painel do próprio Umami, pelo link de compartilhamento,
+  dentro do admin (com o botão "Abrir no Umami"). Até 100 mil eventos por mês e 6 meses de histórico.
+- **Plano Pro:** mostra o painel próprio do admin (visitantes, visitas, páginas vistas, taxa de
+  rejeição, tempo por visita, online agora, série no tempo, páginas, canais, sites, UTM,
+  país/estado/cidade, aparelhos e conversões), lido da API do Umami pela Edge Function
+  `site-analytics`, que guarda a chave no Supabase e só atende staff. A API só existe no Pro.
+  Basta publicar a função: o admin troca de painel sozinho, sem novo build.
+
+### Plano gratuito (o que vale hoje)
 
 1. **Conta no Umami:** crie a conta em umami.is (de preferência com um e-mail da empresa) →
    Add website → nome "Vispe Capital" e o domínio `vispecapital.com`.
 2. **Website ID:** Websites → o site → Edit → copie o Website ID para
    `NEXT_PUBLIC_UMAMI_WEBSITE_ID` no `.env.local` (ver `.env.example`).
-3. **Chave da API:** Settings → API keys → Create key → copie a chave.
-4. **Segredos no Supabase:** Edge Functions → Secrets → `UMAMI_API_KEY` = a chave e
+3. **Link de compartilhamento:** na mesma tela (Edit) → Share URL → ative e escolha o que aparece
+   → copie o link para `NEXT_PUBLIC_UMAMI_SHARE_URL` no `.env.local`. Quem tiver o link vê os
+   números (não há dado pessoal neles); para trocar o link, gere outro no Umami e refaça o build.
+4. Rode `pnpm release` e suba o pacote. As visitas começam a contar com o site no ar, só no
+   domínio de produção (dev e `pnpm preview` não entram nos números).
+
+### Se assinarem o Pro (painel próprio do admin)
+
+1. **Chave da API:** no Umami → Settings → API keys → Create key → copie a chave.
+2. **Segredos no Supabase:** Edge Functions → Secrets → `UMAMI_API_KEY` = a chave e
    `UMAMI_WEBSITE_ID` = o mesmo Website ID. (Opcional: `UMAMI_API_URL`, para um Umami
    próprio em vez do Cloud; padrão `https://api.umami.is/v1`.)
-5. **Publicar a função:** Edge Functions → Deploy a new function → Via Editor → nome
+3. **Publicar a função:** Edge Functions → Deploy a new function → Via Editor → nome
    **`site-analytics`** → cole todo o `supabase/functions/site-analytics/index.ts` → Deploy.
    Deixe ligada a opção de exigir JWT (Verify JWT), que é o padrão.
-6. Rode `pnpm release` e suba o pacote. As visitas começam a contar com o site no ar, só no
-   domínio de produção (dev e `pnpm preview` não entram nos números).
+4. Pronto: ao abrir Métricas, o admin passa a mostrar o painel próprio. O link do Umami
+   continua no botão "Umami", ao lado do seletor de período.
 
 As conversões chegam ao Umami como eventos `lead`, `registration`, `application` e `contact`,
 com a origem (aba da planilha, `lp-<slug>` ou `whatsapp`) e nenhum dado do formulário.
-O painel guarda cada período por 5 minutos; erros aparecem em Edge Functions → site-analytics → Logs.
+O painel próprio guarda cada período por 5 minutos; erros aparecem em Edge Functions →
+site-analytics → Logs.
