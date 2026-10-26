@@ -19,6 +19,7 @@ const pt = {
   form: {
     sending: "Enviando…",
     redirecting: "Enviado. Abrindo a próxima página…",
+    redirectingWhatsapp: "Enviado. Abrindo o grupo do WhatsApp…",
     previewRedirect: "Na página publicada, o envio leva a {target}.",
     selectPlaceholder: "Selecione",
     consent: "Concordo que a Vispe Capital use estes dados para entrar em contato, conforme a LGPD.",
@@ -52,6 +53,7 @@ const en: typeof pt = {
   form: {
     sending: "Sending…",
     redirecting: "Sent. Opening the next page…",
+    redirectingWhatsapp: "Sent. Opening the WhatsApp group…",
     previewRedirect: "On the published page, submitting goes to {target}.",
     selectPlaceholder: "Select",
     consent: "I agree that Vispe Capital may use this information to contact me, in line with Brazil's data protection law (LGPD).",

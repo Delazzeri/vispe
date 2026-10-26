@@ -11,7 +11,7 @@
 import type { Conversion } from "@/lib/tracking/events";
 import { prepareConversion, track } from "@/lib/tracking/track";
 
-// "lp": formulários das landing pages; cada LP grava numa aba própria (lp-<slug>).
+// "lp": formulários das landing pages; todas gravam na aba "LP's", com o nome da LP.
 export type SheetName = "diagnostico" | "franquia" | "materiais" | "carreiras" | "lp";
 
 export type FormValues = Record<string, string>;

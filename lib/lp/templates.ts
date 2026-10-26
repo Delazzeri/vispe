@@ -85,6 +85,7 @@ const form = (data: { title: string; subtitle: string; submitLabel: string; fiel
     fields: data.fields,
     afterSubmit: data.redirect ? "redirect" : "message",
     redirectTo: "",
+    whatsappGroup: "",
   },
 });
 

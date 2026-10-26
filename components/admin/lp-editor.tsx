@@ -12,6 +12,7 @@ import { translationFromJson } from "@/lib/lp/rows";
 import { lpTemplateInfo, templateSections } from "@/lib/lp/templates";
 import { englishFromJson, englishToJson, lpTexts, pageTexts, pendingTexts, type LpEnglish, type LpTextEntry } from "@/lib/lp/translation";
 import { lpTemplates, type LandingPage, type LpImage, type LpSection, type LpSectionType, type LpTemplate } from "@/lib/lp/types";
+import { isWhatsappGroupLink } from "@/lib/lp/whatsapp";
 import { slugify } from "@/lib/slugify";
 import { getSupabase } from "@/lib/supabase/client";
 import { useAdminFeedback } from "./feedback";
@@ -118,6 +119,9 @@ function validate(draft: Draft): string[] {
     }
     if (form.data.afterSubmit === "redirect" && !form.data.redirectTo.trim()) {
       errors.push("Informe a página de obrigado do formulário (endereço de outra LP ou link).");
+    }
+    if (form.data.afterSubmit === "whatsapp" && !isWhatsappGroupLink(form.data.whatsappGroup)) {
+      errors.push("Informe o link de convite do grupo do WhatsApp (começa com https://chat.whatsapp.com/).");
     }
   }
   if (draft.status === "published") {

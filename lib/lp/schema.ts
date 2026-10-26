@@ -201,7 +201,7 @@ export const lpSectionSpecs: Record<LpSectionType, LpSectionSpec> = {
   },
   form: {
     label: "Formulário",
-    description: "Formulário da LP; cada LP grava numa aba própria da planilha.",
+    description: "Formulário da LP; todas as LPs gravam na aba “LP's” da planilha, com o nome da LP em uma coluna.",
     fields: [
       text("title", "Título"),
       text("subtitle", "Subtítulo", { multiline: true }),
@@ -216,9 +216,21 @@ export const lpSectionSpecs: Record<LpSectionType, LpSectionSpec> = {
         options: [
           ["message", "Mostrar a mensagem na própria página"],
           ["redirect", "Ir para a página de obrigado"],
+          ["whatsapp", "Ir para o grupo do WhatsApp"],
         ],
       },
-      { kind: "plain", key: "redirectTo", label: "Página de obrigado", hint: "Endereço de outra LP (ex.: obrigado-workshop) ou link completo." },
+      {
+        kind: "plain",
+        key: "redirectTo",
+        label: "Página de obrigado",
+        hint: "Para “Ir para a página de obrigado”: endereço de outra LP (ex.: obrigado-workshop) ou link completo.",
+      },
+      {
+        kind: "plain",
+        key: "whatsappGroup",
+        label: "Link do grupo do WhatsApp",
+        hint: "Para “Ir para o grupo do WhatsApp”: link de convite do grupo (https://chat.whatsapp.com/…). No WhatsApp: grupo → Convidar via link → Copiar link.",
+      },
     ],
   },
   problem: {

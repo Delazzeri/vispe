@@ -10,6 +10,7 @@ import type { Locale } from "@/i18n/routing";
 import { cn } from "@/lib/cn";
 import { fieldOptions, submitLandingForm, type LandingFormState } from "@/lib/forms/landing";
 import { lpFormAnchor, type LpForm as LpFormData, type LpFormField } from "@/lib/lp/types";
+import { isWhatsappGroupLink } from "@/lib/lp/whatsapp";
 
 const autoComplete: Partial<Record<LpFormField["kind"], string>> = {
   name: "name",
@@ -64,9 +65,9 @@ function redirectTarget(value: string, locale: Locale): string | undefined {
 
 /**
  * Cartão do formulário da LP (âncora #formulario), usado no topo (hero com
- * formulário) ou na faixa do formulário. Grava na aba "lp-<slug>" da planilha,
- * com as colunas em português (`columns`); depois do envio mostra a mensagem
- * ou vai para a página de obrigado.
+ * formulário) ou na faixa do formulário. Grava na aba "LP's" da planilha, com o
+ * nome da LP e as colunas em português (`columns`); depois do envio mostra a
+ * mensagem, vai para a página de obrigado ou para o grupo do WhatsApp.
  */
 export function LpFormCard({
   data,
@@ -90,7 +91,12 @@ export function LpFormCard({
   const [state, setState] = useState<LandingFormState>({ status: "idle" });
   const [pending, startTransition] = useTransition();
   const errors = state.status === "invalid" ? state.errors : {};
-  const target = data.afterSubmit === "redirect" ? redirectTarget(data.redirectTo, locale) : undefined;
+  const target =
+    data.afterSubmit === "redirect"
+      ? redirectTarget(data.redirectTo, locale)
+      : data.afterSubmit === "whatsapp" && isWhatsappGroupLink(data.whatsappGroup)
+        ? data.whatsappGroup.trim()
+        : undefined;
   const [redirecting, setRedirecting] = useState(false);
 
   function onSubmit(event: FormEvent<HTMLFormElement>) {
@@ -117,7 +123,9 @@ export function LpFormCard({
           <CircleCheck className="mt-0.5 h-6 w-6 shrink-0 text-brand-dark" aria-hidden />
           <p className="text-base text-fg">
             {redirecting
-              ? ui.form.redirecting
+              ? data.afterSubmit === "whatsapp"
+                ? ui.form.redirectingWhatsapp
+                : ui.form.redirecting
               : preview && target
                 ? format(ui.form.previewRedirect, { target })
                 : data.successMessage || ui.form.success}

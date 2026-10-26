@@ -5,8 +5,9 @@ import type { LpFormField } from "@/lib/lp/types";
 import { submitToSheet, type FormValues } from "./submit";
 import { isEmail, isPhone, text } from "./validate";
 
-// Formulário das landing pages → aba "lp-<slug>" da planilha (o Apps Script cria
-// a aba e as colunas pelos campos que a LP manda). Validado aqui e de novo lá.
+// Formulário das landing pages → aba "LP's" da planilha, a mesma para todas as LPs,
+// com o nome e o endereço da LP em colunas (o Apps Script cria as colunas pelos
+// campos que cada LP manda). Validado aqui e de novo lá.
 
 export type LandingFormState =
   | { status: "idle" }

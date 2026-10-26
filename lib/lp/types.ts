@@ -85,8 +85,8 @@ export type LpFormField = {
   /** Opções de "select" (e de "revenue"/"role", quando preenchidas). */
   options: string[];
 };
-/** Depois do envio: mensagem na própria página ou ir para a página de obrigado. */
-export const lpAfterSubmit = ["message", "redirect"] as const;
+/** Depois do envio: mensagem na própria página, ir para a página de obrigado ou para o grupo do WhatsApp. */
+export const lpAfterSubmit = ["message", "redirect", "whatsapp"] as const;
 export type LpAfterSubmit = (typeof lpAfterSubmit)[number];
 export type LpForm = {
   title: string;
@@ -99,6 +99,8 @@ export type LpForm = {
   afterSubmit: LpAfterSubmit;
   /** Endereço de outra LP (ex.: "obrigado-workshop") ou link completo. */
   redirectTo: string;
+  /** Link de convite do grupo do WhatsApp (https://chat.whatsapp.com/…). */
+  whatsappGroup: string;
 };
 
 export type LpSectionMap = {

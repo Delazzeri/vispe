@@ -6,8 +6,8 @@
  *
  * Instalação (uma vez):
  *  1. Crie a planilha. As abas "diagnostico", "franquia", "materiais" e
- *     "carreiras" são criadas sozinhas, com cabeçalho, no primeiro envio; cada
- *     landing page ganha a aba "lp-<endereço>" no primeiro envio dela.
+ *     "carreiras" são criadas sozinhas, com cabeçalho, no primeiro envio; as
+ *     landing pages gravam todas na aba "LP's", com o nome da LP numa coluna.
  *  2. Extensões → Apps Script → cole este arquivo inteiro em Code.gs.
  *  3. Configurações do projeto (engrenagem) → Propriedades do script → adicione:
  *       RESUME_FOLDER_ID      ID da pasta do Drive dos currículos (trecho da URL
@@ -129,7 +129,7 @@ const MAX_RESUME_BYTES = 4 * 1024 * 1024;
 function doPost(e) {
   try {
     const body = JSON.parse(e.postData.contents);
-    // Landing pages: cada LP grava na própria aba, com as colunas que ela manda.
+    // Landing pages: todas gravam na aba "LP's", com o nome da LP e as colunas que cada uma manda.
     if (body.sheet === "lp") {
       const result = saveLanding(body);
       if (result.ok) sendMetaConversion(body);
@@ -190,15 +190,22 @@ function sheetFor(name, columns) {
 }
 
 // ─────────────────────────────────────────────────────────────
-// Landing pages (/lp/<slug>/): aba "lp-<slug>" criada no primeiro envio. Cada
-// coluna guarda na nota do cabeçalho o id do campo ("campo:email"), então
-// renomear um campo no admin só troca o título e campo novo entra no fim —
-// as linhas antigas nunca desalinham.
+// Landing pages (/lp/<slug>/): todas gravam na aba "LP's", criada no primeiro
+// envio, com o nome e o endereço da LP em colunas (filtre por elas para ver os
+// leads de uma LP). Cada coluna guarda na nota do cabeçalho o id do campo
+// ("campo:email"): campos com o mesmo id em LPs diferentes caem na mesma coluna,
+// campo novo entra no fim e as linhas antigas nunca desalinham.
+// (Antes, cada LP tinha a aba "lp-<slug>"; essas abas ficam com os leads antigos.)
 // ─────────────────────────────────────────────────────────────
 
+const LP_SHEET = "LP's";
 const LP_MAX_COLUMNS = 30;
-/** Colunas fixas de toda LP: [id, título]. */
-const LP_FIXED_START = [["_recebido", "Recebido em"]];
+/** Colunas fixas de toda LP: [id, título]. Ids com "_" na frente são reservados. */
+const LP_FIXED_START = [
+  ["_recebido", "Recebido em"],
+  ["_lp_nome", "Nome da LP"],
+  ["_lp_endereco", "Endereço da LP"],
+];
 const LP_FIXED_END = [
   ["utm_source", "UTM source"],
   ["utm_medium", "UTM medium"],
@@ -217,18 +224,23 @@ function saveLanding(body) {
     return { ok: false, error: "landing page inválida" };
   }
   const fields = (Array.isArray(body.columns) ? body.columns : [])
-    .filter((column) => Array.isArray(column) && /^[a-z0-9_]{1,40}$/i.test(String(column[0])))
+    .filter((column) => Array.isArray(column) && /^[a-z0-9][a-z0-9_]{0,39}$/i.test(String(column[0])))
     .slice(0, LP_MAX_COLUMNS)
     .map((column) => [String(column[0]), String(column[1] || column[0]).slice(0, 100)]);
   if (!fields.length) return { ok: false, error: "sem campos" };
 
   const columns = [...LP_FIXED_START, ...fields, ...LP_FIXED_END];
-  const row = Object.assign({}, values, { _recebido: new Date(), _pagina: body.page });
+  const row = Object.assign({}, values, {
+    _recebido: new Date(),
+    _lp_nome: String(lp.name || lp.slug).slice(0, 120),
+    _lp_endereco: "/lp/" + lp.slug + "/",
+    _pagina: body.page,
+  });
 
   const lock = LockService.getScriptLock();
   lock.waitLock(20000);
   try {
-    const sheet = landingSheetFor(lp.slug, columns);
+    const sheet = landingSheetFor(columns);
     const positions = landingColumnPositions(sheet);
     const line = new Array(sheet.getLastColumn()).fill("");
     for (const [id] of columns) {
@@ -254,22 +266,22 @@ function landingColumnPositions(sheet) {
   return positions;
 }
 
-/** Aba da LP com todas as colunas: as que faltam entram no fim; títulos acompanham o admin. */
-function landingSheetFor(slug, columns) {
+/**
+ * Aba "LP's" com todas as colunas do envio: as que faltam entram no fim. O título
+ * de uma coluna é o da primeira LP que criou o campo (a aba é de todas as LPs:
+ * trocar a cada envio faria o cabeçalho mudar de uma LP para outra); pode ser
+ * renomeado à mão na planilha, que a nota mantém a ligação.
+ */
+function landingSheetFor(columns) {
   const book = SpreadsheetApp.getActiveSpreadsheet();
-  const name = ("lp-" + slug).slice(0, 99);
-  const sheet = book.getSheetByName(name) || book.insertSheet(name);
+  const sheet = book.getSheetByName(LP_SHEET) || book.insertSheet(LP_SHEET);
   const positions = landingColumnPositions(sheet);
   let next = sheet.getLastColumn();
   for (const [id, title] of columns) {
-    let index = positions[id];
-    if (index === undefined) {
-      index = next++;
-      positions[id] = index;
-      sheet.getRange(1, index + 1).setNote("campo:" + id);
-    }
-    const cell = sheet.getRange(1, index + 1);
-    if (cell.getValue() !== title) cell.setValue(title);
+    if (positions[id] !== undefined) continue;
+    const index = next++;
+    positions[id] = index;
+    sheet.getRange(1, index + 1).setValue(title).setNote("campo:" + id);
   }
   sheet.getRange(1, 1, 1, sheet.getLastColumn()).setFontWeight("bold");
   sheet.setFrozenRows(1);
