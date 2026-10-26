@@ -14,7 +14,7 @@ export async function generateMetadata({ params }: PageProps<"/[locale]/politica
 
 /**
  * Política de Privacidade em formato de documento: fundo preto, coluna estreita,
- * texto corrido em tamanho de leitura e subtítulos em negrito (sem marcadores).
+ * só parágrafos corridos em tamanho de leitura e subtítulos em negrito.
  */
 export default async function PoliticaDePrivacidadePage({ params }: PageProps<"/[locale]/politica-de-privacidade">) {
   const locale = resolveLocale((await params).locale);
@@ -46,21 +46,11 @@ export default async function PoliticaDePrivacidadePage({ params }: PageProps<"/
             <h2 id={`privacy-${section.id}`} className="font-bold">
               {section.title}
             </h2>
-            {section.paragraphs?.map((paragraph) => (
-              <p key={paragraph} className="mt-1 text-paper/85">
+            {section.paragraphs.map((paragraph, index) => (
+              <p key={paragraph} className={index === 0 ? "mt-1 text-paper/85" : "mt-3 text-paper/85"}>
                 {paragraph}
               </p>
             ))}
-            {section.items && (
-              <div className="mt-3 space-y-3 text-paper/85">
-                {section.items.map((item) => (
-                  <p key={item.label}>
-                    <strong className="font-bold text-paper">{item.label}:</strong> {item.text}
-                  </p>
-                ))}
-              </div>
-            )}
-            {section.after && <p className="mt-3 text-paper/85">{section.after}</p>}
             {section.id === "cookies" && (
               <CookiePreferencesButton
                 label={privacy.cookiesButton}
