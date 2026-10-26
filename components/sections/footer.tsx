@@ -120,6 +120,9 @@ export function Footer({ posts }: { posts: readonly LocalizedArticle[] }) {
             © {year} {brand.name}. {footer.rights}
           </p>
           <div className="flex flex-wrap gap-x-5 gap-y-2">
+            <Link href={footer.privacy.href} className="rounded-sm transition-colors hover:text-brand-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-dark">
+              {footer.privacy.label}
+            </Link>
             <CookiePreferencesButton label={footer.cookiePreferences} className="rounded-sm transition-colors hover:text-brand-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-dark text-left" />
             <MotionToggle
               labels={{ pause: footer.motionPause, play: footer.motionPlay }}

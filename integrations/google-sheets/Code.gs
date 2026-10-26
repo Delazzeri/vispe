@@ -15,6 +15,13 @@
  *       MATERIAL_LINK_URL     https://<projeto>.supabase.co/functions/v1/material-link
  *       MATERIAL_LINK_SECRET  o mesmo segredo cadastrado na função, no Supabase
  *     Sem as duas últimas, o material só é registrado na planilha (sem e-mail).
+ *     Opcional, Conversions API da Meta (leads também pelo servidor):
+ *       META_PIXEL_ID         o mesmo ID do Pixel do site (NEXT_PUBLIC_META_PIXEL_ID)
+ *       META_CAPI_TOKEN       token gerado em Gerenciador de Eventos → Pixel →
+ *                             Configurações → API de Conversões → Gerar token
+ *       META_TEST_EVENT_CODE  só para testar (código "TEST…" da aba Testar eventos);
+ *                             apague depois
+ *       META_GRAPH_VERSION    versão da Graph API (padrão v23.0)
  *  4. No editor, escolha a função "autorizar" na barra de cima e clique em Executar:
  *     o Google pede as permissões (planilha, Drive, e-mail e serviço externo).
  *     Rode de novo sempre que o código passar a usar um serviço novo.
@@ -34,6 +41,10 @@ function config() {
     resumeFolderId: props.getProperty("RESUME_FOLDER_ID") || "",
     materialLinkUrl: props.getProperty("MATERIAL_LINK_URL") || "",
     materialLinkSecret: props.getProperty("MATERIAL_LINK_SECRET") || "",
+    metaPixelId: props.getProperty("META_PIXEL_ID") || "",
+    metaCapiToken: props.getProperty("META_CAPI_TOKEN") || "",
+    metaTestEventCode: props.getProperty("META_TEST_EVENT_CODE") || "",
+    metaGraphVersion: props.getProperty("META_GRAPH_VERSION") || "v23.0",
   };
 }
 
@@ -119,7 +130,11 @@ function doPost(e) {
   try {
     const body = JSON.parse(e.postData.contents);
     // Landing pages: cada LP grava na própria aba, com as colunas que ela manda.
-    if (body.sheet === "lp") return json(saveLanding(body));
+    if (body.sheet === "lp") {
+      const result = saveLanding(body);
+      if (result.ok) sendMetaConversion(body);
+      return json(result);
+    }
     const columns = SHEETS[body.sheet];
     if (!columns) return json({ ok: false, error: "formulário desconhecido" });
     const values = body.values || {};
@@ -149,6 +164,7 @@ function doPost(e) {
       lock.releaseLock();
     }
 
+    sendMetaConversion(body);
     return json({ ok: true });
   } catch (error) {
     console.error(error);
@@ -347,6 +363,73 @@ function autorizar() {
     // 401 aqui é o esperado (chamada sem o segredo): a conexão com o Supabase funciona.
     console.log("Supabase (material-link) respondeu:", status);
   }
+}
+
+// ─────────────────────────────────────────────────────────────
+// Conversions API da Meta: o lead também vai pelo servidor, com e-mail, telefone
+// e nome criptografados (SHA-256), para a Meta achar a conta da pessoa mesmo com
+// bloqueador ou no iPhone. O site só manda `tracking` quando a pessoa aceitou os
+// cookies de marketing; o event_id é o mesmo do Pixel, então a Meta conta uma vez.
+// Falha aqui nunca derruba o formulário (a linha já foi gravada).
+
+const META_EVENTS = { Lead: true, CompleteRegistration: true };
+
+function sendMetaConversion(body) {
+  const tracking = body.tracking;
+  const { metaPixelId, metaCapiToken, metaTestEventCode, metaGraphVersion } = config();
+  if (!tracking || !metaPixelId || !metaCapiToken) return;
+  if (!META_EVENTS[tracking.eventName] || typeof tracking.eventId !== "string") return;
+  try {
+    const user = tracking.user || {};
+    const userData = { client_user_agent: String(tracking.userAgent || "").slice(0, 500) };
+    const email = String(user.email || "").trim().toLowerCase();
+    if (email) userData.em = [sha256(email)];
+    const phone = normalizePhone(user.phone);
+    if (phone) userData.ph = [sha256(phone)];
+    const names = String(user.name || "").trim().toLowerCase().split(/\s+/).filter(Boolean);
+    if (names.length) userData.fn = [sha256(names[0])];
+    if (names.length > 1) userData.ln = [sha256(names[names.length - 1])];
+    if (tracking.fbp) userData.fbp = String(tracking.fbp).slice(0, 200);
+    if (tracking.fbc) userData.fbc = String(tracking.fbc).slice(0, 500);
+
+    const event = {
+      event_name: tracking.eventName,
+      event_time: Math.floor(Date.now() / 1000),
+      event_id: tracking.eventId.slice(0, 100),
+      event_source_url: String(body.page || "").slice(0, 1000),
+      action_source: "website",
+      user_data: userData,
+    };
+    if (tracking.contentName) event.custom_data = { content_name: String(tracking.contentName).slice(0, 200) };
+    const payload = { data: [event] };
+    if (metaTestEventCode) payload.test_event_code = metaTestEventCode;
+
+    const url = "https://graph.facebook.com/" + metaGraphVersion + "/" + encodeURIComponent(metaPixelId) + "/events?access_token=" + encodeURIComponent(metaCapiToken);
+    const response = UrlFetchApp.fetch(url, {
+      method: "post",
+      contentType: "application/json",
+      payload: JSON.stringify(payload),
+      muteHttpExceptions: true,
+    });
+    if (response.getResponseCode() >= 300) {
+      console.error("Meta CAPI respondeu", response.getResponseCode(), response.getContentText().slice(0, 500));
+    }
+  } catch (error) {
+    console.error("Meta CAPI", error);
+  }
+}
+
+/** Telefone só com dígitos e o DDI do Brasil (55) quando vier sem. */
+function normalizePhone(value) {
+  let digits = String(value || "").replace(/\D/g, "").replace(/^0+/, "");
+  if (digits.length === 10 || digits.length === 11) digits = "55" + digits;
+  return digits.length >= 8 ? digits : "";
+}
+
+function sha256(value) {
+  return Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, value, Utilities.Charset.UTF_8)
+    .map((byte) => ((byte + 256) % 256).toString(16).padStart(2, "0"))
+    .join("");
 }
 
 function json(payload) {

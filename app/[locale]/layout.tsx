@@ -8,6 +8,8 @@ import { fontVariables } from "@/lib/fonts";
 import { buildMetadata, organizationJsonLd, websiteJsonLd } from "@/lib/seo";
 import { motionInitScript } from "@/lib/motion-preference";
 import { CookieConsent } from "@/components/ui/cookie-consent";
+import { Trackers } from "@/components/tracking/trackers";
+import { trackingConfig } from "@/lib/tracking/config";
 import { brand, getSite } from "@/content/site";
 import "../globals.css";
 
@@ -24,6 +26,10 @@ export async function generateMetadata({ params }: LayoutProps<"/[locale]">): Pr
       title: getSite(resolveLocale(locale)).hero.h1,
       description: getSite(resolveLocale(locale)).hero.description,
       locale: resolveLocale(locale),
+    }),
+    // Verificação do domínio no Business Manager da Meta (alternativa ao registro DNS).
+    ...(trackingConfig.meta.domainVerification && {
+      other: { "facebook-domain-verification": trackingConfig.meta.domainVerification },
     }),
   };
 }
@@ -61,6 +67,7 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
             {/* Cabeçalho, rodapé e <main>: (site)/layout.tsx no site; as LPs têm layout próprio, sem eles. */}
             {children}
             <CookieConsent labels={getSite(locale).ui.cookies} />
+            <Trackers />
           </MotionProvider>
         </NextIntlClientProvider>
       </body>

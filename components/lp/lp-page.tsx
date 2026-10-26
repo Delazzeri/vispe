@@ -55,7 +55,7 @@ export function LpPage({
     return (
       <LpFormCard
         data={section.data}
-        page={{ slug: page.slug, name: page.name }}
+        page={{ slug: page.slug, name: page.name, template: page.template }}
         columns={columns}
         locale={locale}
         ui={ui}

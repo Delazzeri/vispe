@@ -4,6 +4,12 @@
 //
 // Corpo em text/plain de propósito: é uma "simple request" para o navegador,
 // sem a verificação prévia de CORS (OPTIONS) que o Apps Script não responde.
+//
+// Envio que deu certo vira conversão (lib/tracking): Pixel/LinkedIn/Google no
+// navegador e, com consentimento de marketing, Conversions API da Meta pelo Apps Script.
+
+import type { Conversion } from "@/lib/tracking/events";
+import { prepareConversion, track } from "@/lib/tracking/track";
 
 // "lp": formulários das landing pages; cada LP grava numa aba própria (lp-<slug>).
 export type SheetName = "diagnostico" | "franquia" | "materiais" | "carreiras" | "lp";
@@ -38,25 +44,52 @@ export async function fileToBase64(file: File): Promise<string> {
   return btoa(binary);
 }
 
+/** Conversão de cada formulário (as LPs de evento trocam para "registration"). */
+const conversionBySheet: Record<SheetName, Conversion> = {
+  diagnostico: "lead",
+  franquia: "lead",
+  materiais: "lead",
+  carreiras: "application",
+  lp: "lead",
+};
+
+export type ConversionOptions = {
+  conversion?: Conversion;
+  /** Nome do evento nas plataformas (slug da LP, do material…). */
+  contentName?: string;
+  /** Aba de origem nos relatórios (padrão: o nome do formulário). */
+  source?: string;
+  /** Contato para a Conversions API; padrão: os campos name/email/phone do formulário. */
+  user?: { email?: string; phone?: string; name?: string };
+};
+
 /** extra: campos a mais no corpo (as LPs mandam as colunas da aba: [id, rótulo]). */
 export async function submitToSheet(
   sheet: SheetName,
   values: FormValues,
   file?: FormFile,
   extra?: Record<string, unknown>,
+  options: ConversionOptions = {},
 ): Promise<SubmitResult> {
   if (!endpoint) return "unavailable";
+  const conversion = options.conversion ?? conversionBySheet[sheet];
+  const contentName = options.contentName ?? (values.material || undefined);
+  const { eventId, server } = prepareConversion(conversion, contentName, {
+    email: options.user?.email ?? values.email,
+    phone: options.user?.phone ?? values.phone,
+    name: options.user?.name ?? values.name,
+  });
   try {
     const response = await fetch(endpoint, {
       method: "POST",
       headers: { "Content-Type": "text/plain;charset=utf-8" },
-      body: JSON.stringify({ ...extra, sheet, values, file, page: window.location.href }),
+      body: JSON.stringify({ ...extra, sheet, values, file, page: window.location.href, tracking: server }),
     });
     if (!response.ok) return "unavailable";
     const result: unknown = await response.json();
-    return typeof result === "object" && result !== null && (result as { ok?: unknown }).ok === true
-      ? "sent"
-      : "unavailable";
+    const sent = typeof result === "object" && result !== null && (result as { ok?: unknown }).ok === true;
+    if (sent) track({ type: "conversion", conversion, eventId, source: options.source ?? sheet, contentName });
+    return sent ? "sent" : "unavailable";
   } catch {
     return "unavailable";
   }

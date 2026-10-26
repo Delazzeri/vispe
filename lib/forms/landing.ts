@@ -31,6 +31,8 @@ export async function submitLandingForm(
   page: {
     slug: string;
     name: string;
+    /** Modelo da LP: "evento" conta como inscrição; os demais, como lead. */
+    template: string;
     locale: Locale;
     fields: LpFormField[];
     /** Colunas da aba: [id, rótulo em português] (a planilha fica igual nos dois idiomas). */
@@ -66,9 +68,21 @@ export async function submitLandingForm(
   values.consent = "on";
   values.locale = page.locale;
 
-  const sent = await submitToSheet("lp", values, undefined, {
-    lp: { slug: page.slug, name: page.name },
-    columns: page.columns,
-  });
+  const byKind = (kind: LpFormField["kind"]) => {
+    const field = page.fields.find((item) => item.kind === kind);
+    return field ? values[field.id] || undefined : undefined;
+  };
+  const sent = await submitToSheet(
+    "lp",
+    values,
+    undefined,
+    { lp: { slug: page.slug, name: page.name }, columns: page.columns },
+    {
+      conversion: page.template === "evento" ? "registration" : "lead",
+      contentName: page.slug,
+      source: `lp-${page.slug}`,
+      user: { email: byKind("email"), phone: byKind("phone"), name: byKind("name") },
+    },
+  );
   return sent === "sent" ? { status: "success" } : { status: "unavailable" };
 }

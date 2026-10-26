@@ -476,8 +476,8 @@ export const site = {
     { label: "FAQ", href: "/#faq" },
   ],
 
-  // Footer: só links para páginas/âncoras que existem hoje. Política de
-  // privacidade e termos entram aqui quando as páginas forem criadas.
+  // Footer: só links para páginas/âncoras que existem hoje. Termos de uso
+  // entram aqui quando a página for criada.
   footer: {
     description:
       "Aumentamos seu caixa e maximizamos sua margem de lucro, sem precisar contratar um diretor executivo em tempo integral.",
@@ -517,6 +517,7 @@ export const site = {
     },
     rights: "Todos os direitos reservados.",
     backToTop: "Voltar ao topo ↑",
+    privacy: { label: "Política de privacidade", href: "/privacidade" },
     cookiePreferences: "Preferências de cookies",
     motionPause: "Pausar animações",
     motionPlay: "Retomar animações",
@@ -556,6 +557,7 @@ export const site = {
       acceptAll: "Aceitar todos",
       rejectAll: "Rejeitar todos",
       manage: "Gerenciar preferências",
+      privacy: { label: "Política de privacidade", href: "/privacidade" },
       preferencesTitle: "Preferências de cookies",
       save: "Salvar preferências",
       alwaysOn: "Sempre ativos",

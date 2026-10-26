@@ -4,6 +4,7 @@ import { useEffect, useId, useRef, useState } from "react";
 import * as m from "motion/react-m";
 import { AnimatePresence, useReducedMotion } from "motion/react";
 import { spring } from "@/components/motion/presets";
+import { LocaleLink } from "@/components/ui/locale-link";
 import type { SiteContent } from "@/content/site";
 import { openPreferencesEvent, readConsent, saveConsent, type ConsentCategory } from "@/lib/consent";
 import { cn } from "@/lib/cn";
@@ -128,7 +129,13 @@ export function CookieConsent({ labels }: { labels: CookieLabels }) {
 
             {view === "banner" ? (
               <p className="mt-3 text-sm text-paper/70" style={{ lineHeight: 1.6 }}>
-                {labels.description}
+                {labels.description}{" "}
+                <LocaleLink
+                  href={labels.privacy.href}
+                  className="rounded-sm font-medium text-paper underline underline-offset-2 hover:text-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand"
+                >
+                  {labels.privacy.label}
+                </LocaleLink>
               </p>
             ) : (
               <div className="mt-4">

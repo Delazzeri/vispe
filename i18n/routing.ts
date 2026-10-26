@@ -27,6 +27,7 @@ export const routing = defineRouting({
     "/franquia/comercial": { "pt-BR": "/franquia/comercial", "en-US": "/franchise/commercial" },
     "/franquia/financeira": { "pt-BR": "/franquia/financeira", "en-US": "/franchise/financial" },
     "/materiais": { "pt-BR": "/materiais", "en-US": "/free-materials" },
+    "/privacidade": { "pt-BR": "/privacidade", "en-US": "/privacy" },
     // Página única dos materiais publicados depois do último build (lê o slug da URL).
     "/materiais/item": { "pt-BR": "/materiais/item", "en-US": "/free-materials/item" },
     "/materiais/[slug]": { "pt-BR": "/materiais/[slug]", "en-US": "/free-materials/[slug]" },

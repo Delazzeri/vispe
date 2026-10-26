@@ -78,7 +78,7 @@ export function LpFormCard({
   preview = false,
 }: {
   data: LpFormData;
-  page: { slug: string; name: string };
+  page: { slug: string; name: string; template: string };
   columns: [string, string][];
   locale: Locale;
   ui: LpUi;
