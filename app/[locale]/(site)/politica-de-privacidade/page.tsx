@@ -13,7 +13,7 @@ export async function generateMetadata({ params }: PageProps<"/[locale]/politica
 }
 
 /**
- * Política de Privacidade em formato de documento: fundo preto, coluna estreita,
+ * Política de Privacidade em formato de documento: fundo branco, coluna estreita,
  * só parágrafos corridos em tamanho de leitura e subtítulos em negrito.
  */
 export default async function PoliticaDePrivacidadePage({ params }: PageProps<"/[locale]/politica-de-privacidade">) {
@@ -23,7 +23,9 @@ export default async function PoliticaDePrivacidadePage({ params }: PageProps<"/
   const { ui } = getSite(locale);
 
   return (
-    <div className="bg-ink text-paper">
+    <div className="text-fg">
+      {/* Branco atrás de tudo (inclusive da faixa do menu), só nesta página. */}
+      <div aria-hidden className="fixed inset-0 -z-10 bg-surface" />
       <article aria-labelledby="privacy-heading" className="mx-auto max-w-3xl px-6 pt-36 pb-24 text-sm leading-relaxed md:pt-44 md:pb-32">
         <script
           type="application/ld+json"
@@ -39,7 +41,7 @@ export default async function PoliticaDePrivacidadePage({ params }: PageProps<"/
         <h1 id="privacy-heading" className="text-4xl font-bold tracking-tight md:text-5xl">
           {privacy.title}
         </h1>
-        <p className="mt-6 text-paper/85">{privacy.intro}</p>
+        <p className="mt-6">{privacy.intro}</p>
 
         {privacy.sections.map((section) => (
           <section key={section.id} aria-labelledby={`privacy-${section.id}`} className="mt-7">
@@ -47,21 +49,21 @@ export default async function PoliticaDePrivacidadePage({ params }: PageProps<"/
               {section.title}
             </h2>
             {section.paragraphs.map((paragraph, index) => (
-              <p key={paragraph} className={index === 0 ? "mt-1 text-paper/85" : "mt-3 text-paper/85"}>
+              <p key={paragraph} className={index === 0 ? "mt-1" : "mt-3"}>
                 {paragraph}
               </p>
             ))}
             {section.id === "cookies" && (
               <CookiePreferencesButton
                 label={privacy.cookiesButton}
-                className="mt-4 rounded-xl border border-paper/30 px-4 py-2 text-sm font-semibold transition-colors hover:border-brand hover:text-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand"
+                className="mt-4 rounded-xl border border-border px-4 py-2 text-sm font-semibold transition-colors hover:border-brand-dark hover:text-brand-dark focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand"
               />
             )}
           </section>
         ))}
 
         <p className="mt-10 font-bold">{privacy.closing}</p>
-        <p className="mt-6 text-xs text-paper/60">{privacy.updated}</p>
+        <p className="mt-6 text-xs text-fg-muted">{privacy.updated}</p>
       </article>
     </div>
   );
