@@ -41,7 +41,7 @@ export const privacy = {
       id: "cookies",
       title: "Uso de cookies",
       paragraphs: [
-        "Cookies são pequenos arquivos guardados no seu navegador que permitem ao site lembrar informações sobre a sua visita. Usamos cookies essenciais, que estão sempre ativos porque sem eles o site não funciona corretamente: eles guardam a sua escolha sobre cookies e o idioma selecionado. A contagem anônima de visitas feita pelo Umami não usa cookies.",
+        "Cookies são pequenos arquivos guardados no seu navegador que permitem ao site lembrar informações sobre a sua visita. Usamos cookies essenciais, que estão sempre ativos porque sem eles o site não funciona corretamente: eles guardam a sua escolha sobre cookies, o idioma selecionado e quais avisos (pop-ups) você já viu ou fechou, para não repeti-los além da conta. A contagem anônima de visitas feita pelo Umami não usa cookies.",
         "Os cookies de análise (Google Analytics) e de marketing (Meta Pixel, do Facebook e do Instagram, LinkedIn Insight Tag e Google Ads) só são ativados se você permitir no aviso exibido na primeira visita. Quando o marketing está permitido e você envia um formulário, o seu e-mail, telefone e nome também podem ser enviados à Meta de forma criptografada (hash), apenas para relacionar o envio ao anúncio que o originou. Você pode rever a sua escolha a qualquer momento pelo botão abaixo ou pelo link no rodapé do site.",
       ],
     },

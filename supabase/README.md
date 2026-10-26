@@ -205,3 +205,24 @@ As conversões chegam ao Umami como eventos `lead`, `registration`, `application
 com a origem (aba da planilha, `lp-<slug>` ou `whatsapp`) e nenhum dado do formulário.
 O painel próprio guarda cada período por 5 minutos; erros aparecem em Edge Functions →
 site-analytics → Logs.
+
+## Pop-ups (admin → Pop-ups)
+
+A área **Pop-ups** do admin (`/admin/popups/`) cria avisos que aparecem no site e nas landing
+pages: imagem, título, texto e botão; no centro da tela ou no canto; em todas as páginas, só em
+algumas ou em todas menos algumas; em português, inglês ou nos dois; em todos os aparelhos, só
+computador ou só celular; depois de alguns segundos, ao rolar a página ou ao tentar sair; com
+período (início/fim), prioridade e limite por visitante (máximo de exibições, intervalo mínimo
+e "não mostrar mais para quem clicou"). Mudanças valem na hora, sem novo build.
+
+- Aparece no máximo um pop-up por página, só depois que a pessoa respondeu ao banner de cookies
+  (para não empilhar os dois) e depois que a página terminou de carregar.
+- O limite por visitante é guardado no navegador de cada pessoa (`localStorage`), sem
+  identificar ninguém; quem limpa os dados do navegador pode ver de novo.
+- A lista e o editor mostram exibições, cliques, taxa de clique e fechamentos, somados por dia
+  pela função `track_popup` (a única escrita aberta ao público; não guarda nada de quem viu).
+- Quem está com o site aberto vê as mudanças em até 5 minutos (cache da sessão).
+
+Projeto que já tem o banco (0001–0011) — uma vez: SQL Editor → `supabase/migrations/0012_popups.sql`
+→ Run. Ela cria as tabelas `popups` e `popup_daily_stats`, a função `track_popup` e o bucket
+público `popup-images`. Projeto novo: o `setup-completo.sql` já inclui.

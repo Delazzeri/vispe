@@ -1,4 +1,4 @@
-// Tipos do banco escritos à mão a partir de supabase/migrations (0001–0009).
+// Tipos do banco escritos à mão a partir de supabase/migrations (0001–0012).
 // Depois de criar o projeto, regenerar com:
 //   supabase gen types typescript --project-id <ref> > lib/supabase/types.ts
 
@@ -101,6 +101,53 @@ type LandingPageRow = {
   updated_at: string;
 };
 
+export type PopupLayout = "modal" | "corner";
+export type PopupLocale = "pt-BR" | "en-US" | "all";
+export type PopupPageRule = "all" | "include" | "exclude";
+export type PopupDevices = "all" | "desktop" | "mobile";
+export type PopupTrigger = "delay" | "scroll" | "exit";
+
+/** Pop-ups do admin (0012). */
+type PopupRow = {
+  id: string;
+  name: string;
+  active: boolean;
+  starts_at: string | null;
+  ends_at: string | null;
+  priority: number;
+  layout: PopupLayout;
+  image_url: string | null;
+  image_alt: string;
+  image_width: number | null;
+  image_height: number | null;
+  title: string;
+  body: string;
+  cta_label: string;
+  cta_url: string;
+  cta_new_tab: boolean;
+  locale: PopupLocale;
+  page_rule: PopupPageRule;
+  /** Caminhos públicos; "*" no fim inclui as subpáginas. */
+  page_paths: string[];
+  devices: PopupDevices;
+  trigger_type: PopupTrigger;
+  /** Segundos (delay) ou % da página (scroll). */
+  trigger_value: number;
+  max_views: number | null;
+  cooldown_hours: number;
+  hide_after_click: boolean;
+  created_at: string;
+  updated_at: string;
+};
+
+type PopupDailyStatRow = {
+  popup_id: string;
+  day: string;
+  views: number;
+  clicks: number;
+  closes: number;
+};
+
 export type Database = {
   public: {
     Tables: {
@@ -142,9 +189,34 @@ export type Database = {
         Update: Partial<ProfileRow>;
         Relationships: [];
       };
+      popups: {
+        Row: PopupRow;
+        Insert: Partial<Omit<PopupRow, "name">> & Pick<PopupRow, "name">;
+        Update: Partial<PopupRow>;
+        Relationships: [];
+      };
+      popup_daily_stats: {
+        Row: PopupDailyStatRow;
+        Insert: never;
+        Update: never;
+        Relationships: [
+          {
+            foreignKeyName: "popup_daily_stats_popup_id_fkey";
+            columns: ["popup_id"];
+            isOneToOne: false;
+            referencedRelation: "popups";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
     };
     Views: { [_ in never]: never };
-    Functions: { [_ in never]: never };
+    Functions: {
+      track_popup: {
+        Args: { p_popup: string; p_event: "view" | "click" | "close" };
+        Returns: undefined;
+      };
+    };
     Enums: { [_ in never]: never };
     CompositeTypes: { [_ in never]: never };
   };
@@ -154,3 +226,5 @@ export type ArticleRecord = ArticleRow;
 export type MaterialRecord = MaterialRow;
 export type MaterialFormatRecord = MaterialFormatRow;
 export type LandingPageRecord = LandingPageRow;
+export type PopupRecord = PopupRow;
+export type PopupDailyStatRecord = PopupDailyStatRow;

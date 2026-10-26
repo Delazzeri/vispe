@@ -10,6 +10,7 @@ import { motionInitScript } from "@/lib/motion-preference";
 import { CookieConsent } from "@/components/ui/cookie-consent";
 import { Trackers } from "@/components/tracking/trackers";
 import { UmamiScript } from "@/components/tracking/umami-script";
+import { PopupManager } from "@/components/popups/popup-manager";
 import { trackingConfig } from "@/lib/tracking/config";
 import { brand, getSite } from "@/content/site";
 import "../globals.css";
@@ -70,6 +71,7 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
             <CookieConsent labels={getSite(locale).ui.cookies} />
             <Trackers />
             <UmamiScript />
+            <PopupManager />
           </MotionProvider>
         </NextIntlClientProvider>
       </body>

@@ -42,7 +42,7 @@ export const privacy: PrivacyContent = {
       id: "cookies",
       title: "Use of cookies",
       paragraphs: [
-        "Cookies are small files stored in your browser that let the website remember information about your visit. We use essential cookies, which are always on because the website does not work properly without them: they store your cookie choice and the selected language. Umami's anonymous visit count does not use cookies.",
+        "Cookies are small files stored in your browser that let the website remember information about your visit. We use essential cookies, which are always on because the website does not work properly without them: they store your cookie choice, the selected language and which notices (pop-ups) you have already seen or closed, so they are not repeated too often. Umami's anonymous visit count does not use cookies.",
         "Analytics cookies (Google Analytics) and marketing cookies (Meta Pixel, for Facebook and Instagram, LinkedIn Insight Tag and Google Ads) are only enabled if you allow them in the notice shown on your first visit. When marketing is allowed and you submit a form, your e-mail, phone and name may also be sent to Meta in encrypted (hashed) form, only to match the submission to the ad that led to it. You can review your choice at any time using the button below or the link in the website footer.",
       ],
     },
