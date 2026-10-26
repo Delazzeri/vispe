@@ -1,10 +1,13 @@
 "use client";
 
 import Link from "next/link";
+import { Eye, Pencil, Trash2 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { getSupabase } from "@/lib/supabase/client";
 import type { ArticleRecord, ArticleStatus } from "@/lib/supabase/types";
-import { adminInput, adminPrimary, adminSecondary } from "./admin-shell";
+import { adminInput, adminPrimary } from "./admin-shell";
+import { useAdminFeedback } from "./feedback";
+import { IconAction, IconActions } from "./icon-action";
 import { LanguageStatus } from "./language-tabs";
 
 // en_title: só o título da tradução (en->>title), sem baixar o texto em inglês inteiro.
@@ -41,6 +44,7 @@ export function ArticleList() {
   const [rows, setRows] = useState<Row[]>();
   const [error, setError] = useState<string>();
   const [query, setQuery] = useState("");
+  const { confirm, notify } = useAdminFeedback();
 
   useEffect(() => {
     let active = true;
@@ -60,10 +64,19 @@ export function ArticleList() {
   }, [rows, query]);
 
   async function remove(row: Row) {
-    if (!window.confirm(`Excluir "${row.title}"? Não dá para desfazer.`)) return;
+    const ok = await confirm({
+      title: "Excluir artigo?",
+      description: (
+        <>
+          <strong className="font-semibold text-fg">{row.title}</strong> sai do blog e do admin. Não dá para desfazer.
+        </>
+      ),
+    });
+    if (!ok) return;
     const { error: deleteError } = await getSupabase()!.from("articles").delete().eq("id", row.id);
-    if (deleteError) return setError(deleteError.message);
+    if (deleteError) return notify(`Não foi possível excluir: ${deleteError.message}`, "error");
     setRows((current) => current?.filter((r) => r.id !== row.id));
+    notify(`Artigo "${row.title}" excluído.`);
   }
 
   return (
@@ -136,19 +149,11 @@ export function ArticleList() {
                     {row.published_at ? dateTime.format(new Date(row.published_at)) : "—"}
                   </td>
                   <td className="px-5 py-4">
-                    <div className="flex justify-end gap-2">
-                      <Link href={`/admin/editor/?id=${row.id}`} className={adminSecondary}>
-                        Editar
-                      </Link>
-                      {row.status !== "draft" && (
-                        <a href={`/blog/${row.slug}/`} target="_blank" rel="noopener" className={adminSecondary}>
-                          Ver
-                        </a>
-                      )}
-                      <button type="button" onClick={() => remove(row)} className={adminSecondary}>
-                        Excluir
-                      </button>
-                    </div>
+                    <IconActions>
+                      <IconAction label="Editar" icon={Pencil} href={`/admin/editor/?id=${row.id}`} />
+                      {row.status !== "draft" && <IconAction label="Ver no site" icon={Eye} href={`/blog/${row.slug}/`} external />}
+                      <IconAction label="Excluir" icon={Trash2} tone="danger" onClick={() => remove(row)} />
+                    </IconActions>
                   </td>
                 </tr>
               ))}

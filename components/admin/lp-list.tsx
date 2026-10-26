@@ -2,12 +2,15 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { Copy, Eye, Pencil, Trash2 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { lpTemplateInfo } from "@/lib/lp/templates";
 import { lpTemplates, type LpTemplate } from "@/lib/lp/types";
 import { getSupabase } from "@/lib/supabase/client";
 import type { LandingPageRecord, LandingPageStatus } from "@/lib/supabase/types";
-import { adminInput, adminPrimary, adminSecondary } from "./admin-shell";
+import { adminInput, adminPrimary } from "./admin-shell";
+import { useAdminFeedback } from "./feedback";
+import { IconAction, IconActions } from "./icon-action";
 import { LanguageStatus } from "./language-tabs";
 
 // has_en: só se existe tradução (en->sections), sem baixar o conteúdo inteiro.
@@ -36,6 +39,7 @@ export function LpList() {
   const [query, setQuery] = useState("");
   const [choosing, setChoosing] = useState(false);
   const router = useRouter();
+  const { confirm, notify } = useAdminFeedback();
 
   useEffect(() => {
     let active = true;
@@ -55,12 +59,22 @@ export function LpList() {
   }, [rows, query]);
 
   async function remove(row: Row) {
-    if (!window.confirm(`Excluir a LP "${row.name}"? Não dá para desfazer e o endereço /lp/${row.slug}/ sai do ar.`)) return;
+    const ok = await confirm({
+      title: "Excluir landing page?",
+      description: (
+        <>
+          <strong className="font-semibold text-fg">{row.name}</strong> sai do admin e o endereço /lp/{row.slug}/ sai do ar (anúncios que
+          apontam para ele param de funcionar). Não dá para desfazer.
+        </>
+      ),
+    });
+    if (!ok) return;
     const supabase = getSupabase();
     if (!supabase) return;
     const { error: deleteError } = await supabase.from("landing_pages").delete().eq("id", row.id);
-    if (deleteError) return setError(deleteError.message);
+    if (deleteError) return notify(`Não foi possível excluir: ${deleteError.message}`, "error");
     setRows((current) => current?.filter((r) => r.id !== row.id));
+    notify(`Landing page "${row.name}" excluída.`);
   }
 
   /** Cópia em rascunho, com slug livre (sufixo -copia, -copia-2…). */
@@ -185,22 +199,12 @@ export function LpList() {
                     <LanguageStatus pt en={Boolean(row.has_en && typeof row.has_en === "object" && Object.keys(row.has_en).length)} />
                   </td>
                   <td className="px-5 py-4">
-                    <div className="flex justify-end gap-2">
-                      <Link href={`/admin/landing-pages/editor/?id=${row.id}`} className={adminSecondary}>
-                        Editar
-                      </Link>
-                      {row.status === "published" && (
-                        <a href={`/lp/${row.slug}/`} target="_blank" rel="noopener" className={adminSecondary}>
-                          Ver
-                        </a>
-                      )}
-                      <button type="button" onClick={() => duplicate(row)} className={adminSecondary}>
-                        Duplicar
-                      </button>
-                      <button type="button" onClick={() => remove(row)} className={adminSecondary}>
-                        Excluir
-                      </button>
-                    </div>
+                    <IconActions>
+                      <IconAction label="Editar" icon={Pencil} href={`/admin/landing-pages/editor/?id=${row.id}`} />
+                      {row.status === "published" && <IconAction label="Ver no site" icon={Eye} href={`/lp/${row.slug}/`} external />}
+                      <IconAction label="Duplicar" icon={Copy} onClick={() => duplicate(row)} />
+                      <IconAction label="Excluir" icon={Trash2} tone="danger" onClick={() => remove(row)} />
+                    </IconActions>
                   </td>
                 </tr>
               ))}

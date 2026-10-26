@@ -12,6 +12,7 @@ import { getSupabase } from "@/lib/supabase/client";
 import { optimizeImage } from "@/lib/admin/optimize-image";
 import type { ArticleRecord, ArticleStatus, Database, Json } from "@/lib/supabase/types";
 import { adminInput, adminPrimary, adminSecondary } from "./admin-shell";
+import { useAdminFeedback } from "./feedback";
 import { statusLabel } from "./article-list";
 import {
   emptyEnglish,
@@ -173,6 +174,7 @@ function validate(draft: Draft): string[] {
 
 /** Criar e editar artigos: /admin/editor/ (novo) ou /admin/editor/?id=<uuid>. */
 export function ArticleEditor() {
+  const { confirm } = useAdminFeedback();
   const id = useSearchParams().get("id");
   const [draft, setDraft] = useState<Draft | null>(id ? null : emptyDraft);
   const [loadError, setLoadError] = useState<string>();
@@ -259,7 +261,16 @@ export function ArticleEditor() {
 
   async function fillFaqWithAi() {
     if (!draft) return;
-    if (filledFaq(draft.faq).length && !window.confirm("Substituir as perguntas atuais pelas geradas?")) return;
+    if (
+      filledFaq(draft.faq).length &&
+      !(await confirm({
+        title: "Substituir as perguntas?",
+        description: "As perguntas frequentes atuais serão trocadas pelas geradas pela IA.",
+        confirmLabel: "Substituir",
+        tone: "default",
+      }))
+    )
+      return;
     setGeneratingFaq(true);
     setFaqError(undefined);
     try {

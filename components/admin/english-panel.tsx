@@ -5,6 +5,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { Json } from "@/lib/supabase/types";
 import { asObject, faqList, str } from "@/lib/translation-json";
 import { adminInput, adminPrimary, adminSecondary } from "./admin-shell";
+import { useAdminFeedback } from "./feedback";
 import { FaqEditor, Field, filledFaq, type FaqDraft } from "./form-parts";
 import { RichTextEditor } from "./rich-text-editor";
 import { translateToEnglish } from "./seo-assistant";
@@ -221,6 +222,7 @@ type EnglishPanelProps = {
 };
 
 export function EnglishPanel({ value, onChange, defs, bodyLabel, showFaq, translator }: EnglishPanelProps) {
+  const { confirm } = useAdminFeedback();
   const { translating, error, auto, setAuto, translateAll, version, clear } = translator;
   const translated = hasEnglish(value);
 
@@ -243,8 +245,17 @@ export function EnglishPanel({ value, onChange, defs, bodyLabel, showFaq, transl
           <div className="flex flex-wrap gap-2">
             <button
               type="button"
-              onClick={() => {
-                if (translated && !window.confirm("Traduzir tudo de novo? Os ajustes feitos à mão no inglês serão substituídos.")) return;
+              onClick={async () => {
+                if (
+                  translated &&
+                  !(await confirm({
+                    title: "Traduzir tudo de novo?",
+                    description: "Os ajustes feitos à mão no inglês serão substituídos pela nova tradução.",
+                    confirmLabel: "Traduzir de novo",
+                    tone: "default",
+                  }))
+                )
+                  return;
                 void translateAll();
               }}
               disabled={translating}
@@ -255,8 +266,13 @@ export function EnglishPanel({ value, onChange, defs, bodyLabel, showFaq, transl
             {translated && (
               <button
                 type="button"
-                onClick={() => {
-                  if (window.confirm("Remover a tradução? A página em inglês volta a mostrar o português.")) clear();
+                onClick={async () => {
+                  const ok = await confirm({
+                    title: "Remover a tradução?",
+                    description: "A página em inglês volta a mostrar o português, com o aviso “disponível só em português”. Vale depois de salvar.",
+                    confirmLabel: "Remover tradução",
+                  });
+                  if (ok) clear();
                 }}
                 className={adminSecondary}
               >

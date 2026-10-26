@@ -1,11 +1,14 @@
 "use client";
 
 import Link from "next/link";
+import { Eye, Pencil, Trash2 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { getSupabase } from "@/lib/supabase/client";
 import type { MaterialRecord, MaterialStatus } from "@/lib/supabase/types";
 import { adminInput, adminPrimary, adminSecondary } from "./admin-shell";
 import { CoverOptimizer } from "./cover-optimizer";
+import { useAdminFeedback } from "./feedback";
+import { IconAction, IconActions } from "./icon-action";
 import { LanguageStatus } from "./language-tabs";
 
 // en_title: só o título da tradução (en->>title), sem baixar o texto em inglês inteiro.
@@ -31,6 +34,7 @@ export function MaterialList() {
   const [rows, setRows] = useState<Row[]>();
   const [error, setError] = useState<string>();
   const [query, setQuery] = useState("");
+  const { confirm, notify } = useAdminFeedback();
 
   useEffect(() => {
     let active = true;
@@ -50,14 +54,24 @@ export function MaterialList() {
   }, [rows, query]);
 
   async function remove(row: Row) {
-    if (!window.confirm(`Excluir "${row.title}"? Não dá para desfazer. O arquivo enviado também sai do ar.`)) return;
+    const ok = await confirm({
+      title: "Excluir material?",
+      description: (
+        <>
+          <strong className="font-semibold text-fg">{row.title}</strong> sai do site, e o arquivo enviado também é apagado (links já
+          enviados por e-mail param de funcionar). Não dá para desfazer.
+        </>
+      ),
+    });
+    if (!ok) return;
     const supabase = getSupabase();
     if (!supabase) return;
     const { data: full } = await supabase.from("materials").select("file_path").eq("id", row.id).maybeSingle();
     const { error: deleteError } = await supabase.from("materials").delete().eq("id", row.id);
-    if (deleteError) return setError(deleteError.message);
+    if (deleteError) return notify(`Não foi possível excluir: ${deleteError.message}`, "error");
     if (full?.file_path) await supabase.storage.from("material-files").remove([full.file_path]);
     setRows((current) => current?.filter((r) => r.id !== row.id));
+    notify(`Material "${row.title}" excluído.`);
   }
 
   return (
@@ -142,19 +156,11 @@ export function MaterialList() {
                     {row.file_name ?? <span className="font-medium text-brand-dark">Sem arquivo</span>}
                   </td>
                   <td className="px-5 py-4">
-                    <div className="flex justify-end gap-2">
-                      <Link href={`/admin/materiais/editor/?id=${row.id}`} className={adminSecondary}>
-                        Editar
-                      </Link>
-                      {row.status === "published" && (
-                        <a href={`/materiais/${row.slug}/`} target="_blank" rel="noopener" className={adminSecondary}>
-                          Ver
-                        </a>
-                      )}
-                      <button type="button" onClick={() => remove(row)} className={adminSecondary}>
-                        Excluir
-                      </button>
-                    </div>
+                    <IconActions>
+                      <IconAction label="Editar" icon={Pencil} href={`/admin/materiais/editor/?id=${row.id}`} />
+                      {row.status === "published" && <IconAction label="Ver no site" icon={Eye} href={`/materiais/${row.slug}/`} external />}
+                      <IconAction label="Excluir" icon={Trash2} tone="danger" onClick={() => remove(row)} />
+                    </IconActions>
                   </td>
                 </tr>
               ))}

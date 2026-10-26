@@ -1,11 +1,14 @@
 "use client";
 
 import Link from "next/link";
+import { Save, Trash2 } from "lucide-react";
 import { useEffect, useState, type FormEvent } from "react";
 import { fetchMaterialFormats, type MaterialFormat } from "@/lib/materials/formats";
 import { slugify } from "@/lib/slugify";
 import { getSupabase } from "@/lib/supabase/client";
-import { adminInput, adminPrimary, adminSecondary } from "./admin-shell";
+import { adminInput, adminPrimary } from "./admin-shell";
+import { useAdminFeedback } from "./feedback";
+import { IconAction, IconActions } from "./icon-action";
 
 type FormatDraft = { name: string; nameEn: string; sortOrder: number };
 
@@ -20,6 +23,7 @@ export function FormatManager() {
   const [error, setError] = useState<string>();
   const [notice, setNotice] = useState<string>();
   const [busy, setBusy] = useState<string>();
+  const { confirm, notify } = useAdminFeedback();
 
   useEffect(() => {
     let active = true;
@@ -57,16 +61,25 @@ export function FormatManager() {
 
   async function remove(format: MaterialFormat) {
     if (usage[format.slug]) return;
-    if (!window.confirm(`Excluir o formato "${format.name}"?`)) return;
+    const ok = await confirm({
+      title: "Excluir formato?",
+      description: (
+        <>
+          <strong className="font-semibold text-fg">{format.name}</strong> sai do seletor do editor e do filtro do catálogo.
+        </>
+      ),
+    });
+    if (!ok) return;
     setBusy(format.slug);
     const { error: deleteError } = await getSupabase()!.from("material_formats").delete().eq("slug", format.slug);
     setBusy(undefined);
     if (deleteError) {
       const inUse = deleteError.code === "23503";
-      return setError(inUse ? "Há materiais usando esse formato: troque o formato deles antes." : deleteError.message);
+      return notify(inUse ? "Há materiais usando esse formato: troque o formato deles antes." : `Não foi possível excluir: ${deleteError.message}`, "error");
     }
     setFormats((list) => list?.filter((f) => f.slug !== format.slug));
-    setNotice(`"${format.name}" excluído.`);
+    setNotice(undefined);
+    notify(`Formato "${format.name}" excluído.`);
   }
 
   async function add(event: FormEvent<HTMLFormElement>) {
@@ -167,25 +180,23 @@ export function FormatManager() {
                     </td>
                     <td className="px-5 py-3 text-fg-muted">{usage[format.slug] ?? 0}</td>
                     <td className="px-5 py-3">
-                      <div className="flex justify-end gap-2">
-                        <button
-                          type="button"
+                      <IconActions>
+                        <IconAction
+                          label="Salvar alterações"
+                          icon={Save}
                           onClick={() => save(format.slug)}
                           disabled={!changed || busy === format.slug}
-                          className={adminSecondary}
-                        >
-                          Salvar
-                        </button>
-                        <button
-                          type="button"
+                          disabledHint={changed ? "Salvando…" : "Nada para salvar"}
+                        />
+                        <IconAction
+                          label="Excluir"
+                          icon={Trash2}
+                          tone="danger"
                           onClick={() => remove(format)}
                           disabled={Boolean(usage[format.slug]) || busy === format.slug}
-                          title={usage[format.slug] ? "Em uso: troque o formato dos materiais antes" : undefined}
-                          className={adminSecondary}
-                        >
-                          Excluir
-                        </button>
-                      </div>
+                          disabledHint={usage[format.slug] ? "Em uso: troque o formato dos materiais antes" : "Aguarde…"}
+                        />
+                      </IconActions>
                     </td>
                   </tr>
                 );

@@ -11,6 +11,7 @@ import { getSupabase } from "@/lib/supabase/client";
 import { optimizeImage } from "@/lib/admin/optimize-image";
 import type { Database, Json, MaterialRecord, MaterialStatus } from "@/lib/supabase/types";
 import { adminInput, adminPrimary, adminSecondary } from "./admin-shell";
+import { useAdminFeedback } from "./feedback";
 import {
   emptyEnglish,
   EnglishPanel,
@@ -154,6 +155,7 @@ function validate(draft: Draft, formats: readonly MaterialFormat[]): string[] {
 
 /** Criar e editar materiais: /admin/materiais/editor/ (novo) ou ?id=<uuid>. */
 export function MaterialEditor() {
+  const { confirm } = useAdminFeedback();
   const id = useSearchParams().get("id");
   const [draft, setDraft] = useState<Draft | null>(id ? null : emptyDraft);
   const [loadError, setLoadError] = useState<string>();
@@ -258,7 +260,16 @@ export function MaterialEditor() {
 
   async function fillFaqWithAi() {
     if (!draft) return;
-    if (filledFaq(draft.faq).length && !window.confirm("Substituir as perguntas atuais pelas geradas?")) return;
+    if (
+      filledFaq(draft.faq).length &&
+      !(await confirm({
+        title: "Substituir as perguntas?",
+        description: "As perguntas frequentes atuais serão trocadas pelas geradas pela IA.",
+        confirmLabel: "Substituir",
+        tone: "default",
+      }))
+    )
+      return;
     setGeneratingFaq(true);
     setFaqError(undefined);
     try {

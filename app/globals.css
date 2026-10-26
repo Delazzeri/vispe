@@ -21,6 +21,9 @@
   --color-fin-light: #33d39b; /* início do gradiente do logo */
   --color-fin-fg: #0c1310; /* texto sobre o verde (contraste ~9:1) */
 
+  /* Admin: ações destrutivas (excluir). Não usar no site. ~6,5:1 sobre branco. */
+  --color-danger: #b42318;
+
   /* Microtexto dos widgets do mockup (parede do Fin 24/7). */
   --text-2xs: 0.625rem;
   --text-2xs--line-height: 0.75rem;

@@ -40,6 +40,14 @@ O Fin 24/7 (CFO virtual da Vispe) tem identidade própria em verde, medida no po
 --color-fin-fg:    #0c1310;  /* texto sobre o verde (contraste ~9:1) */
 ```
 
+### Cor de ação destrutiva (admin)
+
+Só no admin, para excluir (ícone da lixeira no hover e botão "Excluir" da confirmação). Nunca no site.
+
+```css
+--color-danger: #b42318;  /* ~6,5:1 sobre branco: vale para texto e ícone */
+```
+
 ## Tipografia
 
 - Fonte: stack `"Inter Display", Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif` — mesmo stack usado pela referência cooldock.app.

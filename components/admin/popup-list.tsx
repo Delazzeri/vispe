@@ -1,11 +1,14 @@
 "use client";
 
 import Link from "next/link";
+import { Pause, Pencil, Play, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { popupState, popupStateLabel, popupWhen, popupWhere } from "@/lib/popups/admin";
 import { getSupabase } from "@/lib/supabase/client";
 import type { PopupRecord } from "@/lib/supabase/types";
-import { adminPrimary, adminSecondary } from "./admin-shell";
+import { adminPrimary } from "./admin-shell";
+import { useAdminFeedback } from "./feedback";
+import { IconAction, IconActions } from "./icon-action";
 
 type Row = Pick<
   PopupRecord,
@@ -43,6 +46,7 @@ export function PopupList() {
   const [totals, setTotals] = useState<Totals>({});
   const [error, setError] = useState<string>();
   const [now, setNow] = useState(0);
+  const { confirm, notify } = useAdminFeedback();
 
   useEffect(() => {
     let active = true;
@@ -62,19 +66,30 @@ export function PopupList() {
     const supabase = getSupabase();
     if (!supabase) return;
     const { error: updateError } = await supabase.from("popups").update({ active: !row.active }).eq("id", row.id);
-    if (updateError) return setError(updateError.message);
+    if (updateError) return notify(`Não foi possível ${row.active ? "pausar" : "ligar"}: ${updateError.message}`, "error");
     setRows((current) => current?.map((r) => (r.id === row.id ? { ...r, active: !row.active } : r)));
+    notify(row.active ? `"${row.name}" pausado: não aparece mais no site.` : `"${row.name}" ligado.`);
   }
 
   async function remove(row: Row) {
-    if (!window.confirm(`Excluir o pop-up "${row.name}"? Não dá para desfazer; os resultados dele também somem.`)) return;
+    const ok = await confirm({
+      title: "Excluir pop-up?",
+      description: (
+        <>
+          <strong className="font-semibold text-fg">{row.name}</strong> sai do site e os resultados dele (exibições e cliques) também
+          são apagados. Não dá para desfazer. Para só tirar do ar, use Pausar.
+        </>
+      ),
+    });
+    if (!ok) return;
     const supabase = getSupabase();
     if (!supabase) return;
     const { error: deleteError } = await supabase.from("popups").delete().eq("id", row.id);
-    if (deleteError) return setError(deleteError.message);
+    if (deleteError) return notify(`Não foi possível excluir: ${deleteError.message}`, "error");
     const path = row.image_url?.split("/popup-images/")[1];
     if (path) await supabase.storage.from("popup-images").remove([decodeURIComponent(path)]);
     setRows((current) => current?.filter((r) => r.id !== row.id));
+    notify(`Pop-up "${row.name}" excluído.`);
   }
 
   return (
@@ -141,19 +156,13 @@ export function PopupList() {
                       {total.views > 0 && <span className="block text-xs text-fg-muted">{percent.format(total.clicks / total.views)}</span>}
                     </td>
                     <td className="px-5 py-4">
-                      <div className="flex justify-end gap-2">
-                        <Link href={`/admin/popups/editor/?id=${row.id}`} className={adminSecondary}>
-                          Editar
-                        </Link>
+                      <IconActions>
+                        <IconAction label="Editar" icon={Pencil} href={`/admin/popups/editor/?id=${row.id}`} />
                         {state !== "ended" && (
-                          <button type="button" onClick={() => toggle(row)} className={adminSecondary}>
-                            {row.active ? "Pausar" : "Ligar"}
-                          </button>
+                          <IconAction label={row.active ? "Pausar" : "Ligar"} icon={row.active ? Pause : Play} onClick={() => toggle(row)} />
                         )}
-                        <button type="button" onClick={() => remove(row)} className={adminSecondary}>
-                          Excluir
-                        </button>
-                      </div>
+                        <IconAction label="Excluir" icon={Trash2} tone="danger" onClick={() => remove(row)} />
+                      </IconActions>
                     </td>
                   </tr>
                 );

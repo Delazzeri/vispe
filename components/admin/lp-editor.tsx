@@ -14,6 +14,7 @@ import { englishFromJson, englishToJson, lpTexts, pageTexts, pendingTexts, type 
 import { lpTemplates, type LandingPage, type LpImage, type LpSection, type LpSectionType, type LpTemplate } from "@/lib/lp/types";
 import { slugify } from "@/lib/slugify";
 import { getSupabase } from "@/lib/supabase/client";
+import { useAdminFeedback } from "./feedback";
 import type { Json, LandingPageStatus } from "@/lib/supabase/types";
 import { adminInput, adminPrimary, adminSecondary } from "./admin-shell";
 import { Field } from "./form-parts";
@@ -128,6 +129,7 @@ function validate(draft: Draft): string[] {
 }
 
 export function LpEditor() {
+  const { confirm } = useAdminFeedback();
   const params = useSearchParams();
   const router = useRouter();
   const id = params.get("id");
@@ -462,8 +464,13 @@ export function LpEditor() {
                     count={draft.sections.length}
                     label={`seção ${spec.label}`}
                     onMove={(delta) => setSections(move(draft.sections, index, delta))}
-                    onRemove={() => {
-                      if (window.confirm(`Remover a seção "${spec.label}"?`)) setSections(draft.sections.filter((s) => s.id !== section.id));
+                    onRemove={async () => {
+                      const ok = await confirm({
+                        title: "Remover seção?",
+                        description: `A seção “${spec.label}” e o conteúdo dela saem da página. Vale depois de salvar.`,
+                        confirmLabel: "Remover seção",
+                      });
+                      if (ok) setSections(draft.sections.filter((s) => s.id !== section.id));
                     }}
                   />
                 </div>
