@@ -103,8 +103,13 @@ export async function listEpisodes(): Promise<Episode[]> {
     }
     if (attempt < attempts) await wait(attempt * 1500);
   }
-  throw new Error(
+  const message =
     `[episodes] A playlist do Equity Talks no YouTube não respondeu no build depois de ${attempts} tentativas (${lastError}). ` +
-      "Confira a internet e o id da playlist em content/episodes.ts e rode o build de novo.",
-  );
+    "Confira a internet e o id da playlist em content/episodes.ts e rode o build de novo.";
+  // No `pnpm dev` a home abre sem os episódios do build (a Edge Function ainda tenta no navegador).
+  if (process.env.NODE_ENV === "development") {
+    console.warn(message);
+    return [];
+  }
+  throw new Error(message);
 }
