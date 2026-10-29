@@ -5,13 +5,15 @@ import { ExternalLink, Eye, Pencil, Trash2 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { getSupabase } from "@/lib/supabase/client";
 import type { ArticleRecord, ArticleStatus } from "@/lib/supabase/types";
+import { getSite } from "@/content/site";
 import { adminInput, adminPrimary, adminSecondary } from "./admin-shell";
+import { CountTiles } from "./count-tiles";
 import { useAdminFeedback } from "./feedback";
 import { IconAction, IconActions } from "./icon-action";
 import { LanguageStatus } from "./language-tabs";
 
 // en_title: só o título da tradução (en->>title), sem baixar o texto em inglês inteiro.
-type Row = Pick<ArticleRecord, "id" | "slug" | "title" | "status" | "published_at" | "updated_at"> & {
+type Row = Pick<ArticleRecord, "id" | "slug" | "title" | "status" | "published_at" | "updated_at" | "tags"> & {
   en_title: string | null;
 };
 
@@ -27,6 +29,9 @@ const statusClass: Record<ArticleStatus, string> = {
   published: "bg-ink text-paper",
 };
 
+// Assuntos = pilares da seção Equity, os mesmos filtros do blog (pelas tags de serviço).
+const pillars = getSite("pt-BR").servicePillars;
+
 const dateTime = new Intl.DateTimeFormat("pt-BR", { dateStyle: "short", timeStyle: "short" });
 
 async function fetchRows(): Promise<{ rows: Row[]; error?: string }> {
@@ -34,7 +39,7 @@ async function fetchRows(): Promise<{ rows: Row[]; error?: string }> {
   if (!supabase) return { rows: [], error: "Supabase não configurado." };
   const { data, error } = await supabase
     .from("articles")
-    .select("id,slug,title,status,published_at,updated_at,en_title:en->>title")
+    .select("id,slug,title,status,published_at,updated_at,tags,en_title:en->>title")
     .order("updated_at", { ascending: false });
   return { rows: data ?? [], error: error?.message };
 }
@@ -62,6 +67,14 @@ export function ArticleList() {
     const q = query.trim().toLowerCase();
     return (rows ?? []).filter((row) => !q || row.title.toLowerCase().includes(q) || row.slug.includes(q));
   }, [rows, query]);
+
+  // Quantos artigos há de cada assunto (todos os status); um artigo pode estar em mais de um.
+  const tiles = useMemo(() => {
+    const list = rows ?? [];
+    const tiles = pillars.map((pillar) => ({ label: pillar.name, count: list.filter((row) => row.tags?.some((tag) => pillar.includes.includes(tag))).length }));
+    const none = list.filter((row) => !row.tags?.some((tag) => pillars.some((pillar) => pillar.includes.includes(tag)))).length;
+    return none ? [...tiles, { label: "Sem assunto", count: none }] : tiles;
+  }, [rows]);
 
   async function remove(row: Row) {
     const ok = await confirm({
@@ -100,6 +113,8 @@ export function ArticleList() {
           </Link>
         </div>
       </div>
+
+      {rows && <CountTiles label="Artigos por assunto" total={{ label: "Artigos", count: rows.length }} tiles={tiles} />}
 
       <label className="mt-8 block max-w-sm text-sm font-medium text-fg">
         Buscar

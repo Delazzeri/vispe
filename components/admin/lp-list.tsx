@@ -9,6 +9,7 @@ import { lpTemplates, type LpTemplate } from "@/lib/lp/types";
 import { getSupabase } from "@/lib/supabase/client";
 import type { LandingPageRecord, LandingPageStatus } from "@/lib/supabase/types";
 import { adminInput, adminPrimary } from "./admin-shell";
+import { CountTiles } from "./count-tiles";
 import { useAdminFeedback } from "./feedback";
 import { IconAction, IconActions } from "./icon-action";
 import { LanguageStatus } from "./language-tabs";
@@ -57,6 +58,12 @@ export function LpList() {
     const q = query.trim().toLowerCase();
     return (rows ?? []).filter((row) => !q || row.name.toLowerCase().includes(q) || row.slug.includes(q));
   }, [rows, query]);
+
+  // Quantas há de cada modelo (todos os status).
+  const tiles = useMemo(
+    () => lpTemplates.map((template) => ({ label: templateLabel(template), count: (rows ?? []).filter((row) => row.template === template).length })),
+    [rows],
+  );
 
   async function remove(row: Row) {
     const ok = await confirm({
@@ -142,6 +149,8 @@ export function LpList() {
           </ul>
         </div>
       )}
+
+      {rows && <CountTiles label="Landing pages por modelo" total={{ label: "Landing pages", count: rows.length }} tiles={tiles} />}
 
       <label className="mt-8 block max-w-sm text-sm font-medium text-fg">
         Buscar

@@ -5,33 +5,40 @@ import { Eye, Pencil, Trash2 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { getSupabase } from "@/lib/supabase/client";
 import type { MaterialRecord, MaterialStatus } from "@/lib/supabase/types";
-import { adminInput, adminPrimary, adminSecondary } from "./admin-shell";
+import { adminInput, adminPrimary } from "./admin-shell";
+import { CountTiles } from "./count-tiles";
 import { CoverOptimizer } from "./cover-optimizer";
 import { useAdminFeedback } from "./feedback";
 import { IconAction, IconActions } from "./icon-action";
 import { LanguageStatus } from "./language-tabs";
 
 // en_title: só o título da tradução (en->>title), sem baixar o texto em inglês inteiro.
-type Row = Pick<MaterialRecord, "id" | "slug" | "title" | "type" | "status" | "sort_order" | "file_name" | "updated_at"> & {
+type Row = Pick<MaterialRecord, "id" | "slug" | "title" | "type" | "format" | "status" | "sort_order" | "file_name" | "updated_at"> & {
   en_title: string | null;
 };
 
 export const materialStatusLabel: Record<MaterialStatus, string> = { draft: "Rascunho", published: "Publicado" };
 
-async function fetchRows(): Promise<{ rows: Row[]; error?: string }> {
+type Format = { slug: string; name: string };
+
+async function fetchRows(): Promise<{ rows: Row[]; formats: Format[]; error?: string }> {
   const supabase = getSupabase();
-  if (!supabase) return { rows: [], error: "Supabase não configurado." };
-  const { data, error } = await supabase
-    .from("materials")
-    .select("id,slug,title,type,status,sort_order,file_name,updated_at,en_title:en->>title")
-    .order("sort_order", { ascending: false })
-    .order("updated_at", { ascending: false });
-  return { rows: data ?? [], error: error?.message };
+  if (!supabase) return { rows: [], formats: [], error: "Supabase não configurado." };
+  const [materials, formats] = await Promise.all([
+    supabase
+      .from("materials")
+      .select("id,slug,title,type,format,status,sort_order,file_name,updated_at,en_title:en->>title")
+      .order("sort_order", { ascending: false })
+      .order("updated_at", { ascending: false }),
+    supabase.from("material_formats").select("slug,name").order("sort_order").order("name"),
+  ]);
+  return { rows: materials.data ?? [], formats: formats.data ?? [], error: materials.error?.message ?? formats.error?.message };
 }
 
 /** Materiais gratuitos de todos os status, com busca e ações. */
 export function MaterialList() {
   const [rows, setRows] = useState<Row[]>();
+  const [formats, setFormats] = useState<Format[]>([]);
   const [error, setError] = useState<string>();
   const [query, setQuery] = useState("");
   const { confirm, notify } = useAdminFeedback();
@@ -41,6 +48,7 @@ export function MaterialList() {
     fetchRows().then((result) => {
       if (!active) return;
       setRows(result.rows);
+      setFormats(result.formats);
       setError(result.error);
     });
     return () => {
@@ -52,6 +60,15 @@ export function MaterialList() {
     const q = query.trim().toLowerCase();
     return (rows ?? []).filter((row) => !q || row.title.toLowerCase().includes(q) || row.slug.includes(q));
   }, [rows, query]);
+
+  // Quantos materiais há de cada formato (todos os status), incluindo formatos ainda sem material.
+  const tiles = useMemo(() => {
+    const list = rows ?? [];
+    const known = new Set(formats.map((format) => format.slug));
+    const tiles = formats.map((format) => ({ label: format.name, count: list.filter((row) => row.format === format.slug).length }));
+    const other = list.filter((row) => !row.format || !known.has(row.format)).length;
+    return other ? [...tiles, { label: "Sem formato", count: other }] : tiles;
+  }, [rows, formats]);
 
   async function remove(row: Row) {
     const ok = await confirm({
@@ -87,14 +104,13 @@ export function MaterialList() {
         </div>
         <div className="flex items-start gap-2">
           <CoverOptimizer />
-          <Link href="/admin/materiais/formatos/" className={adminSecondary}>
-            Formatos
-          </Link>
           <Link href="/admin/materiais/editor/" className={adminPrimary}>
             Novo material
           </Link>
         </div>
       </div>
+
+      {rows && <CountTiles label="Materiais por formato" total={{ label: "Materiais", count: rows.length }} tiles={tiles} />}
 
       <label className="mt-8 block max-w-sm text-sm font-medium text-fg">
         Buscar
