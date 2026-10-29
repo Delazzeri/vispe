@@ -1,4 +1,4 @@
-// Tipos do banco escritos à mão a partir de supabase/migrations (0001–0012).
+// Tipos do banco escritos à mão a partir de supabase/migrations (0001–0013).
 // Depois de criar o projeto, regenerar com:
 //   supabase gen types typescript --project-id <ref> > lib/supabase/types.ts
 
@@ -148,6 +148,22 @@ type PopupDailyStatRow = {
   closes: number;
 };
 
+export type AuditAction = "insert" | "update" | "delete";
+
+/** Registro de atividades (0013): gravado por triggers, só leitura no admin. */
+type AuditLogRow = {
+  id: number;
+  at: string;
+  actor_id: string | null;
+  actor_email: string | null;
+  action: AuditAction;
+  entity: string;
+  record_id: string;
+  record_label: string;
+  changed_fields: string[];
+  before: Json | null;
+};
+
 export type Database = {
   public: {
     Tables: {
@@ -209,6 +225,12 @@ export type Database = {
           },
         ];
       };
+      admin_audit_log: {
+        Row: AuditLogRow;
+        Insert: never;
+        Update: never;
+        Relationships: [];
+      };
     };
     Views: { [_ in never]: never };
     Functions: {
@@ -223,6 +245,7 @@ export type Database = {
 };
 
 export type ArticleRecord = ArticleRow;
+export type AuditLogRecord = AuditLogRow;
 export type MaterialRecord = MaterialRow;
 export type MaterialFormatRecord = MaterialFormatRow;
 export type LandingPageRecord = LandingPageRow;

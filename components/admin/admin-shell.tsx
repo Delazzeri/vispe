@@ -40,6 +40,9 @@ export function AdminShell({ email, children }: { email?: string; children: Reac
               <Link href="/admin/metricas/" className="hover:text-fg">
                 Métricas
               </Link>
+              <Link href="/admin/registro/" className="hover:text-fg">
+                Registro
+              </Link>
               <a href="/blog/" target="_blank" rel="noopener" className="hover:text-fg">
                 Ver blog
               </a>

@@ -226,3 +226,32 @@ e "não mostrar mais para quem clicou"). Mudanças valem na hora, sem novo build
 Projeto que já tem o banco (0001–0011) — uma vez: SQL Editor → `supabase/migrations/0012_popups.sql`
 → Run. Ela cria as tabelas `popups` e `popup_daily_stats`, a função `track_popup` e o bucket
 público `popup-images`. Projeto novo: o `setup-completo.sql` já inclui.
+
+## Registro de atividades (admin → Registro)
+
+A tela **Registro** (`/admin/registro/`) lista quem criou, editou ou excluiu artigos,
+materiais, formatos, landing pages, pop-ups e acessos ao admin, com data e hora. Na edição,
+mostra quais campos mudaram; na exclusão, guarda os dados apagados (dá para recuperar o texto).
+
+- Quem grava são triggers no banco (`private.audit_row`), não o navegador: entra tudo, até o que
+  for mudado pelo SQL Editor (aparece como "Banco de dados / sistema").
+- O admin só lê. Não há permissão de inserir, editar ou apagar na tabela `admin_audit_log`
+  para nenhuma conta do site; apagar linhas só no SQL Editor, por exemplo
+  `delete from public.admin_audit_log where at < now() - interval '2 years';`.
+- Login e troca de senha ficam no registro do próprio Supabase: Authentication → Logs.
+
+Projeto que já tem o banco (0001–0012) — uma vez: SQL Editor →
+`supabase/migrations/0013_admin_audit_log.sql` → Run. Projeto novo: o `setup-completo.sql` já inclui.
+
+## Contas do admin
+
+Para cada pessoa: Authentication → Users → Add user → Create new user → e-mail e senha, com
+"Auto Confirm User" marcado. Depois, libere como staff no SQL Editor (passo 5 do início):
+
+```sql
+insert into public.profiles (id, full_name, role)
+select id, 'Nome da pessoa', 'admin' from auth.users where email = 'pessoa@vispe.com.br';
+```
+
+Tirar o acesso: `delete from public.profiles where id = (select id from auth.users where email = 'pessoa@vispe.com.br');`
+(e, se quiser, apague a conta em Authentication → Users). As duas coisas entram no registro.
