@@ -107,6 +107,10 @@ export function VideoEmbed({ youtubeId, title, poster, autoplay = false, classNa
   const wrapperRef = useRef<HTMLDivElement>(null);
   const hostRef = useRef<HTMLDivElement>(null);
   const playerRef = useRef<YouTubePlayer | null>(null);
+  /** O player só aceita comandos (play, pausa, som…) depois do onReady. */
+  const readyRef = useRef(false);
+  /** Metade do vídeo está na tela (autoplay). */
+  const visibleRef = useRef(false);
   const [phase, setPhase] = useState<Phase>("idle");
   const [muted, setMuted] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -158,6 +162,7 @@ export function VideoEmbed({ youtubeId, title, poster, autoplay = false, classNa
           },
           events: {
             onReady: ({ target: player }) => {
+              readyRef.current = true;
               const iframe = player.getIframe();
               iframe.title = title;
               iframe.tabIndex = -1;
@@ -174,6 +179,11 @@ export function VideoEmbed({ youtubeId, title, poster, autoplay = false, classNa
             },
             onStateChange: ({ data }) => {
               if (data === PLAYING) {
+                // Autoplay que começou depois de o vídeo sair da tela: pausa de novo.
+                if (startMuted.current && !engaged.current && !visibleRef.current) {
+                  playerRef.current?.pauseVideo();
+                  return;
+                }
                 setPhase("playing");
                 setBezel(true);
                 clearTimeout(bezelTimer.current);
@@ -201,8 +211,9 @@ export function VideoEmbed({ youtubeId, title, poster, autoplay = false, classNa
   useEffect(
     () => () => {
       clearTimeout(bezelTimer.current);
-      playerRef.current?.destroy();
+      if (readyRef.current) playerRef.current?.destroy();
       playerRef.current = null;
+      readyRef.current = false;
     },
     [],
   );
@@ -225,11 +236,13 @@ export function VideoEmbed({ youtubeId, title, poster, autoplay = false, classNa
     if (!wrapper) return;
     const observer = new IntersectionObserver(
       ([entry]) => {
+        visibleRef.current = entry.isIntersecting;
         if (engaged.current) return;
-        const player = playerRef.current;
+        const player = readyRef.current ? playerRef.current : null;
         if (!entry.isIntersecting) player?.pauseVideo();
         else if (player) player.playVideo();
-        else {
+        // Player criado mas ainda carregando: o autoplay dele cuida de começar.
+        else if (!playerRef.current) {
           startMuted.current = true;
           setMuted(true);
           setPhase((current) => (current === "idle" ? "loading" : current));
@@ -247,25 +260,31 @@ export function VideoEmbed({ youtubeId, title, poster, autoplay = false, classNa
     return () => document.removeEventListener("fullscreenchange", onChange);
   }, []);
 
+  /** O player, só se já está pronto para receber comandos. */
+  function readyPlayer() {
+    return readyRef.current ? playerRef.current : null;
+  }
+
   function start() {
     engage();
-    const player = playerRef.current;
-    if (!player) {
+    if (!playerRef.current) {
       setPhase("loading");
       return;
     }
+    const player = readyPlayer();
+    if (!player) return;
     if (phase === "ended") player.seekTo(0, true);
     player.playVideo();
   }
 
   function toggle() {
     engage();
-    if (phase === "playing") playerRef.current?.pauseVideo();
+    if (phase === "playing") readyPlayer()?.pauseVideo();
     else start();
   }
 
   function toggleMute() {
-    const player = playerRef.current;
+    const player = readyPlayer();
     if (!player) return;
     engage();
     if (muted) player.unMute();
@@ -274,7 +293,7 @@ export function VideoEmbed({ youtubeId, title, poster, autoplay = false, classNa
   }
 
   function seek(value: number) {
-    const player = playerRef.current;
+    const player = readyPlayer();
     const duration = player?.getDuration() ?? 0;
     if (!player || duration <= 0) return;
     engage();
