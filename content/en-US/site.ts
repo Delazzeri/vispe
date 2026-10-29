@@ -57,7 +57,7 @@ export const site: SiteContent = {
     video: {
       title: "How Vispe Capital works",
       youtubeId: "qFf4PULIxrw",
-      poster: "/media/video/vispe-overview-poster-1280.webp",
+      poster: "/media/video/vispe-overview-frame-1280.webp",
     },
   },
 
@@ -314,8 +314,9 @@ export const site: SiteContent = {
     description:
       "Controllership, cash flow and management KPIs in one place, so you decide with clarity, not guesswork.",
     video: {
-      title: "How Vispe organizes your finances",
-      embedUrl: undefined,
+      title: "CFO as a Service",
+      youtubeId: "iTz2NzN_-nM",
+      poster: "/media/video/cfo-as-a-service-frame-1280.webp",
     },
   },
 

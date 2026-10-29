@@ -84,7 +84,7 @@ type Phase = "idle" | "loading" | "playing" | "paused" | "ended";
 type VideoEmbedProps = {
   youtubeId: string;
   title: string;
-  /** Capa local com largura no nome (ex.: "/media/video/x-1280.webp"). */
+  /** Capa local com largura no nome (ex.: "/media/video/x-1280.webp"): o primeiro quadro do vídeo, para a troca para o player não "pular". */
   poster: string;
   /** Começa sozinho, sem som, quando aparece na tela (não com movimento reduzido). */
   autoplay?: boolean;

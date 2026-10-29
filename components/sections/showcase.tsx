@@ -1,5 +1,5 @@
 import { Reveal } from "@/components/motion/reveal";
-import { VideoPlaceholder } from "@/components/ui/video-placeholder";
+import { VideoEmbed } from "@/components/ui/video-embed";
 import { useSite } from "@/content/site";
 
 export function Showcase({ id }: { id?: string }) {
@@ -22,7 +22,7 @@ export function Showcase({ id }: { id?: string }) {
       </div>
 
       <Reveal delay={0.1} className="mx-auto mt-14 max-w-[1104px] px-6">
-        <VideoPlaceholder title={video.title} />
+        <VideoEmbed youtubeId={video.youtubeId} title={video.title} poster={video.poster} autoplay />
       </Reveal>
     </section>
   );

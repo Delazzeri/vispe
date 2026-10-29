@@ -55,11 +55,11 @@ export const site = {
       "Partnership",
     ],
     // Vídeo não listado no YouTube, tocado com controles próprios (components/ui/video-embed.tsx).
-    // Capa: thumbnail do vídeo em public/media/video/ (original em originais/video/).
+    // Capa: primeiro quadro do vídeo em public/media/video/ (original em originais/video/).
     video: {
       title: "Como funciona a Vispe Capital",
       youtubeId: "qFf4PULIxrw" as string | undefined,
-      poster: "/media/video/vispe-overview-poster-1280.webp",
+      poster: "/media/video/vispe-overview-frame-1280.webp",
     },
   },
 
@@ -321,10 +321,11 @@ export const site = {
     title: "Organize seu financeiro, multiplique seu lucro",
     description:
       "Controladoria, fluxo de caixa e indicadores de gestão em um só lugar, para você decidir com clareza, não com achismo.",
-    // TODO(content): vídeo overview real (YouTube/Vimeo), poster e id/URL do embed.
+    // Mesmo player do vídeo das soluções; capa = primeiro quadro do vídeo.
     video: {
-      title: "Como a Vispe organiza o seu financeiro",
-      embedUrl: undefined as string | undefined,
+      title: "CFO as a Service",
+      youtubeId: "iTz2NzN_-nM",
+      poster: "/media/video/cfo-as-a-service-frame-1280.webp",
     },
   },
 
