@@ -9,6 +9,7 @@
 import { spawn } from "node:child_process";
 import { createServer, request } from "node:http";
 import { connect } from "node:net";
+import { networkInterfaces } from "node:os";
 import { localePrefixes, routing } from "../i18n/routing.ts";
 
 const port = Number(process.argv[2] ?? 3000);
@@ -44,9 +45,19 @@ function target(url) {
   return internalPath(parsed.pathname) + parsed.search;
 }
 
+// Para o next dev, tudo chega como localhost: aberto pelo IP da rede (celular no
+// mesmo Wi-Fi), ele bloquearia o hot reload por vir de outra origem.
+function upstreamHeaders(headers) {
+  const local = `localhost:${nextPort}`;
+  const next = { ...headers, host: local };
+  if (headers.origin) next.origin = `http://${local}`;
+  if (headers.referer) next.referer = headers.referer.replace(/^https?:\/\/[^/]+/, `http://${local}`);
+  return next;
+}
+
 const server = createServer((req, res) => {
   const upstream = request(
-    { host: "localhost", port: nextPort, method: req.method, path: target(req.url), headers: { ...req.headers, host: `localhost:${nextPort}` } },
+    { host: "localhost", port: nextPort, method: req.method, path: target(req.url), headers: upstreamHeaders(req.headers) },
     (response) => {
       res.writeHead(response.statusCode ?? 502, response.headers);
       response.pipe(res);
@@ -62,7 +73,7 @@ const server = createServer((req, res) => {
 // WebSocket do hot reload: repassa a conexão crua.
 server.on("upgrade", (req, socket, head) => {
   const upstream = connect(nextPort, "localhost", () => {
-    const headers = Object.entries(req.headers).map(([key, value]) => `${key}: ${key === "host" ? `localhost:${nextPort}` : value}`);
+    const headers = Object.entries(upstreamHeaders(req.headers)).map(([key, value]) => `${key}: ${value}`);
     upstream.write([`${req.method} ${req.url} HTTP/1.1`, ...headers, "", ""].join("\r\n"));
     upstream.write(head);
     socket.pipe(upstream).pipe(socket);
@@ -78,7 +89,13 @@ server.on("error", (problem) => {
   process.exit(1);
 });
 server.listen(port, () => {
-  console.log(`\n  Site com as URLs públicas: http://localhost:${port}  (next dev interno na ${nextPort})\n`);
+  const lan = Object.values(networkInterfaces())
+    .flat()
+    .filter((net) => net && net.family === "IPv4" && !net.internal)
+    .map((net) => `http://${net.address}:${port}`);
+  console.log(`\n  Site com as URLs públicas: http://localhost:${port}`);
+  if (lan.length) console.log(`  Na rede (celular no mesmo Wi-Fi): ${lan.join("  ")}`);
+  console.log(`  (o next dev abaixo roda por dentro na ${nextPort}: use os endereços acima)\n`);
   const next = spawn(process.execPath, ["node_modules/next/dist/bin/next", "dev", "-p", String(nextPort)], { stdio: "inherit" });
   next.on("exit", (code) => process.exit(code ?? 0));
   for (const signal of ["SIGINT", "SIGTERM"]) process.on(signal, () => next.kill(signal));
