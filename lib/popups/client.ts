@@ -6,10 +6,15 @@ import { getSupabase } from "@/lib/supabase/client";
 import { popupColumns, type Popup, type PopupHistory } from "./rules";
 
 const historyKey = "vispe_popups";
-const cacheKey = "vispe_popups_cache";
+// v2: o cache antigo podia guardar pop-ups pausados (visto por quem estava logado no admin).
+const cacheKey = "vispe_popups_cache_v2";
 const CACHE_MS = 5 * 60 * 1000;
 
-/** Ativos e no período (a RLS só entrega esses). Erro ou sem Supabase: nenhum pop-up. */
+/**
+ * Ativos e no período. A RLS só entrega esses ao público, mas quem está logado
+ * no admin (staff) recebe todos, por isso o filtro de active também aqui; o
+ * período é conferido em pickPopup. Erro ou sem Supabase: nenhum pop-up.
+ */
 export async function loadPopups(): Promise<Popup[]> {
   try {
     const cached = JSON.parse(sessionStorage.getItem(cacheKey) ?? "null") as { at: number; popups: Popup[] } | null;
@@ -19,7 +24,7 @@ export async function loadPopups(): Promise<Popup[]> {
   }
   const supabase = getSupabase();
   if (!supabase) return [];
-  const { data, error } = await supabase.from("popups").select(popupColumns);
+  const { data, error } = await supabase.from("popups").select(popupColumns).eq("active", true);
   if (error || !data) return [];
   try {
     sessionStorage.setItem(cacheKey, JSON.stringify({ at: Date.now(), popups: data }));
