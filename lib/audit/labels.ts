@@ -91,3 +91,21 @@ const hiddenFields = new Set(["content_json", "description_json"]);
 export function auditChangedLabels(fields: string[]): string[] {
   return fields.filter((field) => !hiddenFields.has(field)).map((field) => fieldLabels[field] ?? field);
 }
+
+// Siglas pedidas pela equipe, pelo primeiro nome do e-mail (antes do ponto).
+const knownInitials: Record<string, string> = {
+  eduardo: "ED",
+  ricardo: "RA",
+  pablo: "PC",
+  dyonathan: "DH",
+};
+
+/** Sigla do "avatar" de quem fez a ação: lista acima ou as iniciais do e-mail (ana.souza → AS). */
+export function auditInitials(email: string): string {
+  const local = email.split("@")[0].toLowerCase();
+  const parts = local.split(/[._-]+/).filter(Boolean);
+  const known = knownInitials[parts[0] ?? ""];
+  if (known) return known;
+  const letters = parts.length > 1 ? parts[0][0] + parts[1][0] : local.slice(0, 2);
+  return letters.toUpperCase();
+}

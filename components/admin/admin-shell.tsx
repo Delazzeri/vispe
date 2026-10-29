@@ -1,5 +1,6 @@
 "use client";
 
+import { History } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
@@ -40,15 +41,22 @@ export function AdminShell({ email, children }: { email?: string; children: Reac
               <Link href="/admin/metricas/" className="hover:text-fg">
                 Métricas
               </Link>
-              <Link href="/admin/registro/" className="hover:text-fg">
-                Registro
-              </Link>
-              <a href="/blog/" target="_blank" rel="noopener" className="hover:text-fg">
-                Ver blog
-              </a>
             </nav>
           </div>
           <div className="flex items-center gap-3 text-sm text-fg-muted">
+            <Link
+              href="/admin/registro/"
+              aria-label="Registro de atividades"
+              className="group relative flex h-10 w-10 items-center justify-center rounded-xl text-fg-muted transition-colors hover:bg-bg hover:text-fg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-dark"
+            >
+              <History className="h-5 w-5" aria-hidden />
+              <span
+                aria-hidden
+                className="pointer-events-none absolute top-full right-0 z-10 mt-2 whitespace-nowrap rounded-lg bg-ink px-2.5 py-1.5 text-xs font-medium text-paper opacity-0 transition-opacity group-hover:opacity-100 group-focus-visible:opacity-100"
+              >
+                Registro de atividades
+              </span>
+            </Link>
             {email && <span className="hidden sm:inline">{email}</span>}
             <button type="button" onClick={() => getSupabase()?.auth.signOut()} className={adminSecondary}>
               Sair

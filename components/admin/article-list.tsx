@@ -1,11 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { Eye, Pencil, Trash2 } from "lucide-react";
+import { ExternalLink, Eye, Pencil, Trash2 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { getSupabase } from "@/lib/supabase/client";
 import type { ArticleRecord, ArticleStatus } from "@/lib/supabase/types";
-import { adminInput, adminPrimary } from "./admin-shell";
+import { adminInput, adminPrimary, adminSecondary } from "./admin-shell";
 import { useAdminFeedback } from "./feedback";
 import { IconAction, IconActions } from "./icon-action";
 import { LanguageStatus } from "./language-tabs";
@@ -90,9 +90,15 @@ export function ArticleList() {
             Publicados aparecem no site na hora; viram página estática no próximo build.
           </p>
         </div>
-        <Link href="/admin/editor/" className={adminPrimary}>
-          Novo artigo
-        </Link>
+        <div className="flex flex-wrap gap-3">
+          <a href="/blog/" target="_blank" rel="noopener" className={adminSecondary}>
+            <ExternalLink className="h-4 w-4" aria-hidden />
+            Ver blog
+          </a>
+          <Link href="/admin/editor/" className={adminPrimary}>
+            Novo artigo
+          </Link>
+        </div>
       </div>
 
       <label className="mt-8 block max-w-sm text-sm font-medium text-fg">

@@ -44,10 +44,6 @@ function target(url) {
   return internalPath(parsed.pathname) + parsed.search;
 }
 
-const next = spawn(process.execPath, ["node_modules/next/dist/bin/next", "dev", "-p", String(nextPort)], { stdio: "inherit" });
-next.on("exit", (code) => process.exit(code ?? 0));
-for (const signal of ["SIGINT", "SIGTERM"]) process.on(signal, () => next.kill(signal));
-
 const server = createServer((req, res) => {
   const upstream = request(
     { host: "localhost", port: nextPort, method: req.method, path: target(req.url), headers: { ...req.headers, host: `localhost:${nextPort}` } },
@@ -75,4 +71,15 @@ server.on("upgrade", (req, socket, head) => {
   socket.on("error", () => upstream.destroy());
 });
 
-server.listen(port, () => console.log(`\n  Site com as URLs públicas: http://localhost:${port}  (next dev interno na ${nextPort})\n`));
+// O next dev só sobe depois que a porta pública está livre (senão sobraria um next órfão).
+server.on("error", (problem) => {
+  if (problem.code !== "EADDRINUSE") throw problem;
+  console.error(`\n  A porta ${port} já está em uso: o dev provavelmente já está rodando em http://localhost:${port}\n`);
+  process.exit(1);
+});
+server.listen(port, () => {
+  console.log(`\n  Site com as URLs públicas: http://localhost:${port}  (next dev interno na ${nextPort})\n`);
+  const next = spawn(process.execPath, ["node_modules/next/dist/bin/next", "dev", "-p", String(nextPort)], { stdio: "inherit" });
+  next.on("exit", (code) => process.exit(code ?? 0));
+  for (const signal of ["SIGINT", "SIGTERM"]) process.on(signal, () => next.kill(signal));
+});

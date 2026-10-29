@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import { Database } from "lucide-react";
 import { useEffect, useState } from "react";
-import { auditActionLabel, auditChangedLabels, auditEntities, isAuditEntity, type AuditEntity } from "@/lib/audit/labels";
+import { auditActionLabel, auditChangedLabels, auditEntities, auditInitials, isAuditEntity, type AuditEntity } from "@/lib/audit/labels";
 import { getSupabase } from "@/lib/supabase/client";
 import type { AuditAction, AuditLogRecord } from "@/lib/supabase/types";
 import { adminInput, adminSecondary } from "./admin-shell";
@@ -149,7 +150,17 @@ function AuditRow({ row }: { row: AuditLogRecord }) {
   return (
     <tr className="align-top">
       <td className="px-5 py-4 whitespace-nowrap tabular-nums text-fg-muted">{when.format(new Date(row.at))}</td>
-      <td className="px-5 py-4">{row.actor_email ?? <span className="text-fg-muted">Banco de dados / sistema</span>}</td>
+      <td className="px-5 py-4">
+        <span className="flex items-center gap-3">
+          <span
+            aria-hidden
+            className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-ink text-xs font-semibold tracking-wide text-paper"
+          >
+            {row.actor_email ? auditInitials(row.actor_email) : <Database className="h-4 w-4" />}
+          </span>
+          {row.actor_email ?? <span className="text-fg-muted">Banco de dados / sistema</span>}
+        </span>
+      </td>
       <td className="px-5 py-4">
         <span className={`rounded-md px-2 py-1 text-xs font-semibold whitespace-nowrap ${actionBadge[row.action]}`}>{auditActionLabel[row.action]}</span>
       </td>
