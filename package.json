@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "node --no-warnings scripts/dev.mjs",
     "build": "node scripts/clear-fetch-cache.mjs && node scripts/image-manifest.mjs && next build && node --no-warnings scripts/generate-htaccess.mjs",
     "preview": "node scripts/serve-out.mjs",
     "lint": "eslint",

@@ -30,7 +30,7 @@
 ## 3. Comandos
 
 ```bash
-pnpm dev          # desenvolvimento
+pnpm dev          # desenvolvimento em :3000 com as URLs públicas (/sobre/, /en/about/); next dev interno em :3001
 pnpm build        # build de produção — deve passar sem warnings
 pnpm lint         # ESLint
 pnpm typecheck    # tsc --noEmit
